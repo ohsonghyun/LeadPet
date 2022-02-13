@@ -1,0 +1,50 @@
+plugins {
+	id 'org.springframework.boot' version '2.6.3'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+	id 'groovy'
+}
+
+group = 'com.leadpet.www'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// in memory DB
+	implementation 'com.h2database:h2'
+
+	// spock framework
+	testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
+	testImplementation 'org.codehaus.groovy:groovy-all:3.0.8'
+	testImplementation 'org.spockframework:spock-spring:2.1-M2-groovy-3.0'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+sourceSets {
+	test {
+		groovy.srcDirs = ['src/test/groovy/unit', 'src/test/groovy/intg']
+		java.srcDirs = ['src/test/java/unit', 'src/test/java/intg']
+	}
+}
