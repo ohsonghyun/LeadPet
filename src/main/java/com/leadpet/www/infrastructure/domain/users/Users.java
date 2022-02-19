@@ -1,7 +1,6 @@
 package com.leadpet.www.infrastructure.domain.users;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import lombok.AccessLevel;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,8 +18,20 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
+
+    // 공통
     private LoginMethod loginMethod;
-    // TODO ... 필요한 필드 정의하기
+    private String uid;
+    private String email;
+    private String profileImage; // TODO string 으로 어떻게?
+    private String name;
+
+    // 보호소
+    private String shelterName;
+    private String shelterAddress;
+    private String shelterPhoneNumber;
+    private String shelterManager;
+    private String shelterHomePage;
 
     /**
      * 로그인 방법
@@ -28,8 +39,8 @@ public class Users {
     public enum LoginMethod {
         KAKAO,
         GOOGLE,
-        EMAIL,
-        APPLE;
+        APPLE,
+        EMAIL;
 
         @JsonCreator
         public static LoginMethod from(final String loginMethod) {
