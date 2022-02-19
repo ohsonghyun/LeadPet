@@ -7,6 +7,7 @@ import com.leadpet.www.infrastructure.domain.users.Users;
  * SignUpUserRequestDto
  */
 @lombok.Getter
+@lombok.Builder
 public class SignUpUserRequestDto {
 
     // 공통
