@@ -23,7 +23,8 @@ public class Users {
     private LoginMethod loginMethod;
     private String uid;
     private String email;
-    private String profileImage; // TODO string 으로 어떻게?
+    private String password;
+    private String profileImage;
     private String name;
 
     // 보호소

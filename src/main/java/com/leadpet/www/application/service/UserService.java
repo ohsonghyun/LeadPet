@@ -2,6 +2,7 @@ package com.leadpet.www.application.service;
 
 import com.leadpet.www.infrastructure.db.UsersRepository;
 import com.leadpet.www.infrastructure.domain.users.Users;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +17,7 @@ public class UserService {
      * @param newUser 새로운 유저 데이터
      * @return 가입 완성 후 유저 데이
      */
-    public Users saveNewUser(final Users newUser) {
+    public Users saveNewUser(@NonNull final Users newUser) {
         return usersRepository.save(Users.builder()
                 .loginMethod(newUser.getLoginMethod())
                 .build());
