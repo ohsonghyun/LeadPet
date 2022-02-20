@@ -12,6 +12,8 @@ import javax.persistence.Id;
  */
 @Entity
 @lombok.Getter
+@lombok.NoArgsConstructor
+@lombok.AllArgsConstructor
 @lombok.Builder
 public class Users {
 

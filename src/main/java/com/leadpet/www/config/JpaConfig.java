@@ -1,4 +1,4 @@
-package com.leadpet.www.infrastructure.config;
+package com.leadpet.www.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
