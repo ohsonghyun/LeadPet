@@ -4,7 +4,6 @@ package com.leadpet.www.presentation.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leadpet.www.infrastructure.db.UsersRepository;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
-import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.presentation.dto.request.SignUpUserRequestDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

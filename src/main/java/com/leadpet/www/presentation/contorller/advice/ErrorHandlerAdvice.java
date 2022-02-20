@@ -1,5 +1,6 @@
 package com.leadpet.www.presentation.contorller.advice;
 
+import com.leadpet.www.infrastructure.error.signup.UnsatisfiedRequirementException;
 import com.leadpet.www.infrastructure.error.signup.UserAlreadyExistsException;
 import com.leadpet.www.presentation.dto.response.ErrorResponse;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,11 @@ public class ErrorHandlerAdvice {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handler(UserAlreadyExistsException ex) {
+        return errorResponse(ex);
+    }
+
+    @ExceptionHandler(UnsatisfiedRequirementException.class)
+    public ResponseEntity<ErrorResponse> handler(UnsatisfiedRequirementException ex) {
         return errorResponse(ex);
     }
 

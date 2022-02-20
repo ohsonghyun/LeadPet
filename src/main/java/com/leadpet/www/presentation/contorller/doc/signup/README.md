@@ -34,4 +34,12 @@
 | error/message | String     | CONFLICT          | -   |
 | error/detail  | String     | Error: 이미 존재하는 유저 | -   |
 
+##### 에러 : 필수 데이터 입력이 누락된 경우
+
+| 필드명           | 변수 타입      | 예시                  | 비고  |
+|---------------|------------|---------------------|-----|
+| error/        | Object     | -                   | -   |
+| error/code    | HttpStatus | 400                 | -   |
+| error/message | String     | BAD_REQUEST         | -   |
+| error/detail  | String     | Error: 필수 입력 데이터 누락 | -   |
 
