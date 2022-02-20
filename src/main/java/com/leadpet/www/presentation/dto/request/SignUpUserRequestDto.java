@@ -1,7 +1,10 @@
 package com.leadpet.www.presentation.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import com.leadpet.www.infrastructure.domain.users.Users;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * SignUpUserRequestDto
@@ -11,8 +14,10 @@ import com.leadpet.www.infrastructure.domain.users.Users;
 public class SignUpUserRequestDto {
 
     // 공통
+    @NotNull
     @JsonProperty("type")
-    private Users.LoginMethod loginMethod;
+    private LoginMethod loginMethod;
+    @NotNull
     @JsonProperty("uid")
     private String uid;
     @JsonProperty("email")

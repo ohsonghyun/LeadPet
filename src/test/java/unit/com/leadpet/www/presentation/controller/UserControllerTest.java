@@ -3,6 +3,7 @@ package com.leadpet.www.presentation.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leadpet.www.infrastructure.db.UsersRepository;
+import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.presentation.dto.request.SignUpUserRequestDto;
 import org.junit.jupiter.api.AfterEach;
@@ -46,7 +47,7 @@ public class UserControllerTest {
     public void user_signUp_success() throws Exception {
         // given
         var signUpUserRequestDto = SignUpUserRequestDto.builder()
-                .loginMethod(Users.LoginMethod.KAKAO)
+                .loginMethod(LoginMethod.KAKAO)
                 .uid("kakaoUid")
                 .name("kakao")
                 .build();
@@ -61,7 +62,7 @@ public class UserControllerTest {
     public void user_signUp_failed_UserAlreadyExistsException() throws Exception {
         // given
         var signUpUserRequestDto = SignUpUserRequestDto.builder()
-                .loginMethod(Users.LoginMethod.KAKAO)
+                .loginMethod(LoginMethod.KAKAO)
                 .uid("kakaoUid")
                 .name("kakao")
                 .build();

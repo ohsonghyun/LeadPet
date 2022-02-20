@@ -1,5 +1,6 @@
 package com.leadpet.www.infrastructure.db;
 
+import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -17,5 +18,5 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
      * @param uid 유저 고유 ID
      * @return {@code Users}
      */
-    Users findByLoginMethodAndUid(Users.LoginMethod loginMethod, String uid);
+    Users findByLoginMethodAndUid(LoginMethod loginMethod, String uid);
 }

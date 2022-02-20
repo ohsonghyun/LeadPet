@@ -1,11 +1,10 @@
 package com.leadpet.www.infrastructure.domain.users;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 /**
  * Users
@@ -16,7 +15,6 @@ import javax.persistence.Id;
 @lombok.AllArgsConstructor
 @lombok.Builder
 public class Users {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -37,17 +35,15 @@ public class Users {
     private String shelterHomePage;
 
     /**
-     * 로그인 방법
+     * 셀프체크
+     * <p>로그인 유형별 필수 데이터 체크</p>
+     *
+     * @return {@code boolean}
      */
-    public enum LoginMethod {
-        KAKAO,
-        GOOGLE,
-        APPLE,
-        EMAIL;
-
-        @JsonCreator
-        public static LoginMethod from(final String loginMethod) {
-            return LoginMethod.valueOf(loginMethod.toUpperCase());
+    public boolean hasAllRequiredValues() {
+        if (Objects.nonNull((this.loginMethod))) {
+            return this.loginMethod.validateEssentialParam(this);
         }
+        return false;
     }
 }

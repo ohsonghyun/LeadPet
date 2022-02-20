@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Objects;
+import javax.validation.Valid;
 
 /**
  * UserController
@@ -23,7 +23,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<SignUpUserResponseDto> signUp(@RequestBody final SignUpUserRequestDto signUpUserRequestDto) {
+    public ResponseEntity<SignUpUserResponseDto> signUp(@Valid @RequestBody final SignUpUserRequestDto signUpUserRequestDto) {
         Users savedUser = userService.saveNewUser(signUpUserRequestDto.toUsers());
         return ResponseEntity.ok(SignUpUserResponseDto.from(savedUser.getUid()));
     }
