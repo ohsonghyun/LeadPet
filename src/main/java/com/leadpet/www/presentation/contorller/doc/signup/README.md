@@ -11,6 +11,7 @@
 | password           | String | 조건부 필수 | -                           | 공통: 이메일로그인이라면 필수 |
 | profileImage       | String | x      | -                           | 공통               |
 | name               | String | o      | -                           | 공통               |
+| userType           | String | o      | normal, shelter             | 공통               |
 | shelterName        | String | x      | -                           | 보호소 전용           |
 | shelterAddress     | String | x      | -                           | 보호소 전용           |
 | shelterPhoneNumber | String | x      | -                           | 보호소 전용           |

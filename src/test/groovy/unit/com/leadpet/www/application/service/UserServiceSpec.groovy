@@ -21,8 +21,8 @@ class UserServiceSpec extends Specification {
 
     def "회원가입: #testCase"() {
         setup:
-        def dbResponse = createUser(1, loginMethod, uid, email, password, profileImage, name, shelterName, shelterAddress, shelterPhoneNumber, shelterManager, shelterHomePage)
-        def newUser = createUser(null, loginMethod, uid, email, password, profileImage, name, shelterName, shelterAddress, shelterPhoneNumber, shelterManager, shelterHomePage)
+        def dbResponse = createUser(1, loginMethod, uid, email, password, profileImage, name, userType, shelterName, shelterAddress, shelterPhoneNumber, shelterManager, shelterHomePage)
+        def newUser = createUser(null, loginMethod, uid, email, password, profileImage, name, userType, shelterName, shelterAddress, shelterPhoneNumber, shelterManager, shelterHomePage)
         usersRepository.save(_) >> dbResponse
 
         when:
@@ -36,6 +36,7 @@ class UserServiceSpec extends Specification {
         savedUser.getPassword() == password
         savedUser.getProfileImage() == profileImage
         savedUser.getName() == name
+        savedUser.getUserType() == userType
         savedUser.getShelterName() == shelterName
         savedUser.getShelterAddress() == shelterAddress
         savedUser.getShelterPhoneNumber() == shelterPhoneNumber
@@ -43,20 +44,20 @@ class UserServiceSpec extends Specification {
         savedUser.getShelterHomePage() == shelterHomePage
 
         where:
-        testCase     | loginMethod        | uid         | email             | password   | profileImage | name     | shelterName  | shelterAddress | shelterPhoneNumber | shelterManager | shelterHomePage
-        "KAKAO"      | LoginMethod.KAKAO  | "kakaoUid"  | null              | null       | null         | "kakao"  | null         | null           | null               | null           | null
-        "EMAIL"      | LoginMethod.EMAIL  | "email"     | "email@dummy.com" | "password" | null         | "email"  | null         | null           | null               | null           | null
-        "GOOGLE"     | LoginMethod.GOOGLE | "googleUid" | "email@gmail.com" | null       | null         | "google" | null         | null           | null               | null           | null
-        "APPLE"      | LoginMethod.APPLE  | "appleUid"  | "email@apple.com" | null       | null         | "apple"  | null         | null           | null               | null           | null
-        "KAKAO 보호소"  | LoginMethod.KAKAO  | "kakaoUid"  | null              | null       | null         | "kakao"  | "kakao 보호소"  | "kakao 1-2-3"  | "123-456-7890"     | "카톡"           | "www.kko.com"
-        "EMAIL 보호소"  | LoginMethod.EMAIL  | "email"     | "email@dummy.com" | "password" | null         | "email"  | "email 보호소"  | "email 1-2-3"  | "123-456-7890"     | "이메일"          | "www.email.com"
-        "GOOGLE 보호소" | LoginMethod.GOOGLE | "googleUid" | "email@gmail.com" | null       | null         | "google" | "google 보호소" | "google 1-2-3" | "123-456-7890"     | "구글"           | "www.google.com"
-        "APPLE 보호소"  | LoginMethod.APPLE  | "appleUid"  | "email@apple.com" | null       | null         | "apple"  | "apple 보호소"  | "apple 1-2-3"  | "123-456-7890"     | "애플"           | "www.apple.com"
+        testCase     | loginMethod        | uid         | email             | password   | profileImage | name     | userType              | shelterName  | shelterAddress | shelterPhoneNumber | shelterManager | shelterHomePage
+        "KAKAO"      | LoginMethod.KAKAO  | "kakaoUid"  | null              | null       | null         | "kakao"  | Users.UserType.NORMAL | null         | null           | null               | null           | null
+        "EMAIL"      | LoginMethod.EMAIL  | "email"     | "email@dummy.com" | "password" | null         | "email"  | Users.UserType.NORMAL | null         | null           | null               | null           | null
+        "GOOGLE"     | LoginMethod.GOOGLE | "googleUid" | "email@gmail.com" | null       | null         | "google" | Users.UserType.NORMAL | null         | null           | null               | null           | null
+        "APPLE"      | LoginMethod.APPLE  | "appleUid"  | "email@apple.com" | null       | null         | "apple"  | Users.UserType.NORMAL | null         | null           | null               | null           | null
+        "KAKAO 보호소"  | LoginMethod.KAKAO  | "kakaoUid"  | null              | null       | null         | "kakao"  | Users.UserType.NORMAL | "kakao 보호소"  | "kakao 1-2-3"  | "123-456-7890"     | "카톡"           | "www.kko.com"
+        "EMAIL 보호소"  | LoginMethod.EMAIL  | "email"     | "email@dummy.com" | "password" | null         | "email"  | Users.UserType.NORMAL | "email 보호소"  | "email 1-2-3"  | "123-456-7890"     | "이메일"          | "www.email.com"
+        "GOOGLE 보호소" | LoginMethod.GOOGLE | "googleUid" | "email@gmail.com" | null       | null         | "google" | Users.UserType.NORMAL | "google 보호소" | "google 1-2-3" | "123-456-7890"     | "구글"           | "www.google.com"
+        "APPLE 보호소"  | LoginMethod.APPLE  | "appleUid"  | "email@apple.com" | null       | null         | "apple"  | Users.UserType.NORMAL | "apple 보호소"  | "apple 1-2-3"  | "123-456-7890"     | "애플"           | "www.apple.com"
     }
 
     def "이미 회원가입 상태라면 409-CONFLICT"() {
         setup:
-        def existingUser = createUser(1, LoginMethod.KAKAO, "kakaoUid", null, null, null, "kakao", null, null, null, null, null)
+        def existingUser = createUser(1, LoginMethod.KAKAO, "kakaoUid", null, null, null, "kakao", Users.UserType.NORMAL, null, null, null, null, null)
         usersRepository.findByLoginMethodAndUid(_, _) >> existingUser
 
         when:
@@ -67,7 +68,7 @@ class UserServiceSpec extends Specification {
     }
 
     private Users createUser(Long userId, LoginMethod loginMethod, String uid, String email, String password, String profileImage,
-                             String name, String shelterName, String shelterAddress, String shelterPhoneNumber,
+                             String name, Users.UserType userType, String shelterName, String shelterAddress, String shelterPhoneNumber,
                              String shelterManager, String shelterHomePage) {
         return Users.builder()
                 .userId(userId)
@@ -77,6 +78,7 @@ class UserServiceSpec extends Specification {
                 .password(password)
                 .profileImage(profileImage)
                 .name(name)
+                .userType(userType)
                 .shelterName(shelterName)
                 .shelterAddress(shelterAddress)
                 .shelterPhoneNumber(shelterPhoneNumber)
