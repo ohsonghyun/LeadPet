@@ -28,6 +28,8 @@ public class SignUpUserRequestDto {
     private String profileImage;
     @JsonProperty("name")
     private String name;
+    @JsonProperty("userType")
+    private Users.UserType userType;
 
     // 보호소
     @JsonProperty("shelterName")
@@ -54,6 +56,7 @@ public class SignUpUserRequestDto {
                 .password(this.password)
                 .profileImage(this.profileImage)
                 .name(this.name)
+                .userType(this.userType)
                 .shelterName(this.shelterName)
                 .shelterAddress(this.shelterAddress)
                 .shelterPhoneNumber(this.shelterPhoneNumber)

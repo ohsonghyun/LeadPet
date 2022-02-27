@@ -1,9 +1,8 @@
 package com.leadpet.www.infrastructure.domain.users;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -20,12 +19,17 @@ public class Users {
     private Long userId;
 
     // 공통
+    @Column(nullable = false)
     private LoginMethod loginMethod;
+    @Column(nullable = false)
     private String uid;
     private String email;
     private String password;
     private String profileImage;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
+    private UserType userType;
 
     // 보호소
     private String shelterName;
@@ -45,5 +49,19 @@ public class Users {
             return this.loginMethod.validateEssentialParam(this);
         }
         return false;
+    }
+
+    /**
+     * 유저 유형
+     */
+    public enum UserType {
+        NORMAL,
+        SHELTER,
+        ;
+
+        @JsonCreator
+        public UserType from(final String userType) {
+            return UserType.valueOf(userType.toUpperCase());
+        }
     }
 }
