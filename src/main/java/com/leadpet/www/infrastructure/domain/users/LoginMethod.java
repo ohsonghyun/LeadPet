@@ -3,6 +3,8 @@ package com.leadpet.www.infrastructure.domain.users;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Objects;
+
 /**
  * LoginMethod
  */
@@ -11,6 +13,9 @@ public enum LoginMethod {
         @Override
         public boolean validateEssentialParam(final Users user) {
             if (user.getLoginMethod() != KAKAO) {
+                return false;
+            }
+            if (Objects.isNull(user.getUserType())) {
                 return false;
             }
             return !StringUtils.isAnyBlank(user.getUid(), user.getName());
@@ -22,6 +27,9 @@ public enum LoginMethod {
             if (user.getLoginMethod() != GOOGLE) {
                 return false;
             }
+            if (Objects.isNull(user.getUserType())) {
+                return false;
+            }
             return !StringUtils.isAnyBlank(user.getUid(), user.getName());
         }
     },
@@ -31,6 +39,9 @@ public enum LoginMethod {
             if (user.getLoginMethod() != APPLE) {
                 return false;
             }
+            if (Objects.isNull(user.getUserType())) {
+                return false;
+            }
             return !StringUtils.isAnyBlank(user.getUid(), user.getName());
         }
     },
@@ -38,6 +49,9 @@ public enum LoginMethod {
         @Override
         public boolean validateEssentialParam(final Users user) {
             if (user.getLoginMethod() != EMAIL) {
+                return false;
+            }
+            if (Objects.isNull(user.getUserType())) {
                 return false;
             }
             return !StringUtils.isAnyBlank(

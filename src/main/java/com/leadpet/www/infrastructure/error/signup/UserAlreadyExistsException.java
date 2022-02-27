@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * UerAlreadyExistsException
+ * UserAlreadyExistsException
  */
 public class UserAlreadyExistsException extends ResponseStatusException {
     public UserAlreadyExistsException(final String reason) {

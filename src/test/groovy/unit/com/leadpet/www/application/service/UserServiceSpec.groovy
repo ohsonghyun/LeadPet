@@ -3,6 +3,7 @@ package com.leadpet.www.application.service
 import com.leadpet.www.infrastructure.db.UsersRepository
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.Users
+import com.leadpet.www.infrastructure.error.login.UserNotFoundException
 import com.leadpet.www.infrastructure.error.signup.UserAlreadyExistsException
 import spock.lang.Specification
 
@@ -66,6 +67,57 @@ class UserServiceSpec extends Specification {
         then:
         thrown(UserAlreadyExistsException)
     }
+
+    def "유저 로그인: 성공 케이스: #testCase"() {
+        setup:
+        def existingUser = createUser(1, loginMethod, uid, email, password, null, name, userType, null, null, null, null, null)
+        usersRepository.findByLoginMethodAndUid(_, _) >> existingUser
+
+        when:
+        def logInUser = userService.logIn(
+                Users.builder()
+                        .userType(userType)
+                        .uid(uid)
+                        .email(email)
+                        .password(password)
+                        .build())
+
+        then:
+        logInUser != null
+        logInUser.getLoginMethod() == loginMethod
+        logInUser.getUid() == uid
+        logInUser.getName() == name
+        logInUser.getUserType() == userType
+
+        where:
+        testCase    | loginMethod       | uid        | name    | userType              | email             | password
+        "SNS 로그인"   | LoginMethod.KAKAO | "kakaoUid" | "kakao" | Users.UserType.NORMAL | null              | null
+        "Email 로그인" | LoginMethod.EMAIL | "emailUid" | "email" | Users.UserType.NORMAL | "email@email.com" | "password"
+    }
+
+    def "유저 로그인: 실패 케이스: #testCase"() {
+        setup:
+        usersRepository.findByLoginMethodAndUid(_, _) >> null
+
+        when:
+        userService.logIn(
+                Users.builder()
+                        .userType(userType)
+                        .uid(uid)
+                        .email(email)
+                        .password(password)
+                        .build())
+
+        then:
+        thrown(UserNotFoundException.class)
+
+        where:
+        testCase    | loginMethod       | uid        | name    | userType              | email             | password
+        "SNS 로그인"   | LoginMethod.KAKAO | "kakaoUid" | "kakao" | Users.UserType.NORMAL | null              | null
+        "Email 로그인" | LoginMethod.EMAIL | "emailUid" | "email" | Users.UserType.NORMAL | "email@email.com" | "password"
+    }
+
+    // -------------------------------------------------------------------------------------
 
     private Users createUser(Long userId, LoginMethod loginMethod, String uid, String email, String password, String profileImage,
                              String name, Users.UserType userType, String shelterName, String shelterAddress, String shelterPhoneNumber,
