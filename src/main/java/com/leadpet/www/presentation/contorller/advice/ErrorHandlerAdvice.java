@@ -1,6 +1,6 @@
 package com.leadpet.www.presentation.contorller.advice;
 
-import com.leadpet.www.infrastructure.error.signup.UnsatisfiedRequirementException;
+import com.leadpet.www.infrastructure.error.UnsatisfiedRequirementException;
 import com.leadpet.www.infrastructure.error.signup.UserAlreadyExistsException;
 import com.leadpet.www.presentation.dto.response.ErrorResponse;
 import org.springframework.http.HttpHeaders;
