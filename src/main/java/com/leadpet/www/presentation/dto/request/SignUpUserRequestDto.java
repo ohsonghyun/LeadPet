@@ -28,6 +28,7 @@ public class SignUpUserRequestDto {
     private String profileImage;
     @JsonProperty("name")
     private String name;
+    @NotNull
     @JsonProperty("userType")
     private Users.UserType userType;
 

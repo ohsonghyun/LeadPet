@@ -1,6 +1,8 @@
 package com.leadpet.www.infrastructure.domain.users;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -45,8 +47,8 @@ public class Users {
      * @return {@code boolean}
      */
     public boolean hasAllRequiredValues() {
-        if (Objects.nonNull((this.loginMethod))) {
-            return this.loginMethod.validateEssentialParam(this);
+        if (ObjectUtils.allNotNull(this.loginMethod, this.userType)) {
+            return this.loginMethod.validateEssentialParam(this) && this.userType.validateEssentialParam(this);
         }
         return false;
     }
@@ -55,13 +57,36 @@ public class Users {
      * 유저 유형
      */
     public enum UserType {
-        NORMAL,
-        SHELTER,
+        NORMAL() {
+            @Override
+            public boolean validateEssentialParam(final Users user) {
+                // 필수사항은 LoginMethod에서 검사
+                return true;
+            }
+        },
+        SHELTER() {
+            @Override
+            public boolean validateEssentialParam(final Users user) {
+                return !StringUtils.isAnyBlank(
+                        user.getShelterName(),
+                        user.getShelterAddress(),
+                        user.getShelterPhoneNumber()
+                );
+            }
+        },
         ;
 
         @JsonCreator
         public UserType from(final String userType) {
             return UserType.valueOf(userType.toUpperCase());
         }
+
+        /**
+         * 유저 유형별 필수 데이터 확인
+         *
+         * @param user 유저 데이터
+         * @return {@code boolean}
+         */
+        abstract public boolean validateEssentialParam(final Users user);
     }
 }
