@@ -77,7 +77,7 @@ public class Users {
         ;
 
         @JsonCreator
-        public UserType from(final String userType) {
+        public static UserType from(final String userType) {
             return UserType.valueOf(userType.toUpperCase());
         }
 
