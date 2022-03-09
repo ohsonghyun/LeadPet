@@ -5,6 +5,8 @@ import com.leadpet.www.infrastructure.domain.users.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * UsersRepository
  */
@@ -31,4 +33,12 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
      * @return {@code Users}
      */
     Users findByLoginMethodAndUidAndEmailAndPassword(LoginMethod loginMethod, String uid, String email, String password);
+
+    /**
+     * 유저 타입별 리스트 취득
+     *
+     * @param userType {@code Users.UserType}
+     * @return {@code List<Users>}
+     */
+    List<Users> findByUserType(Users.UserType userType);
 }

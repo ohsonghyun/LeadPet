@@ -1,4 +1,4 @@
-package com.leadpet.www.presentation.contorller;
+package com.leadpet.www.presentation.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

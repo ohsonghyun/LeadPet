@@ -5,7 +5,9 @@ import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.error.login.UserNotFoundException
 import com.leadpet.www.infrastructure.error.signup.UserAlreadyExistsException
+import org.hibernate.usertype.UserType
 import spock.lang.Specification
+import spock.lang.Unroll
 
 /**
  * UserServiceSpec
@@ -115,6 +117,21 @@ class UserServiceSpec extends Specification {
         testCase    | loginMethod       | uid        | name    | userType              | email             | password
         "SNS 로그인"   | LoginMethod.KAKAO | "kakaoUid" | "kakao" | Users.UserType.NORMAL | null              | null
         "Email 로그인" | LoginMethod.EMAIL | "emailUid" | "email" | Users.UserType.NORMAL | "email@email.com" | "password"
+    }
+
+    def "일반 유저 리스트를 받는다"() {
+        given:
+        usersRepository.findByUserType(_) >> [
+                createUser(1, LoginMethod.KAKAO, 'uid1', null, null, null, "name1", Users.UserType.NORMAL, null, null, null, null, null),
+                createUser(2, LoginMethod.GOOGLE, 'uid2', null, null, null, "name2", Users.UserType.NORMAL, null, null, null, null, null),
+                createUser(3, LoginMethod.EMAIL, 'uid3', "email@email.com", "password", null, "name3", Users.UserType.NORMAL, null, null, null, null, null)
+        ]
+
+        when:
+        List<Users> result = userService.getUserListBy(Users.UserType.NORMAL)
+
+        then:
+        result.size() == 3
     }
 
     // -------------------------------------------------------------------------------------

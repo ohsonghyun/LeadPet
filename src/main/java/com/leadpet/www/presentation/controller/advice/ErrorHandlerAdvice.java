@@ -1,4 +1,4 @@
-package com.leadpet.www.presentation.contorller.advice;
+package com.leadpet.www.presentation.controller.advice;
 
 import com.leadpet.www.infrastructure.error.UnsatisfiedRequirementException;
 import com.leadpet.www.infrastructure.error.login.UserNotFoundException;

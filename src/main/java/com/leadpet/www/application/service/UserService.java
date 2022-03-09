@@ -9,6 +9,8 @@ import com.leadpet.www.infrastructure.error.signup.UserAlreadyExistsException;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -35,6 +37,12 @@ public class UserService {
         return usersRepository.save(newUser);
     }
 
+    /**
+     * 로그인
+     *
+     * @param user 로그인 대상 유저
+     * @return {@code Users}
+     */
     public Users logIn(@NonNull final Users user) {
         Users userInDb = user.getLoginMethod() == LoginMethod.EMAIL
                 ? usersRepository.findByLoginMethodAndUidAndEmailAndPassword(user.getLoginMethod(), user.getUid(), user.getEmail(), user.getPassword())
@@ -44,5 +52,15 @@ public class UserService {
             throw new UserNotFoundException("Error: 존재하지 않는 유저");
         }
         return usersRepository.findByLoginMethodAndUid(user.getLoginMethod(), user.getUid());
+    }
+
+    /**
+     * 유저 타입별 리스트 획득
+     *
+     * @param userType 획득하려고하는 유저 타입
+     * @return {@code List<Users>}
+     */
+    public List<Users> getUserListBy(@NonNull final Users.UserType userType) {
+        return usersRepository.findByUserType(userType);
     }
 }
