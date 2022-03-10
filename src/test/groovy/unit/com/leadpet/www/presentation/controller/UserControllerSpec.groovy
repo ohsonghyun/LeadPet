@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
@@ -167,13 +168,21 @@ class UserControllerSpec extends Specification {
         userService.saveNewUser(Users.builder().loginMethod(LoginMethod.EMAIL).uid('uid4').email("email@email.com").password("password").name('name4').userType(Users.UserType.NORMAL).build())
 
         expect:
-        mvc.perform(get(USER_URL + '/list').param('ut', 'normal'))
+        mvc.perform(get(USER_URL + '/list').param('ut', paramValue))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("\$", Matchers.hasSize(expectedSize)))
 
         where:
         testCase | paramValue | userType               | expectedSize
         '일반유저'   | 'normal'   | Users.UserType.NORMAL  | 3
-        '보호소'    | 'shelter'  | Users.UserType.SHELTER | 3
+        '보호소'    | 'shelter'  | Users.UserType.SHELTER | 1
+    }
+
+    def "유저 타입별 리스트 획득: 에러 케이스: WrongArgumentsException"() {
+        expect:
+        mvc.perform(get(USER_URL + '/list').param('ut', 'wrongParam'))
+            .andExpect(status().isBadRequest())
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(jsonPath('\$.error.detail').value('Error: 잘못 된 파라미터'))
     }
 }

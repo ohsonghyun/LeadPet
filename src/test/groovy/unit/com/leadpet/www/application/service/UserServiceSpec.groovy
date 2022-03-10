@@ -3,11 +3,9 @@ package com.leadpet.www.application.service
 import com.leadpet.www.infrastructure.db.UsersRepository
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.Users
-import com.leadpet.www.infrastructure.error.login.UserNotFoundException
-import com.leadpet.www.infrastructure.error.signup.UserAlreadyExistsException
-import org.hibernate.usertype.UserType
+import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
+import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException
 import spock.lang.Specification
-import spock.lang.Unroll
 
 /**
  * UserServiceSpec
@@ -67,7 +65,7 @@ class UserServiceSpec extends Specification {
         userService.saveNewUser(existingUser)
 
         then:
-        thrown(UserAlreadyExistsException)
+        thrown(UserAlreadyExistsException.class)
     }
 
     def "유저 로그인: 성공 케이스: #testCase"() {

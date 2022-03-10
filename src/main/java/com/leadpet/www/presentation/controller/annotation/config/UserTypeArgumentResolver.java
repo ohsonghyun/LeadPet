@@ -1,6 +1,7 @@
 package com.leadpet.www.presentation.controller.annotation.config;
 
 import com.leadpet.www.infrastructure.domain.users.Users;
+import com.leadpet.www.infrastructure.exception.WrongArgumentsException;
 import com.leadpet.www.presentation.controller.annotation.UserType;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -31,9 +32,8 @@ public class UserTypeArgumentResolver implements HandlerMethodArgumentResolver {
         String value = servletWebRequest
                 .getRequest()
                 .getParameter(key);
-        if (Objects.isNull(value)) {
-            // TODO 예외 커즈터마이즈
-            throw new IllegalArgumentException();
+        if (Objects.isNull(value) || !Users.UserType.has(value)) {
+            throw new WrongArgumentsException("Error: 잘못 된 파라미터");
         }
         return Users.UserType.from(value);
     }

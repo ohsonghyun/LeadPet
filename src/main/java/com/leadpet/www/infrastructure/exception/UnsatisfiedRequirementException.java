@@ -1,4 +1,4 @@
-package com.leadpet.www.infrastructure.error;
+package com.leadpet.www.infrastructure.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

@@ -2,7 +2,7 @@ package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.application.service.UserService;
 import com.leadpet.www.infrastructure.domain.users.Users;
-import com.leadpet.www.infrastructure.error.UnsatisfiedRequirementException;
+import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
 import com.leadpet.www.presentation.controller.annotation.UserType;
 import com.leadpet.www.presentation.dto.request.LogInRequestDto;
 import com.leadpet.www.presentation.dto.request.SignUpUserRequestDto;

@@ -3,13 +3,12 @@ package com.leadpet.www.application.service;
 import com.leadpet.www.infrastructure.db.UsersRepository;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import com.leadpet.www.infrastructure.domain.users.Users;
-import com.leadpet.www.infrastructure.error.login.UserNotFoundException;
-import com.leadpet.www.infrastructure.error.UnsatisfiedRequirementException;
-import com.leadpet.www.infrastructure.error.signup.UserAlreadyExistsException;
+import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
+import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
+import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
