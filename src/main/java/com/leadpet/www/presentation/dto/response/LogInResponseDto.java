@@ -1,6 +1,7 @@
 package com.leadpet.www.presentation.dto.response;
 
 import com.leadpet.www.infrastructure.domain.users.Users;
+import io.swagger.annotations.ApiModel;
 import lombok.AccessLevel;
 import org.springframework.lang.NonNull;
 
@@ -9,6 +10,7 @@ import org.springframework.lang.NonNull;
  */
 @lombok.Getter
 @lombok.Builder(access = AccessLevel.PRIVATE)
+@ApiModel("로그인 Response")
 public class LogInResponseDto {
 
     private String uid;

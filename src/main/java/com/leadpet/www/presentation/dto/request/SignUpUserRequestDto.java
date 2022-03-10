@@ -3,6 +3,7 @@ package com.leadpet.www.presentation.dto.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import com.leadpet.www.infrastructure.domain.users.Users;
+import io.swagger.annotations.ApiModel;
 
 import javax.validation.constraints.NotNull;
 
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotNull;
  */
 @lombok.Getter
 @lombok.Builder
+@ApiModel("회원가입 Request")
 public class SignUpUserRequestDto {
 
     // 공통

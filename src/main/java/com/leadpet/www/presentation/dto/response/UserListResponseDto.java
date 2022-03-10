@@ -2,6 +2,7 @@ package com.leadpet.www.presentation.dto.response;
 
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import com.leadpet.www.infrastructure.domain.users.Users;
+import io.swagger.annotations.ApiModel;
 import lombok.AccessLevel;
 import org.springframework.lang.NonNull;
 
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
  */
 @lombok.Getter
 @lombok.Builder(access = AccessLevel.PRIVATE)
+@ApiModel("유저리스트 취득 Response")
 public class UserListResponseDto {
 
     // 공통
