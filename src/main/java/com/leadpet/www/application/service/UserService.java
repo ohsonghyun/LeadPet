@@ -6,7 +6,9 @@ import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.infrastructure.error.login.UserNotFoundException;
 import com.leadpet.www.infrastructure.error.UnsatisfiedRequirementException;
 import com.leadpet.www.infrastructure.error.signup.UserAlreadyExistsException;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -28,21 +30,46 @@ public class UserService {
             throw new UnsatisfiedRequirementException("Error: 필수 입력 데이터 누락");
         }
 
-        Users userInDb = usersRepository.findByLoginMethodAndUid(newUser.getLoginMethod(), newUser.getUid());
+        // TODO 로그인 타입이 이메일인 유저는 이메일까지 넘겨받아야하나? 이메일과 비밀번호로만 검색을 해봐야하는지 uid 생성 로직을 확인할 필요가 있음.
+        Users userInDb = findUserBy(newUser.getLoginMethod(), newUser.getUid(), newUser.getEmail(), newUser.getPassword());
         if (Objects.nonNull(userInDb)) {
             throw new UserAlreadyExistsException("Error: 이미 존재하는 유저");
         }
         return usersRepository.save(newUser);
     }
 
+    /**
+     * 로그인
+     *
+     * @param user 로그인 유저 데이터
+     * @return {@code Users}
+     */
     public Users logIn(@NonNull final Users user) {
-        Users userInDb = user.getLoginMethod() == LoginMethod.EMAIL
-                ? usersRepository.findByLoginMethodAndUidAndEmailAndPassword(user.getLoginMethod(), user.getUid(), user.getEmail(), user.getPassword())
-                : usersRepository.findByLoginMethodAndUid(user.getLoginMethod(), user.getUid());
-
+        Users userInDb = findUserBy(user.getLoginMethod(), user.getUid(), user.getEmail(), user.getPassword());
         if (Objects.isNull(userInDb)) {
             throw new UserNotFoundException("Error: 존재하지 않는 유저");
         }
         return usersRepository.findByLoginMethodAndUid(user.getLoginMethod(), user.getUid());
+    }
+
+    /**
+     * 로그인 유형과 UID로 특정 유저를 검색
+     *
+     * @param loginMethod 로그인 유형
+     * @param uid {@code String}
+     * @param email {@code String}
+     * @param password {@code String}
+     * @return {@code Users}
+     */
+    @Nullable
+    Users findUserBy(@NonNull final LoginMethod loginMethod, @NonNull final String uid, @Nullable final String email, @Nullable final String password) {
+        if (loginMethod == LoginMethod.EMAIL) {
+            if (ObjectUtils.anyNull(email, password)) {
+                throw new UnsatisfiedRequirementException("Error: 필수 데이터 누락");
+            }
+            return usersRepository.findByLoginMethodAndUidAndEmailAndPassword(loginMethod, uid, email, password);
+        }
+
+        return usersRepository.findByLoginMethodAndUid(loginMethod, uid);
     }
 }
