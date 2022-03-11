@@ -3,6 +3,8 @@ package com.leadpet.www.presentation.dto.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import com.leadpet.www.infrastructure.domain.users.Users;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,6 +15,9 @@ import javax.validation.constraints.NotNull;
  */
 @lombok.Getter
 @lombok.Builder
+@lombok.NoArgsConstructor
+@lombok.AllArgsConstructor
+@ApiModel("로그인 Request")
 public class LogInRequestDto {
 
     // sns 로그인

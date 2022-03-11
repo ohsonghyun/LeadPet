@@ -1,4 +1,4 @@
-package com.leadpet.www.infrastructure.error.signup;
+package com.leadpet.www.infrastructure.exception.signup;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

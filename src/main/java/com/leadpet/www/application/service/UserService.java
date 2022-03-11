@@ -3,14 +3,15 @@ package com.leadpet.www.application.service;
 import com.leadpet.www.infrastructure.db.UsersRepository;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import com.leadpet.www.infrastructure.domain.users.Users;
-import com.leadpet.www.infrastructure.error.login.UserNotFoundException;
-import com.leadpet.www.infrastructure.error.UnsatisfiedRequirementException;
-import com.leadpet.www.infrastructure.error.signup.UserAlreadyExistsException;
 import org.apache.commons.lang3.ObjectUtils;
+import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
+import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
+import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -41,7 +42,7 @@ public class UserService {
     /**
      * 로그인
      *
-     * @param user 로그인 유저 데이터
+     * @param user 로그인 대상 유저
      * @return {@code Users}
      */
     public Users logIn(@NonNull final Users user) {
@@ -49,6 +50,7 @@ public class UserService {
         if (Objects.isNull(userInDb)) {
             throw new UserNotFoundException("Error: 존재하지 않는 유저");
         }
+        // TODO 이놈.. 실수네 중복. DRY 위반
         return usersRepository.findByLoginMethodAndUid(user.getLoginMethod(), user.getUid());
     }
 
@@ -71,5 +73,16 @@ public class UserService {
         }
 
         return usersRepository.findByLoginMethodAndUid(loginMethod, uid);
+    }
+
+    /**
+     * 유저 타입별 리스트 획득
+     *
+     * @param userType 획득하려고하는 유저 타입
+     * @return {@code List<Users>}
+     */
+    @NonNull
+    public List<Users> getUserListBy(@NonNull final Users.UserType userType) {
+        return usersRepository.findByUserType(userType);
     }
 }

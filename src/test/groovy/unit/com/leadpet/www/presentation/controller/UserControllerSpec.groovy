@@ -7,15 +7,20 @@ import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.presentation.dto.request.LogInRequestDto
 import com.leadpet.www.presentation.dto.request.SignUpUserRequestDto
+import org.hamcrest.Matchers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
+import spock.lang.Unroll
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @SpringBootTest
@@ -39,6 +44,7 @@ class UserControllerSpec extends Specification {
         usersRepository.deleteAll()
     }
 
+    @Unroll
     def "회원가입 validation: #testCase"() throws Exception {
         setup:
         def signUpUserRequestDto = SignUpUserRequestDto.builder()
@@ -96,6 +102,7 @@ class UserControllerSpec extends Specification {
         "EMAIL(보호소): 보호소 전화번호이 없는 경우"  | LoginMethod.EMAIL  | "emailUid"  | "test@gmail.com" | "password" | null         | "email"  | Users.UserType.SHELTER | "보호소 이름"    | "보호소 주소"       | null
     }
 
+    @Unroll
     def "로그인 성공: #testCase"() {
         setup:
         // 유저 추가
@@ -129,6 +136,7 @@ class UserControllerSpec extends Specification {
         "EMAIL 로그인" | LoginMethod.EMAIL | "emailUid" | "test@gmail.com" | "password" | null         | "email" | Users.UserType.NORMAL
     }
 
+    @Unroll
     def "로그인 실패: #testCase"() {
         setup:
         def logInRequestDto = LogInRequestDto.builder()
@@ -151,4 +159,30 @@ class UserControllerSpec extends Specification {
         "EMAIL: 필수 데이터가 누락된 경우" | LoginMethod.EMAIL | "emailUid" | null  | null     | status().isBadRequest()
     }
 
+    @Unroll('#testCase')
+    def "유저 타입별 리스트 획득"() {
+        given:
+        userService.saveNewUser(Users.builder().loginMethod(LoginMethod.KAKAO).uid('uid1').name('name1').userType(Users.UserType.NORMAL).build())
+        userService.saveNewUser(Users.builder().loginMethod(LoginMethod.GOOGLE).uid('uid2').name('name2').userType(Users.UserType.NORMAL).build())
+        userService.saveNewUser(Users.builder().loginMethod(LoginMethod.GOOGLE).uid('uid3').name('name3').userType(Users.UserType.SHELTER).shelterName("shelter").shelterAddress("address").shelterPhoneNumber('01012341234').build())
+        userService.saveNewUser(Users.builder().loginMethod(LoginMethod.EMAIL).uid('uid4').email("email@email.com").password("password").name('name4').userType(Users.UserType.NORMAL).build())
+
+        expect:
+        mvc.perform(get(USER_URL + '/list').param('ut', paramValue))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("\$", Matchers.hasSize(expectedSize)))
+
+        where:
+        testCase | paramValue | userType               | expectedSize
+        '일반유저'   | 'normal'   | Users.UserType.NORMAL  | 3
+        '보호소'    | 'shelter'  | Users.UserType.SHELTER | 1
+    }
+
+    def "유저 타입별 리스트 획득: 에러 케이스: WrongArgumentsException"() {
+        expect:
+        mvc.perform(get(USER_URL + '/list').param('ut', 'wrongParam'))
+            .andExpect(status().isBadRequest())
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(jsonPath('\$.error.detail').value('Error: 잘못 된 파라미터'))
+    }
 }

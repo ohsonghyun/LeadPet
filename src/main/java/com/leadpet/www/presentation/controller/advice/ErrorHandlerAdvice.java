@@ -1,8 +1,9 @@
-package com.leadpet.www.presentation.contorller.advice;
+package com.leadpet.www.presentation.controller.advice;
 
-import com.leadpet.www.infrastructure.error.UnsatisfiedRequirementException;
-import com.leadpet.www.infrastructure.error.login.UserNotFoundException;
-import com.leadpet.www.infrastructure.error.signup.UserAlreadyExistsException;
+import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
+import com.leadpet.www.infrastructure.exception.WrongArgumentsException;
+import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
+import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException;
 import com.leadpet.www.presentation.dto.response.ErrorResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -26,6 +27,11 @@ public class ErrorHandlerAdvice {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handler(UserNotFoundException ex) {
+        return errorResponse(ex);
+    }
+
+    @ExceptionHandler(WrongArgumentsException.class)
+    public ResponseEntity<ErrorResponse> handler(WrongArgumentsException ex) {
         return errorResponse(ex);
     }
 

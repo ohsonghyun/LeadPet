@@ -1,4 +1,4 @@
-package com.leadpet.www.infrastructure.error.login;
+package com.leadpet.www.infrastructure.exception.login;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

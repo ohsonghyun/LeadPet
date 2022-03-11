@@ -5,6 +5,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -79,6 +80,16 @@ public class Users {
         @JsonCreator
         public static UserType from(final String userType) {
             return UserType.valueOf(userType.toUpperCase());
+        }
+
+        /**
+         * 문자열에 해당하는 유저 유형이 존재하는지 확인
+         *
+         * @param userType 유저 유형에 해당하는 문자열
+         * @return {@code boolean}
+         */
+        public static boolean has(final String userType) {
+            return Arrays.stream(values()).anyMatch(value -> value.name().equalsIgnoreCase(userType));
         }
 
         /**
