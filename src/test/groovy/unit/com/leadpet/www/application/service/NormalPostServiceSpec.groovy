@@ -1,6 +1,7 @@
 package com.leadpet.www.application.service
 
 import com.leadpet.www.infrastructure.db.NormalPostsRepository
+import com.leadpet.www.infrastructure.db.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import spock.lang.Specification
 
@@ -11,10 +12,12 @@ class NormalPostServiceSpec extends Specification {
 
     private NormalPostService normalPostService
     private NormalPostsRepository normalPostsRepository
+    private UsersRepository usersRepository
 
     def setup() {
-        this. normalPostsRepository = Mock(NormalPostsRepository.class)
-        this.normalPostService = new NormalPostService(normalPostsRepository)
+        this.usersRepository = Mock(UsersRepository.class)
+        this.normalPostsRepository = Mock(NormalPostsRepository.class)
+        this.normalPostService = new NormalPostService(usersRepository, normalPostsRepository)
     }
 
     def "모든 일반게시물을 취득한다"() {

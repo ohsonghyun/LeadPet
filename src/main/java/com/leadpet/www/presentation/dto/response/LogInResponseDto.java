@@ -6,11 +6,11 @@ import lombok.AccessLevel;
 import org.springframework.lang.NonNull;
 
 /**
- * SignUpUserResponseDto
+ * LogInResponseDto
  */
+@ApiModel("로그인 Response")
 @lombok.Getter
 @lombok.Builder(access = AccessLevel.PRIVATE)
-@ApiModel("로그인 Response")
 public class LogInResponseDto {
 
     private String uid;

@@ -182,7 +182,6 @@ class UserControllerSpec extends Specification {
         expect:
         mvc.perform(get(USER_URL + '/list').param('ut', 'wrongParam'))
             .andExpect(status().isBadRequest())
-            .andDo(MockMvcResultHandlers.print())
             .andExpect(jsonPath('\$.error.detail').value('Error: 잘못 된 파라미터'))
     }
 }
