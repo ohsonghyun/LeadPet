@@ -1,9 +1,9 @@
 package com.leadpet.www.infrastructure.domain.posts;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.leadpet.www.infrastructure.db.converter.StringListConverter;
+
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * NormalPosts
@@ -19,13 +19,16 @@ public class NormalPosts {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long normalPostId;
 
+    @Column(nullable = false)
     private String title;
+    @Column(nullable = false)
     private String contents;
+    @Convert(converter = StringListConverter.class)
+    private List<String> images;
+    @Convert(converter = StringListConverter.class)
+    private List<String> tags;
 
+    @Column(nullable = false)
     private Long userId;
 
-    @Override
-    public String toString() {
-        return String.format("postId: %s, title: %s, contents: %s, userId: %s", this.normalPostId, this.title, this.contents, this.userId);
-    }
 }

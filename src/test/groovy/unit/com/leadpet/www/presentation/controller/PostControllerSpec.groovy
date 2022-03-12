@@ -39,9 +39,9 @@ class PostControllerSpec extends Specification {
     def "모든 일반게시물 데이터를 취득한다"() {
         given:
         normalPostsRepository.saveAll(List.of(
-                NormalPosts.builder().title("title").contents("contents").build(),
-                NormalPosts.builder().title("title").contents("contents").build(),
-                NormalPosts.builder().title("title").contents("contents").build()
+                NormalPosts.builder().title("title").contents("contents").userId(1).build(),
+                NormalPosts.builder().title("title").contents("contents").userId(1).build(),
+                NormalPosts.builder().title("title").contents("contents").userId(1).build()
         ))
 
         expect:
@@ -49,5 +49,13 @@ class PostControllerSpec extends Specification {
             .andExpect(status().isOk())
             .andExpect(jsonPath('$', Matchers.hasSize(3)))
     }
+
+    // TODO 일반 게시물 추가
+//    def "일반 게시물 추가"() {
+//        given:
+//        NewNormalPostRequestDto newNormalPostRequestDto = NewNormalPostRequestDto.builder
+//    }
+    // TODO 일반 게시물 수정
+    // TODO 일반 게시물 삭제
 
 }
