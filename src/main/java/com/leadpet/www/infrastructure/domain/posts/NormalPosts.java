@@ -9,6 +9,7 @@ import javax.persistence.Id;
  * NormalPosts
  */
 @Entity
+@lombok.Getter
 @lombok.NoArgsConstructor
 @lombok.AllArgsConstructor
 @lombok.Builder
