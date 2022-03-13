@@ -5,6 +5,7 @@ import com.leadpet.www.infrastructure.db.UsersRepository;
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import com.leadpet.www.infrastructure.domain.users.Users;
+import com.leadpet.www.infrastructure.exception.PostNotFoundException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -67,15 +68,17 @@ public class NormalPostService {
     public NormalPosts updateNormalPost(@NonNull final NormalPosts updatingNormalPost,
                                         @NonNull final LoginMethod loginMethod,
                                         @NonNull final String uid) {
-        // TODO 401 패턴: 권한 없는 유저
         Users targetUser = usersRepository.findByLoginMethodAndUid(loginMethod, uid);
         if (Objects.isNull(targetUser)) {
             throw new UserNotFoundException("Error: 존재하지 않는 유저");
         }
 
+        // 권한이 없는 유저는 게시물 획득 불가
         NormalPosts targetPost = normalPostsRepository.findByNormalPostIdAndUserId(
                 updatingNormalPost.getNormalPostId(), targetUser.getUserId());
-        // TODO 404 패턴: 게시물 없음
+        if (Objects.isNull(targetPost)) {
+            throw new PostNotFoundException("Error: 존재하지 않는 게시글");
+        }
 
         NormalPosts updatedPost = targetPost.update(updatingNormalPost);
         return updatedPost;

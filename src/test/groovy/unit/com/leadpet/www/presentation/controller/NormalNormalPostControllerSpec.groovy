@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
@@ -115,7 +116,7 @@ class NormalNormalPostControllerSpec extends Specification {
         Long userId = user.getUserId()
 
         // 기존 일반 게시글 생성
-        NormalPosts existingPost = normalPostsRepository.save(NormalPosts.builder().title("title").contents("contents").userId(userId).build())
+        NormalPosts existingPost = addNormalPost('title', 'contents', userId)
         Long normalPostId = existingPost.getNormalPostId()
 
         UpdateNormalPostRequestDto updateNormalPostRequestDto = UpdateNormalPostRequestDto.builder()
@@ -152,8 +153,32 @@ class NormalNormalPostControllerSpec extends Specification {
         testCase | uid   | loginMethod       | updatedTitle   | updatedContents   | updatedImages            | updatedTags
         '정상'     | 'uid' | LoginMethod.KAKAO | 'updatedTitle' | 'updatedContents' | ['updated1', 'updated2'] | ['updated1', 'updated2']
     }
-    // TODO 일반 게시물 수정: 에러: 404 존재하지 않는 게시글
-    // TODO 일반 게시물 수정: 에러: 401 권한이 없는 유저
+
+    def "일반 게시물 수정: 404 - 존재하지 않는 게시글"() {
+        given:
+        // 유저 생성
+        Users user = addNewUser(loginMethod, uid, 'name', UserType.NORMAL)
+        UpdateNormalPostRequestDto updateNormalPostRequestDto = UpdateNormalPostRequestDto.builder()
+                .normalPostId(normalPostId)
+                .title(updatedTitle)
+                .contents(updatedContents)
+                .images(updatedImages)
+                .tags(updatedTags)
+                .loginMethod(loginMethod)
+                .uid(uid)
+                .build()
+
+        expect:
+        mvc.perform(put(POST_URL + '/updateNormal')
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(updateNormalPostRequestDto)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath('\$.error.detail').value('Error: 존재하지 않는 게시글'))
+
+        where:
+        testCase | uid   | normalPostId | loginMethod       | updatedTitle   | updatedContents   | updatedImages            | updatedTags
+        '정상'     | 'uid' | 1L           | LoginMethod.KAKAO | 'updatedTitle' | 'updatedContents' | ['updated1', 'updated2'] | ['updated1', 'updated2']
+    }
 
     // TODO 일반 게시물 삭제
 
@@ -170,6 +195,16 @@ class NormalNormalPostControllerSpec extends Specification {
                         .name(name)
                         .userType(userType)
                         .build())
+    }
+
+    private NormalPosts addNormalPost(String title, String contents, Long userId) {
+        return normalPostsRepository.save(
+                NormalPosts.builder()
+                        .title(title)
+                        .contents(contents)
+                        .userId(userId)
+                        .build())
+
     }
 
 }

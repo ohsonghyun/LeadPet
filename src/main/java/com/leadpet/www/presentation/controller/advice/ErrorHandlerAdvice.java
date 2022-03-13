@@ -1,5 +1,6 @@
 package com.leadpet.www.presentation.controller.advice;
 
+import com.leadpet.www.infrastructure.exception.PostNotFoundException;
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
 import com.leadpet.www.infrastructure.exception.WrongArgumentsException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
@@ -32,6 +33,11 @@ public class ErrorHandlerAdvice {
 
     @ExceptionHandler(WrongArgumentsException.class)
     public ResponseEntity<ErrorResponse> handler(WrongArgumentsException ex) {
+        return errorResponse(ex);
+    }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handler(PostNotFoundException ex) {
         return errorResponse(ex);
     }
 
