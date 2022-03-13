@@ -1,6 +1,7 @@
 package com.leadpet.www.infrastructure.domain.users;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.leadpet.www.infrastructure.domain.BaseTime;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,7 +17,7 @@ import java.util.Objects;
 @lombok.NoArgsConstructor
 @lombok.AllArgsConstructor
 @lombok.Builder
-public class Users {
+public class Users extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;

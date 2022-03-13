@@ -1,6 +1,7 @@
 package com.leadpet.www.infrastructure.domain.posts;
 
 import com.leadpet.www.infrastructure.db.converter.StringListConverter;
+import com.leadpet.www.infrastructure.domain.BaseTime;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @lombok.NoArgsConstructor
 @lombok.AllArgsConstructor
 @lombok.Builder
-public class NormalPosts {
+public class NormalPosts extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
