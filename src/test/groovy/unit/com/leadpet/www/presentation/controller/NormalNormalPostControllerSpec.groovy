@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
-import spock.lang.Unroll
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -26,10 +25,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 /**
- * PostControllerSpec
+ * NormalPostControllerSpec
  */
 @SpringBootTest
-class PostControllerSpec extends Specification {
+class NormalNormalPostControllerSpec extends Specification {
     private final String POST_URL = "/v1/post"
 
     @Autowired
@@ -109,14 +108,18 @@ class PostControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.error.detail').value('Error: 존재하지 않는 유저'))
     }
 
-    // TODO 일반 게시물 수정
-    @Unroll("#testCase")
-    def "일반 게시물 수정"() {
+    def "일반 게시물 수정: 정상"() {
         given:
-        addNewUser(loginMethod, uid, 'name', UserType.NORMAL)
-        normalPostsRepository.save(NormalPosts.builder().title("title").contents("contents").userId(1).build())
+        // 유저 생성
+        Users user = addNewUser(loginMethod, uid, 'name', UserType.NORMAL)
+        Long userId = user.getUserId()
+
+        // 기존 일반 게시글 생성
+        NormalPosts existingPost = normalPostsRepository.save(NormalPosts.builder().title("title").contents("contents").userId(userId).build())
+        Long normalPostId = existingPost.getNormalPostId()
+
         UpdateNormalPostRequestDto updateNormalPostRequestDto = UpdateNormalPostRequestDto.builder()
-                .normalPostId(1)
+                .normalPostId(normalPostId)
                 .title(updatedTitle)
                 .contents(updatedContents)
                 .images(updatedImages)
@@ -146,8 +149,8 @@ class PostControllerSpec extends Specification {
         updatedPost.tags == updatedTags
 
         where:
-        testCase | userId | normalPostId | uid   | loginMethod       | updatedTitle   | updatedContents   | updatedImages            | updatedTags
-        '정상'     | 1L     | 1L           | 'uid' | LoginMethod.KAKAO | 'updatedTitle' | 'updatedContents' | ['updated1', 'updated2'] | ['updated1', 'updated2']
+        testCase | uid   | loginMethod       | updatedTitle   | updatedContents   | updatedImages            | updatedTags
+        '정상'     | 'uid' | LoginMethod.KAKAO | 'updatedTitle' | 'updatedContents' | ['updated1', 'updated2'] | ['updated1', 'updated2']
     }
     // TODO 일반 게시물 수정: 에러: 404 존재하지 않는 게시글
     // TODO 일반 게시물 수정: 에러: 401 권한이 없는 유저

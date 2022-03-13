@@ -68,7 +68,6 @@ public class NormalPostService {
                                         @NonNull final LoginMethod loginMethod,
                                         @NonNull final String uid) {
         // TODO 401 패턴: 권한 없는 유저
-        // TODO 404 패턴: 게시물 없음
         Users targetUser = usersRepository.findByLoginMethodAndUid(loginMethod, uid);
         if (Objects.isNull(targetUser)) {
             throw new UserNotFoundException("Error: 존재하지 않는 유저");
@@ -76,6 +75,7 @@ public class NormalPostService {
 
         NormalPosts targetPost = normalPostsRepository.findByNormalPostIdAndUserId(
                 updatingNormalPost.getNormalPostId(), targetUser.getUserId());
+        // TODO 404 패턴: 게시물 없음
 
         NormalPosts updatedPost = targetPost.update(updatingNormalPost);
         return updatedPost;

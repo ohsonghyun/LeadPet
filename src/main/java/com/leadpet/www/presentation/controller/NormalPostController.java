@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * PostController
+ * NormalPostController
  */
 @Api(tags = "게시물 컨트롤러")
 @RestController
 @RequestMapping("/v1/post")
 @lombok.RequiredArgsConstructor
-public class PostController {
+public class NormalPostController {
 
     private final NormalPostService normalPostService;
 
