@@ -1,4 +1,4 @@
-package com.leadpet.www.presentation.dto.response;
+package com.leadpet.www.presentation.dto.response.user;
 
 import com.leadpet.www.infrastructure.domain.users.Users;
 import io.swagger.annotations.ApiModel;

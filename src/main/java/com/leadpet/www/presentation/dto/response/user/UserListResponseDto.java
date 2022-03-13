@@ -1,12 +1,12 @@
-package com.leadpet.www.presentation.dto.response;
+package com.leadpet.www.presentation.dto.response.user;
 
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
+import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import io.swagger.annotations.ApiModel;
 import lombok.AccessLevel;
 import org.springframework.lang.NonNull;
 
-import javax.persistence.Column;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +24,7 @@ public class UserListResponseDto {
     private String email;
     private String profileImage;
     private String name;
-    private Users.UserType userType;
+    private UserType userType;
 
     // 보호소
     private String shelterName;

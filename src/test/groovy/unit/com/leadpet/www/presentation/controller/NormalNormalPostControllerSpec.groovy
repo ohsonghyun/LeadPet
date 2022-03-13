@@ -5,10 +5,10 @@ import com.leadpet.www.infrastructure.db.NormalPostsRepository
 import com.leadpet.www.infrastructure.db.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
+import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
-import com.leadpet.www.infrastructure.domain.users.Users.UserType
-import com.leadpet.www.presentation.dto.request.AddNormalPostRequestDto
-import com.leadpet.www.presentation.dto.request.UpdateNormalPostRequestDto
+import com.leadpet.www.presentation.dto.request.post.AddNormalPostRequestDto
+import com.leadpet.www.presentation.dto.request.post.UpdateNormalPostRequestDto
 import org.hamcrest.Matchers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

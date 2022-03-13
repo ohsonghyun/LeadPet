@@ -1,8 +1,8 @@
 package com.leadpet.www.presentation.controller.annotation.config;
 
-import com.leadpet.www.infrastructure.domain.users.Users;
+import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.exception.WrongArgumentsException;
-import com.leadpet.www.presentation.controller.annotation.UserType;
+import com.leadpet.www.presentation.controller.annotation.UserTypes;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -22,19 +22,19 @@ public class UserTypeArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(UserType.class);
+        return parameter.hasParameterAnnotation(UserTypes.class);
     }
 
     @Override
-    public Users.UserType resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-                                          NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public UserType resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                                    NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         ServletWebRequest servletWebRequest = (ServletWebRequest)webRequest;
         String value = servletWebRequest
                 .getRequest()
                 .getParameter(key);
-        if (Objects.isNull(value) || !Users.UserType.has(value)) {
+        if (Objects.isNull(value) || !UserType.has(value)) {
             throw new WrongArgumentsException("Error: 잘못 된 파라미터");
         }
-        return Users.UserType.from(value);
+        return UserType.from(value);
     }
 }

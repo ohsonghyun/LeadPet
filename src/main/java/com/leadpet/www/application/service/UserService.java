@@ -2,6 +2,7 @@ package com.leadpet.www.application.service;
 
 import com.leadpet.www.infrastructure.db.UsersRepository;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
+import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import org.apache.commons.lang3.ObjectUtils;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
@@ -82,7 +83,7 @@ public class UserService {
      * @return {@code List<Users>}
      */
     @NonNull
-    public List<Users> getUserListBy(@NonNull final Users.UserType userType) {
+    public List<Users> getUserListBy(@NonNull final UserType userType) {
         return usersRepository.findByUserType(userType);
     }
 }

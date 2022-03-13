@@ -1,4 +1,4 @@
-package com.leadpet.www.presentation.dto.request;
+package com.leadpet.www.presentation.dto.request.post;
 
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;

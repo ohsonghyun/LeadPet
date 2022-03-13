@@ -4,8 +4,8 @@ package com.leadpet.www.presentation.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leadpet.www.infrastructure.db.UsersRepository;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
-import com.leadpet.www.infrastructure.domain.users.Users;
-import com.leadpet.www.presentation.dto.request.SignUpUserRequestDto;
+import com.leadpet.www.infrastructure.domain.users.UserType;
+import com.leadpet.www.presentation.dto.request.user.SignUpUserRequestDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,7 +50,7 @@ public class UserControllerTest {
                 .loginMethod(LoginMethod.KAKAO)
                 .uid("kakaoUid")
                 .name("kakao")
-                .userType(Users.UserType.NORMAL)
+                .userType(UserType.NORMAL)
                 .build();
         // expect
         mvc.perform(post(USER_URL + "/signup")
@@ -66,7 +66,7 @@ public class UserControllerTest {
                 .loginMethod(LoginMethod.KAKAO)
                 .uid("kakaoUid")
                 .name("kakao")
-                .userType(Users.UserType.NORMAL)
+                .userType(UserType.NORMAL)
                 .build();
         // when
         usersRepository.save(signUpUserRequestDto.toUsers());

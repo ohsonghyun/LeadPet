@@ -1,4 +1,4 @@
-package com.leadpet.www.presentation.dto.response;
+package com.leadpet.www.presentation.dto.response.user;
 
 import io.swagger.annotations.ApiModel;
 import lombok.AccessLevel;

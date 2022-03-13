@@ -1,7 +1,8 @@
-package com.leadpet.www.presentation.dto.request;
+package com.leadpet.www.presentation.dto.request.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
+import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import io.swagger.annotations.ApiModel;
 
@@ -34,7 +35,7 @@ public class SignUpUserRequestDto {
     private String name;
     @NotNull
     @JsonProperty("userType")
-    private Users.UserType userType;
+    private UserType userType;
 
     // 보호소
     @JsonProperty("shelterName")

@@ -2,11 +2,11 @@ package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.application.service.NormalPostService;
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
-import com.leadpet.www.presentation.dto.request.AddNormalPostRequestDto;
-import com.leadpet.www.presentation.dto.request.UpdateNormalPostRequestDto;
-import com.leadpet.www.presentation.dto.response.AddNormalPostResponseDto;
-import com.leadpet.www.presentation.dto.response.NormalPostResponse;
-import com.leadpet.www.presentation.dto.response.UpdateNormalPostResponseDto;
+import com.leadpet.www.presentation.dto.request.post.AddNormalPostRequestDto;
+import com.leadpet.www.presentation.dto.request.post.UpdateNormalPostRequestDto;
+import com.leadpet.www.presentation.dto.response.post.AddNormalPostResponseDto;
+import com.leadpet.www.presentation.dto.response.post.NormalPostResponse;
+import com.leadpet.www.presentation.dto.response.post.UpdateNormalPostResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

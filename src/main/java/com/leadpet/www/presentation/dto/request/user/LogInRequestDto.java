@@ -1,4 +1,4 @@
-package com.leadpet.www.presentation.dto.request;
+package com.leadpet.www.presentation.dto.request.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;

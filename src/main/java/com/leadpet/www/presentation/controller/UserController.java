@@ -1,14 +1,15 @@
 package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.application.service.UserService;
+import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
-import com.leadpet.www.presentation.controller.annotation.UserType;
-import com.leadpet.www.presentation.dto.request.LogInRequestDto;
-import com.leadpet.www.presentation.dto.request.SignUpUserRequestDto;
-import com.leadpet.www.presentation.dto.response.LogInResponseDto;
-import com.leadpet.www.presentation.dto.response.SignUpUserResponseDto;
-import com.leadpet.www.presentation.dto.response.UserListResponseDto;
+import com.leadpet.www.presentation.controller.annotation.UserTypes;
+import com.leadpet.www.presentation.dto.request.user.LogInRequestDto;
+import com.leadpet.www.presentation.dto.request.user.SignUpUserRequestDto;
+import com.leadpet.www.presentation.dto.response.user.LogInResponseDto;
+import com.leadpet.www.presentation.dto.response.user.SignUpUserResponseDto;
+import com.leadpet.www.presentation.dto.response.user.UserListResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -62,7 +63,7 @@ public class UserController {
             @ApiResponse(code = 400, message = "필수 데이터 누락 에러")
     })
     @GetMapping("/list")
-    public ResponseEntity<List<UserListResponseDto>> listBy(@UserType final Users.UserType ut) {
+    public ResponseEntity<List<UserListResponseDto>> listBy(@UserTypes final UserType ut) {
         return ResponseEntity.ok(UserListResponseDto.from(userService.getUserListBy(ut)));
     }
 
