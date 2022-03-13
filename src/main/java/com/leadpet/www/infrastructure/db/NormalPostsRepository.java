@@ -9,4 +9,13 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface NormalPostsRepository extends JpaRepository<NormalPosts, Long> {
+
+    /**
+     * NormalPostId와 UserId로 일반 게시글 취득
+     *
+     * @param normalPostId 게시글 아이디
+     * @param UserId 유저 아이디
+     * @return {@NormalPosts}
+     */
+    NormalPosts findByNormalPostIdAndUserId(Long normalPostId, Long UserId);
 }

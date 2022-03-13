@@ -6,7 +6,9 @@ import com.leadpet.www.infrastructure.db.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.Users
+import com.leadpet.www.infrastructure.domain.users.Users.UserType
 import com.leadpet.www.presentation.dto.request.AddNormalPostRequestDto
+import com.leadpet.www.presentation.dto.request.UpdateNormalPostRequestDto
 import org.hamcrest.Matchers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -15,12 +17,17 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+/**
+ * PostControllerSpec
+ */
 @SpringBootTest
 class PostControllerSpec extends Specification {
     private final String POST_URL = "/v1/post"
@@ -59,14 +66,7 @@ class PostControllerSpec extends Specification {
 
     def "일반 게시물 추가: 정상"() {
         given:
-        usersRepository.save(
-                Users.builder()
-                        .loginMethod(LoginMethod.KAKAO)
-                        .uid(uid)
-                        .name('name')
-                        .userType(Users.UserType.NORMAL)
-                        .build())
-
+        addNewUser(LoginMethod.KAKAO, uid, 'name', UserType.NORMAL)
         AddNormalPostRequestDto addNormalPostRequestDto = AddNormalPostRequestDto.builder()
                 .title(title)
                 .contents(contents)
@@ -110,6 +110,63 @@ class PostControllerSpec extends Specification {
     }
 
     // TODO 일반 게시물 수정
+    @Unroll("#testCase")
+    def "일반 게시물 수정"() {
+        given:
+        addNewUser(loginMethod, uid, 'name', UserType.NORMAL)
+        normalPostsRepository.save(NormalPosts.builder().title("title").contents("contents").userId(1).build())
+        UpdateNormalPostRequestDto updateNormalPostRequestDto = UpdateNormalPostRequestDto.builder()
+                .normalPostId(1)
+                .title(updatedTitle)
+                .contents(updatedContents)
+                .images(updatedImages)
+                .tags(updatedTags)
+                .loginMethod(loginMethod)
+                .uid(uid)
+                .build()
+
+        expect:
+        mvc.perform(put(POST_URL + '/updateNormal')
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(updateNormalPostRequestDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('$.normalPostId').value(normalPostId))
+                .andExpect(jsonPath('$.title').value(updatedTitle))
+                .andExpect(jsonPath('$.contents').value(updatedContents))
+                .andExpect(jsonPath('$.images').value(updatedImages))
+                .andExpect(jsonPath('$.tags').value(updatedTags))
+                .andExpect(jsonPath('$.uid').value(uid))
+                .andExpect(jsonPath('$.loginMethod').value(loginMethod.name()))
+
+        NormalPosts updatedPost = normalPostsRepository.findByNormalPostIdAndUserId(normalPostId, userId)
+        updatedPost != null
+        updatedPost.title == updatedTitle
+        updatedPost.contents == updatedContents
+        updatedPost.images == updatedImages
+        updatedPost.tags == updatedTags
+
+        where:
+        testCase | userId | normalPostId | uid   | loginMethod       | updatedTitle   | updatedContents   | updatedImages            | updatedTags
+        '정상'     | 1L     | 1L           | 'uid' | LoginMethod.KAKAO | 'updatedTitle' | 'updatedContents' | ['updated1', 'updated2'] | ['updated1', 'updated2']
+    }
+    // TODO 일반 게시물 수정: 에러: 404 존재하지 않는 게시글
+    // TODO 일반 게시물 수정: 에러: 401 권한이 없는 유저
+
     // TODO 일반 게시물 삭제
+
+    // ----------------------------------------------------
+
+    /**
+     * Users 등록
+     */
+    private Users addNewUser(LoginMethod loginMethod, String uid, String name, UserType userType) {
+        return usersRepository.save(
+                Users.builder()
+                        .loginMethod(loginMethod)
+                        .uid(uid)
+                        .name(name)
+                        .userType(userType)
+                        .build())
+    }
 
 }

@@ -8,6 +8,7 @@ import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -52,5 +53,31 @@ public class NormalPostService {
                 .userId(user.getUserId())
                 .build();
         return normalPostsRepository.save(normalPostWithUserId);
+    }
+
+    /**
+     * 일반 게시물 수정
+     *
+     * @param updatingNormalPost 수정할 일반 게시물
+     * @param loginMethod 수정을 실행하는 유저 로그인 유형
+     * @param uid 수정을 실행하는 유저 uid
+     * @return {@code NormalPosts}
+     */
+    @Transactional
+    public NormalPosts updateNormalPost(@NonNull final NormalPosts updatingNormalPost,
+                                        @NonNull final LoginMethod loginMethod,
+                                        @NonNull final String uid) {
+        // TODO 401 패턴: 권한 없는 유저
+        // TODO 404 패턴: 게시물 없음
+        Users targetUser = usersRepository.findByLoginMethodAndUid(loginMethod, uid);
+        if (Objects.isNull(targetUser)) {
+            throw new UserNotFoundException("Error: 존재하지 않는 유저");
+        }
+
+        NormalPosts targetPost = normalPostsRepository.findByNormalPostIdAndUserId(
+                updatingNormalPost.getNormalPostId(), targetUser.getUserId());
+
+        NormalPosts updatedPost = targetPost.update(updatingNormalPost);
+        return updatedPost;
     }
 }

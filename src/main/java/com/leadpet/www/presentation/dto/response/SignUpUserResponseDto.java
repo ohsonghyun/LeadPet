@@ -7,9 +7,9 @@ import org.springframework.lang.NonNull;
 /**
  * SignUpUserResponseDto
  */
+@ApiModel("회원가입 Response")
 @lombok.Getter
 @lombok.Builder(access = AccessLevel.PRIVATE)
-@ApiModel("회원가입 Response")
 public class SignUpUserResponseDto {
 
     private String uid;
