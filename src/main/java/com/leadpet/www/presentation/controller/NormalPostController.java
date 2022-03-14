@@ -44,6 +44,7 @@ public class NormalPostController {
     })
     @PutMapping("/updateNormal")
     public ResponseEntity<UpdateNormalPostResponseDto> updatePost(@RequestBody UpdateNormalPostRequestDto request) {
+        // TODO DTO 수정해서 userId와 postId 조합으로 특정 포스트 업데이트 가능하도록 변경할 것.
         // 삭제하려고하는 postId
         // 삭제를 실행한 userId
 
