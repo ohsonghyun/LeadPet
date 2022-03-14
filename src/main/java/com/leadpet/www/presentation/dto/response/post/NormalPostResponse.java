@@ -21,7 +21,7 @@ public class NormalPostResponse {
     private List<String> images;
     private List<String> tags;
     // TODO uid / loginmethod를 넘겨줄 필요가 있다.
-    private Long userId;
+    private String userId;
 
     public static List<NormalPostResponse> from(@NonNull final List<NormalPosts> normalPosts) {
         return normalPosts

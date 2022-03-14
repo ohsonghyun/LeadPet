@@ -1,6 +1,7 @@
 package com.leadpet.www.infrastructure.domain.users;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
@@ -9,7 +10,7 @@ import java.util.Objects;
  * LoginMethod
  */
 public enum LoginMethod {
-    KAKAO() {
+    KAKAO("kko") {
         @Override
         public boolean validateEssentialParam(final Users user) {
             if (user.getLoginMethod() != KAKAO) {
@@ -21,7 +22,7 @@ public enum LoginMethod {
             return !StringUtils.isAnyBlank(user.getUid(), user.getName());
         }
     },
-    GOOGLE() {
+    GOOGLE("ggl") {
         @Override
         public boolean validateEssentialParam(final Users user) {
             if (user.getLoginMethod() != GOOGLE) {
@@ -33,7 +34,7 @@ public enum LoginMethod {
             return !StringUtils.isAnyBlank(user.getUid(), user.getName());
         }
     },
-    APPLE() {
+    APPLE("app") {
         @Override
         public boolean validateEssentialParam(final Users user) {
             if (user.getLoginMethod() != APPLE) {
@@ -45,7 +46,7 @@ public enum LoginMethod {
             return !StringUtils.isAnyBlank(user.getUid(), user.getName());
         }
     },
-    EMAIL() {
+    EMAIL("eml") {
         @Override
         public boolean validateEssentialParam(final Users user) {
             if (user.getLoginMethod() != EMAIL) {
@@ -61,6 +62,12 @@ public enum LoginMethod {
                     user.getName());
         }
     };
+
+    @Getter
+    private String acronym;
+    LoginMethod(String acronym) {
+        this.acronym = acronym;
+    }
 
     @JsonCreator
     public static LoginMethod from(final String loginMethod) {

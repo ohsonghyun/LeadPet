@@ -1,11 +1,11 @@
 package com.leadpet.www.infrastructure.domain.users;
 
 import com.leadpet.www.infrastructure.domain.BaseTime;
-import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
-import java.util.List;
 
 /**
  * Users
@@ -17,8 +17,7 @@ import java.util.List;
 @lombok.Builder
 public class Users extends BaseTime {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private String userId;
 
     // 공통
     @Column(nullable = false)
@@ -39,6 +38,17 @@ public class Users extends BaseTime {
     private String shelterPhoneNumber;
     private String shelterManager;
     private String shelterHomePage;
+
+    /**
+     * UserId를 생성
+     * <p>유저아이디는 uid + loginMethod(약자)로 구성됨</p>
+     *
+     * @return {@code String}
+     */
+    @NonNull
+    public void createUserId() {
+        this.userId = String.format("%s%s", this.uid, this.loginMethod.getAcronym());
+    }
 
     /**
      * 셀프체크

@@ -19,7 +19,7 @@ public class AddNormalPostResponseDto {
     private String contents;
     private List<String> images;
     private List<String> tags;
-    private Long userId;
+    private String userId;
 
     public static AddNormalPostResponseDto from(@NonNull final NormalPosts normalPost) {
         return AddNormalPostResponseDto.builder()

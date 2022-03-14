@@ -37,6 +37,7 @@ public class UserService {
         if (Objects.nonNull(userInDb)) {
             throw new UserAlreadyExistsException("Error: 이미 존재하는 유저");
         }
+        newUser.createUserId();
         return usersRepository.save(newUser);
     }
 
