@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leadpet.www.infrastructure.db.UsersRepository;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import com.leadpet.www.infrastructure.domain.users.UserType;
+import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.presentation.dto.request.user.SignUpUserRequestDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,7 +70,9 @@ public class UserControllerTest {
                 .userType(UserType.NORMAL)
                 .build();
         // when
-        usersRepository.save(signUpUserRequestDto.toUsers());
+        Users existingUser = signUpUserRequestDto.toUsers();
+        existingUser.createUserId();
+        usersRepository.save(existingUser);
         // expect
         mvc.perform(post(USER_URL + "/signup")
                         .contentType(MediaType.APPLICATION_JSON)

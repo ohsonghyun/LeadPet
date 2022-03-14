@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
@@ -53,9 +52,9 @@ class NormalNormalPostControllerSpec extends Specification {
     def "모든 일반게시물 데이터를 취득한다"() {
         given:
         normalPostsRepository.saveAll(List.of(
-                NormalPosts.builder().title("title").contents("contents").userId(1).build(),
-                NormalPosts.builder().title("title").contents("contents").userId(1).build(),
-                NormalPosts.builder().title("title").contents("contents").userId(1).build()
+                NormalPosts.builder().title("title").contents("contents").userId('userId').build(),
+                NormalPosts.builder().title("title").contents("contents").userId('userId').build(),
+                NormalPosts.builder().title("title").contents("contents").userId('userId').build()
         ))
 
         expect:
@@ -113,7 +112,7 @@ class NormalNormalPostControllerSpec extends Specification {
         given:
         // 유저 생성
         Users user = addNewUser(loginMethod, uid, 'name', UserType.NORMAL)
-        Long userId = user.getUserId()
+        String userId = user.getUserId()
 
         // 기존 일반 게시글 생성
         NormalPosts existingPost = addNormalPost('title', 'contents', userId)
@@ -188,16 +187,17 @@ class NormalNormalPostControllerSpec extends Specification {
      * Users 등록
      */
     private Users addNewUser(LoginMethod loginMethod, String uid, String name, UserType userType) {
-        return usersRepository.save(
-                Users.builder()
-                        .loginMethod(loginMethod)
-                        .uid(uid)
-                        .name(name)
-                        .userType(userType)
-                        .build())
+        Users user = Users.builder()
+                .loginMethod(loginMethod)
+                .uid(uid)
+                .name(name)
+                .userType(userType)
+                .build()
+        user.createUserId()
+        return usersRepository.save(user)
     }
 
-    private NormalPosts addNormalPost(String title, String contents, Long userId) {
+    private NormalPosts addNormalPost(String title, String contents, String userId) {
         return normalPostsRepository.save(
                 NormalPosts.builder()
                         .title(title)

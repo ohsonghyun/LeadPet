@@ -31,7 +31,7 @@ public class NormalPosts extends BaseTime {
     private List<String> tags;
 
     @Column(nullable = false)
-    private Long userId;
+    private String userId;
 
     /**
      * 일반게시글 수정

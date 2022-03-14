@@ -17,5 +17,5 @@ public interface NormalPostsRepository extends JpaRepository<NormalPosts, Long> 
      * @param UserId 유저 아이디
      * @return {@NormalPosts}
      */
-    NormalPosts findByNormalPostIdAndUserId(Long normalPostId, Long UserId);
+    NormalPosts findByNormalPostIdAndUserId(Long normalPostId, String UserId);
 }

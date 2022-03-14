@@ -12,7 +12,7 @@ import java.util.List;
  * UsersRepository
  */
 @Repository
-public interface UsersRepository extends JpaRepository<Users, Long> {
+public interface UsersRepository extends JpaRepository<Users, String> {
 
     /**
      * 로그인 방법 + UID 조합으로 유저데이터 반
