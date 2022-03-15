@@ -1,4 +1,5 @@
-## UserController API 사양 정리
+## Deprecated ~~UserController API 사양 정리~~
+최신버전은 로컬에서 프로젝트 기동 후 [swagger](http://localhost:8080/swagger-ui/index.html) 참고해주세요.
 
 ### 1) POST : /v1/user/login
 
