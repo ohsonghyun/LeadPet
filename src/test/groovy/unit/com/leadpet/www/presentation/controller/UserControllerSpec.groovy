@@ -129,11 +129,12 @@ class UserControllerSpec extends Specification {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(logInRequestDto)))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath('$.userId').value(userId))
 
         where:
-        testCase    | loginMethod       | uid        | email            | password   | profileImage | name    | userType
-        "SNS 로그인"   | LoginMethod.KAKAO | "kakaoUid" | null             | null       | null         | "kakao" | UserType.NORMAL
-        "EMAIL 로그인" | LoginMethod.EMAIL | "emailUid" | "test@gmail.com" | "password" | null         | "email" | UserType.NORMAL
+        testCase    | loginMethod       | uid   | email            | password   | profileImage | name    | userType        | userId
+        "SNS 로그인"   | LoginMethod.KAKAO | "uid" | null             | null       | null         | "kakao" | UserType.NORMAL | 'uidkko'
+        "EMAIL 로그인" | LoginMethod.EMAIL | "uid" | "test@gmail.com" | "password" | null         | "email" | UserType.NORMAL | 'uideml'
     }
 
     @Unroll

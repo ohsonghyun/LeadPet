@@ -22,20 +22,16 @@ public class UpdateNormalPostResponseDto {
     private List<String> images;
     private List<String> tags;
 
-    private LoginMethod loginMethod;
-    private String uid;
+    private String userId;
 
-    public static UpdateNormalPostResponseDto from(@NonNull final NormalPosts updatedNormalPost,
-                                                   @NonNull final LoginMethod loginMethod,
-                                                   @NonNull final String uid) {
+    public static UpdateNormalPostResponseDto from(@NonNull final NormalPosts updatedNormalPost) {
         return UpdateNormalPostResponseDto.builder()
                 .normalPostId(updatedNormalPost.getNormalPostId())
                 .title(updatedNormalPost.getTitle())
                 .contents(updatedNormalPost.getContents())
                 .images(updatedNormalPost.getImages())
                 .tags(updatedNormalPost.getTags())
-                .loginMethod(loginMethod)
-                .uid(uid)
+                .userId(updatedNormalPost.getUserId())
                 .build();
     }
 }

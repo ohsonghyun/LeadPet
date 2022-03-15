@@ -22,9 +22,7 @@ public class UpdateNormalPostRequestDto {
 
     // 유저 판단 데이터
     @NotNull
-    private LoginMethod loginMethod;
-    @NotNull
-    private String uid;
+    private String userId;
 
     /**
      * 일반 게시물 객체로 변환
@@ -39,6 +37,7 @@ public class UpdateNormalPostRequestDto {
                 .contents(this.contents)
                 .images(this.images)
                 .tags(this.tags)
+                .userId(this.userId)
                 .build();
     }
 }

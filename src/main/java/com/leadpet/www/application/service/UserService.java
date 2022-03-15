@@ -32,7 +32,9 @@ public class UserService {
             throw new UnsatisfiedRequirementException("Error: 필수 입력 데이터 누락");
         }
 
-        // TODO 로그인 타입이 이메일인 유저는 이메일까지 넘겨받아야하나? 이메일과 비밀번호로만 검색을 해봐야하는지 uid 생성 로직을 확인할 필요가 있음.
+        // 로그인 타입이 이메일인 유저는 이메일까지 넘겨받아야하나? 이메일과 비밀번호로만 검색을 해봐야하는지 uid 생성 로직을 확인할 필요가 있음.
+        // 일단, 동일한 이메일에서는 동일한 uid가 생성되는걸로 확인 받음. 구현 완료인지는 아직 미확인
+        // https://discord.com/channels/933332878232809493/934390730972069938/952454407340060722
         Users userInDb = findUserBy(newUser.getLoginMethod(), newUser.getUid(), newUser.getEmail(), newUser.getPassword());
         if (Objects.nonNull(userInDb)) {
             throw new UserAlreadyExistsException("Error: 이미 존재하는 유저");
@@ -52,8 +54,7 @@ public class UserService {
         if (Objects.isNull(userInDb)) {
             throw new UserNotFoundException("Error: 존재하지 않는 유저");
         }
-        // TODO 이놈.. 실수네 중복. DRY 위반
-        return usersRepository.findByLoginMethodAndUid(user.getLoginMethod(), user.getUid());
+        return userInDb;
     }
 
     /**
