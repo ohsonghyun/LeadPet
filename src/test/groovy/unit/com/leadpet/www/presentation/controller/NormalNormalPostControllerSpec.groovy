@@ -206,6 +206,14 @@ class NormalNormalPostControllerSpec extends Specification {
 
 
     // TODO 일반 게시물 삭제
+    def "일반 게시물 삭제: 정상"() {
+
+    }
+
+    // TODO 일반 게시물 삭제
+    def "일반 게시물 삭제: 에러: 404-존재하지 않는 게시글"() {
+
+    }
 
     // ----------------------------------------------------
 
