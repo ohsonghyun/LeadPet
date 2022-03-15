@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Api(tags = "게시물 컨트롤러")
 @RestController
-@RequestMapping("/v1/post")
+@RequestMapping("/v1/post/normal")
 @lombok.RequiredArgsConstructor
 public class NormalPostController {
 
@@ -31,7 +31,7 @@ public class NormalPostController {
     @ApiResponses({
             @ApiResponse(code = 404, message = "존재하지 않는 유저")
     })
-    @PostMapping("/addNormal")
+    @PostMapping("/add")
     public ResponseEntity<AddNormalPostResponseDto> addNewPost(@RequestBody AddNormalPostRequestDto request) {
         return ResponseEntity.ok(
                 AddNormalPostResponseDto.from(
@@ -42,7 +42,7 @@ public class NormalPostController {
     @ApiResponses({
             @ApiResponse(code = 404, message = "존재하지 않는 게시글")
     })
-    @PutMapping("/updateNormal")
+    @PutMapping("/update")
     public ResponseEntity<UpdateNormalPostResponseDto> updatePost(@RequestBody UpdateNormalPostRequestDto request) {
         // TODO DTO 수정해서 userId와 postId 조합으로 특정 포스트 업데이트 가능하도록 변경할 것.
         // 삭제하려고하는 postId
@@ -54,7 +54,7 @@ public class NormalPostController {
     }
 
     @ApiOperation(value = "모든 일반 게시물 취득")
-    @GetMapping("/allNormal")
+    @GetMapping("/all")
     public ResponseEntity<List<NormalPostResponse>> getAllNormalPosts() {
         return ResponseEntity.ok(NormalPostResponse.from(normalPostService.getAllNormalPosts()));
     }

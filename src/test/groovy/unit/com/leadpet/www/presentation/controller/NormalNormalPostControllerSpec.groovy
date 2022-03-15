@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 class NormalNormalPostControllerSpec extends Specification {
-    private final String POST_URL = "/v1/post"
+    private final String NORMAL_POST_URL = "/v1/post/normal"
 
     @Autowired
     WebApplicationContext webApplicationContext
@@ -58,7 +58,7 @@ class NormalNormalPostControllerSpec extends Specification {
         ))
 
         expect:
-        mvc.perform(get(POST_URL + "/allNormal"))
+        mvc.perform(get(NORMAL_POST_URL + "/all"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('$', Matchers.hasSize(3)))
     }
@@ -76,7 +76,7 @@ class NormalNormalPostControllerSpec extends Specification {
                 .build()
 
         expect:
-        mvc.perform(post(POST_URL + '/addNormal')
+        mvc.perform(post(NORMAL_POST_URL + '/add')
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(addNormalPostRequestDto)))
                 .andExpect(status().isOk())
@@ -101,7 +101,7 @@ class NormalNormalPostControllerSpec extends Specification {
                 .build()
 
         expect:
-        mvc.perform(post(POST_URL + '/addNormal')
+        mvc.perform(post(NORMAL_POST_URL + '/add')
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(addNormalPostRequestDto)))
                 .andExpect(status().isNotFound())
@@ -129,7 +129,7 @@ class NormalNormalPostControllerSpec extends Specification {
                 .build()
 
         expect:
-        mvc.perform(put(POST_URL + '/updateNormal')
+        mvc.perform(put(NORMAL_POST_URL + '/update')
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(updateNormalPostRequestDto)))
                 .andExpect(status().isOk())
@@ -168,7 +168,7 @@ class NormalNormalPostControllerSpec extends Specification {
                 .build()
 
         expect:
-        mvc.perform(put(POST_URL + '/updateNormal')
+        mvc.perform(put(NORMAL_POST_URL + '/update')
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(updateNormalPostRequestDto)))
                 .andExpect(status().isNotFound())
