@@ -14,11 +14,13 @@ import org.springframework.lang.NonNull;
 public class LogInResponseDto {
 
     private String uid;
+    private String userId;
     private String profileImage;
 
     public static LogInResponseDto from(@NonNull final Users user) {
         return LogInResponseDto.builder()
                 .uid(user.getUid())
+                .userId(user.getUserId())
                 .profileImage(user.getProfileImage())
                 .build();
     }

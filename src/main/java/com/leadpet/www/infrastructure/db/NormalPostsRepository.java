@@ -4,6 +4,8 @@ import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * NormalPostsRepository
  */
@@ -17,5 +19,5 @@ public interface NormalPostsRepository extends JpaRepository<NormalPosts, Long> 
      * @param UserId 유저 아이디
      * @return {@NormalPosts}
      */
-    NormalPosts findByNormalPostIdAndUserId(Long normalPostId, String UserId);
+    Optional<NormalPosts> findByNormalPostIdAndUserId(Long normalPostId, String UserId);
 }

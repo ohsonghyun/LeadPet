@@ -39,46 +39,28 @@ public class NormalPostService {
      * @param newNormalPost 신규 일반 게시물
      * @return {@code NormalPosts}
      */
-    public NormalPosts addNewPost(@NonNull final NormalPosts newNormalPost, @NonNull final String uid,
-                                  @NonNull final LoginMethod loginMethod) {
-        Users user = usersRepository.findByLoginMethodAndUid(loginMethod, uid);
-        if (Objects.isNull(user)) {
-            throw new UserNotFoundException("Error: 존재하지 않는 유저");
-        }
-        // 불변성 유지를 위해 객체 새로 생성. 생성비용이 크지 않기 때문에 괜찮지 않을까. 문제가 생기면 그 때 생각해보는 걸로.
-        NormalPosts normalPostWithUserId = NormalPosts.builder()
-                .title(newNormalPost.getTitle())
-                .contents(newNormalPost.getContents())
-                .images(newNormalPost.getImages())
-                .tags(newNormalPost.getTags())
-                .userId(user.getUserId())
-                .build();
-        return normalPostsRepository.save(normalPostWithUserId);
+    public NormalPosts addNewPost(@NonNull final NormalPosts newNormalPost) {
+        // 존재하는 유저인지 확인
+        usersRepository.findById(newNormalPost.getUserId())
+                .orElseThrow(() -> new UserNotFoundException("Error: 존재하지 않는 유저"));
+        return normalPostsRepository.save(newNormalPost);
     }
 
     /**
      * 일반 게시물 수정
      *
      * @param updatingNormalPost 수정할 일반 게시물
-     * @param loginMethod 수정을 실행하는 유저 로그인 유형
-     * @param uid 수정을 실행하는 유저 uid
      * @return {@code NormalPosts}
      */
     @Transactional
-    public NormalPosts updateNormalPost(@NonNull final NormalPosts updatingNormalPost,
-                                        @NonNull final LoginMethod loginMethod,
-                                        @NonNull final String uid) {
-        Users targetUser = usersRepository.findByLoginMethodAndUid(loginMethod, uid);
-        if (Objects.isNull(targetUser)) {
-            throw new UserNotFoundException("Error: 존재하지 않는 유저");
-        }
+    public NormalPosts updateNormalPost(@NonNull final NormalPosts updatingNormalPost) {
+        Users targetUser = usersRepository.findById(updatingNormalPost.getUserId())
+                .orElseThrow(() -> new UserNotFoundException());
 
         // 권한이 없는 유저는 게시물 획득 불가
         NormalPosts targetPost = normalPostsRepository.findByNormalPostIdAndUserId(
-                updatingNormalPost.getNormalPostId(), targetUser.getUserId());
-        if (Objects.isNull(targetPost)) {
-            throw new PostNotFoundException("Error: 존재하지 않는 게시글");
-        }
+                updatingNormalPost.getNormalPostId(), targetUser.getUserId())
+                .orElseThrow(() -> new PostNotFoundException());
 
         NormalPosts updatedPost = targetPost.update(updatingNormalPost);
         return updatedPost;

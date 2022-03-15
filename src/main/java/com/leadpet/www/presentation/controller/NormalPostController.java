@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Api(tags = "게시물 컨트롤러")
 @RestController
-@RequestMapping("/v1/post")
+@RequestMapping("/v1/post/normal")
 @lombok.RequiredArgsConstructor
 public class NormalPostController {
 
@@ -31,29 +31,27 @@ public class NormalPostController {
     @ApiResponses({
             @ApiResponse(code = 404, message = "존재하지 않는 유저")
     })
-    @PostMapping("/addNormal")
+    @PostMapping("/add")
     public ResponseEntity<AddNormalPostResponseDto> addNewPost(@RequestBody AddNormalPostRequestDto request) {
         return ResponseEntity.ok(
                 AddNormalPostResponseDto.from(
-                        normalPostService.addNewPost(request.toNormalPost(), request.getUid(), request.getLoginMethod())));
+                        normalPostService.addNewPost(request.toNormalPost())));
     }
 
     @ApiOperation(value = "일반 게시물 수정")
     @ApiResponses({
-            @ApiResponse(code = 404, message = "존재하지 않는 게시글")
+            @ApiResponse(code = 404, message = "존재하지 않는 게시글"),
+            @ApiResponse(code = 404, message = "존재하지 않는 유저")
     })
-    @PutMapping("/updateNormal")
+    @PutMapping("/update")
     public ResponseEntity<UpdateNormalPostResponseDto> updatePost(@RequestBody UpdateNormalPostRequestDto request) {
-        // 삭제하려고하는 postId
-        // 삭제를 실행한 userId
-
-        // TODO update & delete 같은 경우는 유저판단을 위해 userId, uid, loginMethod를 받을 필요가 있다. 수정 필요.
-        NormalPosts updatedNormalPost = normalPostService.updateNormalPost(request.toNormalPost(), request.getLoginMethod(), request.getUid());
-        return ResponseEntity.ok(UpdateNormalPostResponseDto.from(updatedNormalPost, request.getLoginMethod(), request.getUid()));
+        return ResponseEntity.ok(
+                UpdateNormalPostResponseDto.from(
+                        normalPostService.updateNormalPost(request.toNormalPost())));
     }
 
     @ApiOperation(value = "모든 일반 게시물 취득")
-    @GetMapping("/allNormal")
+    @GetMapping("/all")
     public ResponseEntity<List<NormalPostResponse>> getAllNormalPosts() {
         return ResponseEntity.ok(NormalPostResponse.from(normalPostService.getAllNormalPosts()));
     }

@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 class NormalNormalPostControllerSpec extends Specification {
-    private final String POST_URL = "/v1/post"
+    private final String NORMAL_POST_URL = "/v1/post/normal"
 
     @Autowired
     WebApplicationContext webApplicationContext
@@ -58,7 +58,7 @@ class NormalNormalPostControllerSpec extends Specification {
         ))
 
         expect:
-        mvc.perform(get(POST_URL + "/allNormal"))
+        mvc.perform(get(NORMAL_POST_URL + "/all"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('$', Matchers.hasSize(3)))
     }
@@ -71,12 +71,11 @@ class NormalNormalPostControllerSpec extends Specification {
                 .contents(contents)
                 .images(images)
                 .tags(tags)
-                .loginMethod(LoginMethod.KAKAO)
-                .uid(uid)
+                .userId(userId)
                 .build()
 
         expect:
-        mvc.perform(post(POST_URL + '/addNormal')
+        mvc.perform(post(NORMAL_POST_URL + '/add')
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(addNormalPostRequestDto)))
                 .andExpect(status().isOk())
@@ -87,8 +86,8 @@ class NormalNormalPostControllerSpec extends Specification {
                 .andExpect(jsonPath('$.userId').isNotEmpty())
 
         where:
-        title   | contents   | images           | tags                     | uid
-        'title' | 'contents' | ['img1', 'img2'] | ['tag1', 'tag2', 'tag3'] | 'uid'
+        title   | contents   | images           | tags                     | uid   | userId
+        'title' | 'contents' | ['img1', 'img2'] | ['tag1', 'tag2', 'tag3'] | 'uid' | 'uidkko'
     }
 
     def "일반 게시물 추가: 에러: 404 - 존재하지 않는 유저"() {
@@ -96,12 +95,11 @@ class NormalNormalPostControllerSpec extends Specification {
         AddNormalPostRequestDto addNormalPostRequestDto = AddNormalPostRequestDto.builder()
                 .title('title')
                 .contents('contents')
-                .loginMethod(LoginMethod.KAKAO)
-                .uid('uid')
+                .userId('uidkko')
                 .build()
 
         expect:
-        mvc.perform(post(POST_URL + '/addNormal')
+        mvc.perform(post(NORMAL_POST_URL + '/add')
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(addNormalPostRequestDto)))
                 .andExpect(status().isNotFound())
@@ -124,12 +122,11 @@ class NormalNormalPostControllerSpec extends Specification {
                 .contents(updatedContents)
                 .images(updatedImages)
                 .tags(updatedTags)
-                .loginMethod(loginMethod)
-                .uid(uid)
+                .userId(userId)
                 .build()
 
         expect:
-        mvc.perform(put(POST_URL + '/updateNormal')
+        mvc.perform(put(NORMAL_POST_URL + '/update')
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(updateNormalPostRequestDto)))
                 .andExpect(status().isOk())
@@ -138,10 +135,9 @@ class NormalNormalPostControllerSpec extends Specification {
                 .andExpect(jsonPath('$.contents').value(updatedContents))
                 .andExpect(jsonPath('$.images').value(updatedImages))
                 .andExpect(jsonPath('$.tags').value(updatedTags))
-                .andExpect(jsonPath('$.uid').value(uid))
-                .andExpect(jsonPath('$.loginMethod').value(loginMethod.name()))
+                .andExpect(jsonPath('$.userId').value(userId))
 
-        NormalPosts updatedPost = normalPostsRepository.findByNormalPostIdAndUserId(normalPostId, userId)
+        NormalPosts updatedPost = normalPostsRepository.findByNormalPostIdAndUserId(normalPostId, userId).get()
         updatedPost != null
         updatedPost.title == updatedTitle
         updatedPost.contents == updatedContents
@@ -163,12 +159,11 @@ class NormalNormalPostControllerSpec extends Specification {
                 .contents(updatedContents)
                 .images(updatedImages)
                 .tags(updatedTags)
-                .loginMethod(loginMethod)
-                .uid(uid)
+                .userId(user.getUserId())
                 .build()
 
         expect:
-        mvc.perform(put(POST_URL + '/updateNormal')
+        mvc.perform(put(NORMAL_POST_URL + '/update')
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(updateNormalPostRequestDto)))
                 .andExpect(status().isNotFound())
@@ -197,6 +192,9 @@ class NormalNormalPostControllerSpec extends Specification {
         return usersRepository.save(user)
     }
 
+    /**
+     * 일반 게시글 등록
+     */
     private NormalPosts addNormalPost(String title, String contents, String userId) {
         return normalPostsRepository.save(
                 NormalPosts.builder()

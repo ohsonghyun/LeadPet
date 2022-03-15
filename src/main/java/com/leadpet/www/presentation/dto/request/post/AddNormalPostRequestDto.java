@@ -1,12 +1,14 @@
 package com.leadpet.www.presentation.dto.request.post;
 
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
-import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import io.swagger.annotations.ApiModel;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+/**
+ * AddNormalPostRequestDto
+ */
 @ApiModel("신규 일반 게시물 Request")
 @lombok.Getter
 @lombok.Builder
@@ -23,9 +25,7 @@ public class AddNormalPostRequestDto {
 
     // 유저 판단 데이터
     @NotNull
-    private LoginMethod loginMethod;
-    @NotNull
-    private String uid;
+    private String userId;
 
     /**
      * 일반 게시물 객체로 변환
@@ -39,6 +39,7 @@ public class AddNormalPostRequestDto {
                 .contents(this.contents)
                 .images(this.images)
                 .tags(this.tags)
+                .userId(this.userId)
                 .build();
     }
 }
