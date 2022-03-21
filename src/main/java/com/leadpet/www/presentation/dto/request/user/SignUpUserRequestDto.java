@@ -20,7 +20,7 @@ public class SignUpUserRequestDto {
 
     // 공통
     @NotNull
-    @JsonProperty("type")
+    @JsonProperty("loginMethod")
     private LoginMethod loginMethod;
     @NotNull
     @JsonProperty("uid")
