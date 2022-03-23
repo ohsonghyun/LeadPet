@@ -22,7 +22,7 @@ public class LogInRequestDto {
 
     // sns 로그인
     @NotNull
-    @JsonProperty("type")
+    @JsonProperty("loginMethod")
     private LoginMethod loginMethod;
     @NotNull
     @JsonProperty("uid")
