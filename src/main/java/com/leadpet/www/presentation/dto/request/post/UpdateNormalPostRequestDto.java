@@ -14,7 +14,7 @@ import java.util.List;
 @lombok.AllArgsConstructor
 public class UpdateNormalPostRequestDto {
 
-    private Long normalPostId;
+    private String normalPostId;
     private String title;
     private String contents;
     private List<String> images;
@@ -26,7 +26,7 @@ public class UpdateNormalPostRequestDto {
 
     /**
      * 일반 게시물 객체로 변환
-     * <p>NormalPosts의 userId는 백엔드에서 취득해서 저장</p>
+     * <p>NormalPosts의 User는 백엔드에서 취득해서 저장</p>
      *
      * @return {@code NormalPosts}
      */
@@ -37,7 +37,6 @@ public class UpdateNormalPostRequestDto {
                 .contents(this.contents)
                 .images(this.images)
                 .tags(this.tags)
-                .userId(this.userId)
                 .build();
     }
 }

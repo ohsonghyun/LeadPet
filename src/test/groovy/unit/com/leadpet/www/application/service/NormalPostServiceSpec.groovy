@@ -3,6 +3,7 @@ package com.leadpet.www.application.service
 import com.leadpet.www.infrastructure.db.NormalPostsRepository
 import com.leadpet.www.infrastructure.db.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
+import com.leadpet.www.infrastructure.domain.users.Users
 import spock.lang.Specification
 
 /**
@@ -23,9 +24,9 @@ class NormalPostServiceSpec extends Specification {
     def "모든 일반게시물을 취득한다"() {
         given:
         normalPostsRepository.findAll() >> [
-                NormalPosts.builder().normalPostId(0).title('title').contents('contents').images(['img1', 'img2']).tags(['tag1', 'tag2']).userId('userId').build(),
-                NormalPosts.builder().normalPostId(1).title('title').contents('contents').images(['img1', 'img2']).tags(['tag1', 'tag2']).userId('userId').build(),
-                NormalPosts.builder().normalPostId(2).title('title').contents('contents').images(['img1', 'img2']).tags(['tag1', 'tag2']).userId('userId').build()
+                NormalPosts.builder().normalPostId('NP_a').title('title').contents('contents').images(['img1', 'img2']).tags(['tag1', 'tag2']).user(Users.builder().userId('userId').build()).build(),
+                NormalPosts.builder().normalPostId('NP_b').title('title').contents('contents').images(['img1', 'img2']).tags(['tag1', 'tag2']).user(Users.builder().userId('userId').build()).build(),
+                NormalPosts.builder().normalPostId('NP_c').title('title').contents('contents').images(['img1', 'img2']).tags(['tag1', 'tag2']).user(Users.builder().userId('userId').build()).build()
         ]
 
         when:
@@ -39,7 +40,7 @@ class NormalPostServiceSpec extends Specification {
         normalPost.getContents() == 'contents'
         normalPost.getImages() == ['img1', 'img2']
         normalPost.getTags() == ['tag1', 'tag2']
-        normalPost.getUserId() == 'userId'
+        normalPost.getUser().getUserId() == 'userId'
     }
 
 }

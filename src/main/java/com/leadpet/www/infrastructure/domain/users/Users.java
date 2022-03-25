@@ -2,7 +2,6 @@ package com.leadpet.www.infrastructure.domain.users;
 
 import com.leadpet.www.infrastructure.domain.BaseTime;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
@@ -17,6 +16,7 @@ import javax.persistence.*;
 @lombok.Builder
 public class Users extends BaseTime {
     @Id
+    @Column(name = "user_id")
     private String userId;
 
     // 공통

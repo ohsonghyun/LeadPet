@@ -35,19 +35,19 @@ public class NormalPostController {
     public ResponseEntity<AddNormalPostResponseDto> addNewPost(@RequestBody AddNormalPostRequestDto request) {
         return ResponseEntity.ok(
                 AddNormalPostResponseDto.from(
-                        normalPostService.addNewPost(request.toNormalPost())));
+                        normalPostService.addNewPost(request.toNormalPost(), request.getUserId())));
     }
 
     @ApiOperation(value = "일반 게시물 수정")
     @ApiResponses({
             @ApiResponse(code = 404, message = "존재하지 않는 게시글"),
-            @ApiResponse(code = 404, message = "존재하지 않는 유저")
+            @ApiResponse(code = 403, message = "권한 없는 조작")
     })
     @PutMapping("/update")
     public ResponseEntity<UpdateNormalPostResponseDto> updatePost(@RequestBody UpdateNormalPostRequestDto request) {
         return ResponseEntity.ok(
                 UpdateNormalPostResponseDto.from(
-                        normalPostService.updateNormalPost(request.toNormalPost())));
+                        normalPostService.updateNormalPost(request.toNormalPost(), request.getUserId())));
     }
 
     @ApiOperation(value = "모든 일반 게시물 취득")

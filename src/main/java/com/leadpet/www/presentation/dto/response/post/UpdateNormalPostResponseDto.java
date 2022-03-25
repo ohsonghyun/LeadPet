@@ -16,7 +16,7 @@ import java.util.List;
 @lombok.Builder(access = AccessLevel.PRIVATE)
 public class UpdateNormalPostResponseDto {
 
-    private Long normalPostId;
+    private String normalPostId;
     private String title;
     private String contents;
     private List<String> images;
@@ -31,7 +31,7 @@ public class UpdateNormalPostResponseDto {
                 .contents(updatedNormalPost.getContents())
                 .images(updatedNormalPost.getImages())
                 .tags(updatedNormalPost.getTags())
-                .userId(updatedNormalPost.getUserId())
+                .userId(updatedNormalPost.getUser().getUserId())
                 .build();
     }
 }

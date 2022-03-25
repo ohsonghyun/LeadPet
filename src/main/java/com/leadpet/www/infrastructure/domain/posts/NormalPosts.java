@@ -2,6 +2,7 @@ package com.leadpet.www.infrastructure.domain.posts;
 
 import com.leadpet.www.infrastructure.db.converter.StringListConverter;
 import com.leadpet.www.infrastructure.domain.BaseTime;
+import com.leadpet.www.infrastructure.domain.users.Users;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
@@ -18,8 +19,8 @@ import java.util.List;
 public class NormalPosts extends BaseTime {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long normalPostId;
+    @Column(unique = true, nullable = false)
+    private String normalPostId;
 
     @Column(nullable = false)
     private String title;
@@ -29,9 +30,9 @@ public class NormalPosts extends BaseTime {
     private List<String> images;
     @Convert(converter = StringListConverter.class)
     private List<String> tags;
-
-    @Column(nullable = false)
-    private String userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private Users user;
 
     /**
      * 일반게시글 수정
@@ -47,4 +48,5 @@ public class NormalPosts extends BaseTime {
         this.tags = updatingNormalPost.getTags();
         return this;
     }
+
 }

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @lombok.Getter
 @lombok.Builder(access = AccessLevel.PRIVATE)
 public class NormalPostResponse {
-    private Long normalPostId;
+    private String normalPostId;
     private String title;
     private String contents;
     private List<String> images;
@@ -32,7 +32,7 @@ public class NormalPostResponse {
                                 .contents(normalPost.getContents())
                                 .images(normalPost.getImages())
                                 .tags(normalPost.getTags())
-                                .userId(normalPost.getUserId())
+                                .userId(normalPost.getUser().getUserId())
                                 .build())
                 .collect(Collectors.toList());
     }

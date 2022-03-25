@@ -45,16 +45,17 @@ class NormalNormalPostControllerSpec extends Specification {
     }
 
     def cleanup() {
-        usersRepository.deleteAll()
         normalPostsRepository.deleteAll()
+        usersRepository.deleteAll()
     }
 
     def "모든 일반게시물 데이터를 취득한다"() {
         given:
+        Users user = addNewUser(LoginMethod.KAKAO, 'uid', 'name', UserType.NORMAL)
         normalPostsRepository.saveAll(List.of(
-                NormalPosts.builder().title("title").contents("contents").userId('userId').build(),
-                NormalPosts.builder().title("title").contents("contents").userId('userId').build(),
-                NormalPosts.builder().title("title").contents("contents").userId('userId').build()
+                NormalPosts.builder().normalPostId("NP_a").title("title").contents("contents").user(user).build(),
+                NormalPosts.builder().normalPostId("NP_b").title("title").contents("contents").user(user).build(),
+                NormalPosts.builder().normalPostId("NP_c").title("title").contents("contents").user(user).build()
         ))
 
         expect:
@@ -113,8 +114,8 @@ class NormalNormalPostControllerSpec extends Specification {
         String userId = user.getUserId()
 
         // 기존 일반 게시글 생성
-        NormalPosts existingPost = addNormalPost('title', 'contents', userId)
-        Long normalPostId = existingPost.getNormalPostId()
+        NormalPosts existingPost = addNormalPost('NP_a', 'title', 'contents', user)
+        String normalPostId = existingPost.getNormalPostId()
 
         UpdateNormalPostRequestDto updateNormalPostRequestDto = UpdateNormalPostRequestDto.builder()
                 .normalPostId(normalPostId)
@@ -137,7 +138,7 @@ class NormalNormalPostControllerSpec extends Specification {
                 .andExpect(jsonPath('$.tags').value(updatedTags))
                 .andExpect(jsonPath('$.userId').value(userId))
 
-        NormalPosts updatedPost = normalPostsRepository.findByNormalPostIdAndUserId(normalPostId, userId).get()
+        NormalPosts updatedPost = normalPostsRepository.findById(normalPostId).get()
         updatedPost != null
         updatedPost.title == updatedTitle
         updatedPost.contents == updatedContents
@@ -149,7 +150,7 @@ class NormalNormalPostControllerSpec extends Specification {
         '정상'     | 'uid' | LoginMethod.KAKAO | 'updatedTitle' | 'updatedContents' | ['updated1', 'updated2'] | ['updated1', 'updated2']
     }
 
-    def "일반 게시물 수정: 404 - 존재하지 않는 게시글"() {
+    def "일반 게시물 수정: 404 - #error"() {
         given:
         // 유저 생성
         Users user = addNewUser(loginMethod, uid, 'name', UserType.NORMAL)
@@ -167,12 +168,42 @@ class NormalNormalPostControllerSpec extends Specification {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(updateNormalPostRequestDto)))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath('\$.error.detail').value('Error: 존재하지 않는 게시글'))
+                .andExpect(jsonPath('\$.error.detail').value(error))
 
         where:
-        testCase | uid   | normalPostId | loginMethod       | updatedTitle   | updatedContents   | updatedImages            | updatedTags
-        '정상'     | 'uid' | 1L           | LoginMethod.KAKAO | 'updatedTitle' | 'updatedContents' | ['updated1', 'updated2'] | ['updated1', 'updated2']
+        error                | uid   | normalPostId | loginMethod       | updatedTitle   | updatedContents   | updatedImages            | updatedTags
+        'Error: 존재하지 않는 게시글' | 'uid' | 'NP_a'       | LoginMethod.KAKAO | 'updatedTitle' | 'updatedContents' | ['updated1', 'updated2'] | ['updated1', 'updated2']
     }
+
+    def "일반 게시물 수정: 403 - #error"() {
+        given:
+        // 유저 생성
+        Users userA = addNewUser(loginMethod, 'uidA', 'name', UserType.NORMAL)
+        Users userB = addNewUser(loginMethod, 'uidB', 'name', UserType.NORMAL)
+        // 일반 게시글 추가한 유저는 userA
+        NormalPosts existingPost = addNormalPost(normalPostId, 'title', 'contents', userA)
+        // 일반 게시글 수정쿼리의 userId는 userB: 권한 없는 조작
+        UpdateNormalPostRequestDto updateNormalPostRequestDto = UpdateNormalPostRequestDto.builder()
+                .normalPostId(normalPostId)
+                .title('updatedTitle')
+                .contents('updatedContents')
+                .images(['updated1', 'updated2'])
+                .tags(['updated1', 'updated2'])
+                .userId(userB.getUserId())
+                .build()
+
+        expect:
+        mvc.perform(put(NORMAL_POST_URL + '/update')
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(updateNormalPostRequestDto)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath('\$.error.detail').value(error))
+
+        where:
+        error             | normalPostId | loginMethod
+        'Error: 권한 없는 조작' | 'NP_a'       | LoginMethod.KAKAO
+    }
+
 
     // TODO 일반 게시물 삭제
 
@@ -189,18 +220,21 @@ class NormalNormalPostControllerSpec extends Specification {
                 .userType(userType)
                 .build()
         user.createUserId()
-        return usersRepository.save(user)
+        Users result = usersRepository.save(user)
+        usersRepository.flush()
+        return result
     }
 
     /**
      * 일반 게시글 등록
      */
-    private NormalPosts addNormalPost(String title, String contents, String userId) {
+    private NormalPosts addNormalPost(String normalPostId, String title, String contents, Users user) {
         return normalPostsRepository.save(
                 NormalPosts.builder()
+                        .normalPostId(normalPostId)
                         .title(title)
                         .contents(contents)
-                        .userId(userId)
+                        .user(user)
                         .build())
 
     }

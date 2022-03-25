@@ -1,6 +1,7 @@
 package com.leadpet.www.presentation.controller.advice;
 
 import com.leadpet.www.infrastructure.exception.PostNotFoundException;
+import com.leadpet.www.infrastructure.exception.UnauthorizedUserException;
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
 import com.leadpet.www.infrastructure.exception.WrongArgumentsException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * ErrorHandlerAdvice
+ */
 @RestControllerAdvice
 public class ErrorHandlerAdvice {
 
@@ -38,6 +42,11 @@ public class ErrorHandlerAdvice {
 
     @ExceptionHandler(PostNotFoundException.class)
     public ResponseEntity<ErrorResponse> handler(PostNotFoundException ex) {
+        return errorResponse(ex);
+    }
+
+    @ExceptionHandler(UnauthorizedUserException.class)
+    public ResponseEntity<ErrorResponse> handler(UnauthorizedUserException ex) {
         return errorResponse(ex);
     }
 

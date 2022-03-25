@@ -39,7 +39,6 @@ public class AddNormalPostRequestDto {
                 .contents(this.contents)
                 .images(this.images)
                 .tags(this.tags)
-                .userId(this.userId)
                 .build();
     }
 }
