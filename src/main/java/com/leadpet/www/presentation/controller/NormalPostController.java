@@ -4,7 +4,9 @@ import com.leadpet.www.application.service.NormalPostService;
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import com.leadpet.www.presentation.dto.request.post.AddNormalPostRequestDto;
 import com.leadpet.www.presentation.dto.request.post.UpdateNormalPostRequestDto;
+import com.leadpet.www.presentation.dto.request.post.normal.DeleteNormalPostRequestDto;
 import com.leadpet.www.presentation.dto.response.post.AddNormalPostResponseDto;
+import com.leadpet.www.presentation.dto.response.post.DeleteNormalPostResponseDto;
 import com.leadpet.www.presentation.dto.response.post.NormalPostResponse;
 import com.leadpet.www.presentation.dto.response.post.UpdateNormalPostResponseDto;
 import io.swagger.annotations.Api;
@@ -48,6 +50,18 @@ public class NormalPostController {
         return ResponseEntity.ok(
                 UpdateNormalPostResponseDto.from(
                         normalPostService.updateNormalPost(request.toNormalPost(), request.getUserId())));
+    }
+
+    @ApiOperation(value = "일반 게시물 삭제")
+    @ApiResponses({
+            @ApiResponse(code = 404, message = "존재하지 않는 게시글"),
+            @ApiResponse(code = 403, message = "권한 없는 조작")
+    })
+    @DeleteMapping("/delete")
+    public ResponseEntity<DeleteNormalPostResponseDto> deletePost(@RequestBody DeleteNormalPostRequestDto request) {
+        return ResponseEntity.ok(
+                DeleteNormalPostResponseDto.from(
+                        normalPostService.deleteNormalPost(request.getNormalPostId(), request.getUserId())));
     }
 
     @ApiOperation(value = "모든 일반 게시물 취득")

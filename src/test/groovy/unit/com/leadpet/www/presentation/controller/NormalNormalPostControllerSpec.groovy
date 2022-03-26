@@ -9,6 +9,7 @@ import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.presentation.dto.request.post.AddNormalPostRequestDto
 import com.leadpet.www.presentation.dto.request.post.UpdateNormalPostRequestDto
+import com.leadpet.www.presentation.dto.request.post.normal.DeleteNormalPostRequestDto
 import org.hamcrest.Matchers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
@@ -204,15 +206,86 @@ class NormalNormalPostControllerSpec extends Specification {
         'Error: 권한 없는 조작' | 'NP_a'       | LoginMethod.KAKAO
     }
 
-
-    // TODO 일반 게시물 삭제
     def "일반 게시물 삭제: 정상"() {
+        given:
+        // 유저 생성
+        Users user = addNewUser(loginMethod, uid, 'name', UserType.NORMAL)
+        String userId = user.getUserId()
 
+        // 기존 일반 게시글 생성
+        NormalPosts existingPost = addNormalPost('NP_a', 'title', 'contents', user)
+        String normalPostId = existingPost.getNormalPostId()
+
+        DeleteNormalPostRequestDto deleteNormalPostRequestDto = DeleteNormalPostRequestDto.builder()
+                .normalPostId(normalPostId)
+                .userId(userId)
+                .build()
+
+        expect:
+        mvc.perform(delete(NORMAL_POST_URL + '/delete')
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(deleteNormalPostRequestDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('$.normalPostId').value(normalPostId))
+
+        Optional<NormalPosts> updatedPost = normalPostsRepository.findById(normalPostId)
+        updatedPost.isEmpty() == true
+
+        where:
+        uid   | loginMethod       | updatedTitle   | updatedContents   | updatedImages            | updatedTags
+        'uid' | LoginMethod.KAKAO | 'updatedTitle' | 'updatedContents' | ['updated1', 'updated2'] | ['updated1', 'updated2']
     }
 
-    // TODO 일반 게시물 삭제
     def "일반 게시물 삭제: 에러: 404-존재하지 않는 게시글"() {
+        given:
+        // 유저 생성
+        Users user = addNewUser(loginMethod, uid, 'name', UserType.NORMAL)
+        String userId = user.getUserId()
 
+        DeleteNormalPostRequestDto deleteNormalPostRequestDto = DeleteNormalPostRequestDto.builder()
+                .normalPostId(normalPostId)
+                .userId(userId)
+                .build()
+
+        expect:
+        mvc.perform(delete(NORMAL_POST_URL + '/delete')
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(deleteNormalPostRequestDto)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath('\$.error.detail').value('Error: 존재하지 않는 게시글'))
+
+        where:
+        uid   | loginMethod       | normalPostId
+        'uid' | LoginMethod.KAKAO | 'NP_a'
+    }
+
+    def "일반 게시물 삭제: 에러: 403-권한 없는 조작"() {
+        given:
+        // 유저 생성
+        Users userA = addNewUser(loginMethod, 'uidA', 'name', UserType.NORMAL)
+        Users userB = addNewUser(loginMethod, 'uidB', 'name', UserType.NORMAL)
+
+        // userA가 기존 일반 게시글 생성
+        NormalPosts existingPost = addNormalPost('NP_a', 'title', 'contents', userA)
+        String normalPostId = existingPost.getNormalPostId()
+
+        DeleteNormalPostRequestDto deleteNormalPostRequestDto = DeleteNormalPostRequestDto.builder()
+                .normalPostId(normalPostId)
+                .userId(userB.getUserId())
+                .build()
+
+        expect:
+        mvc.perform(delete(NORMAL_POST_URL + '/delete')
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(deleteNormalPostRequestDto)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath('\$.error.detail').value('Error: 권한 없는 조작'))
+
+        Optional<NormalPosts> updatedPost = normalPostsRepository.findById(normalPostId)
+        updatedPost.isPresent() == true
+
+        where:
+        loginMethod << [LoginMethod.KAKAO]
     }
 
     // ----------------------------------------------------
@@ -244,7 +317,6 @@ class NormalNormalPostControllerSpec extends Specification {
                         .contents(contents)
                         .user(user)
                         .build())
-
     }
 
 }

@@ -78,4 +78,21 @@ public class NormalPostService {
         NormalPosts updatedPost = targetPost.update(updatingNormalPost);
         return updatedPost;
     }
+
+    /**
+     * 일반 게시글 삭제
+     *
+     * @param normalPostId
+     * @param userId {@code String}
+     * @return {@code String} 삭제한 일반 게시글 ID
+     */
+    public String deleteNormalPost(@NonNull final String normalPostId, @NonNull final String userId) {
+        NormalPosts targetPost = this.normalPostsRepository.findById(normalPostId)
+                .orElseThrow(() -> new PostNotFoundException());
+        if (ObjectUtils.notEqual(userId, targetPost.getUser().getUserId())) {
+            throw new UnauthorizedUserException();
+        }
+        this.normalPostsRepository.deleteById(normalPostId);
+        return normalPostId;
+    }
 }
