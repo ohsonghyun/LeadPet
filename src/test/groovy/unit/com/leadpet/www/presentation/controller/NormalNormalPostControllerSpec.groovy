@@ -51,7 +51,8 @@ class NormalNormalPostControllerSpec extends Specification {
         usersRepository.deleteAll()
     }
 
-    def "모든 일반게시물 데이터를 취득한다"() {
+    // TODO
+    def "일반게시물 데이터를 페이징을 통해 취득한다"() {
         given:
         Users user = addNewUser(LoginMethod.KAKAO, 'uid', 'name', UserType.NORMAL)
         normalPostsRepository.saveAll(List.of(
@@ -61,10 +62,30 @@ class NormalNormalPostControllerSpec extends Specification {
         ))
 
         expect:
-        mvc.perform(get(NORMAL_POST_URL + "/all"))
+        mvc.perform(get(NORMAL_POST_URL + "/all")
+                .param('page', page)
+                .param('size', size))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath('$', Matchers.hasSize(3)))
+                .andExpect(jsonPath('$', Matchers.hasSize(resultSize)))
+        where:
+        page | size | resultSize
+        '0'  | '1'  | 1
+        '1'  | '1'  | 1
+        '2'  | '1'  | 1
+        '3'  | '1'  | 0
+
+        '0'  | '2'  | 2
+        '1'  | '2'  | 1
+        '2'  | '2'  | 0
+
+        '0'  | '3'  | 3
+        '1'  | '3'  | 0
+
+        '0'  | '10' | 3
     }
+
+    // TODO 페이징 에러 패턴
+
 
     def "일반 게시물 추가: 정상"() {
         given:

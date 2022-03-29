@@ -1,7 +1,6 @@
 package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.application.service.NormalPostService;
-import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import com.leadpet.www.presentation.dto.request.post.AddNormalPostRequestDto;
 import com.leadpet.www.presentation.dto.request.post.UpdateNormalPostRequestDto;
 import com.leadpet.www.presentation.dto.request.post.normal.DeleteNormalPostRequestDto;
@@ -14,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -65,9 +65,11 @@ public class NormalPostController {
     }
 
     @ApiOperation(value = "모든 일반 게시물 취득")
+    @ApiResponses({
+            @ApiResponse(code = 400, message = "옳지 않은 파라미터")
+    })
     @GetMapping("/all")
-    public ResponseEntity<List<NormalPostResponse>> getAllNormalPosts() {
-        return ResponseEntity.ok(NormalPostResponse.from(normalPostService.getAllNormalPosts()));
+    public ResponseEntity<List<NormalPostResponse>> getAllNormalPosts(@NonNull @RequestParam final int page, @NonNull @RequestParam final int size) {
+        return ResponseEntity.ok(NormalPostResponse.from(normalPostService.getNormalPostsWith(page, size)));
     }
 }
-
