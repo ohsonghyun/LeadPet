@@ -51,7 +51,6 @@ class NormalNormalPostControllerSpec extends Specification {
         usersRepository.deleteAll()
     }
 
-    // TODO
     def "일반게시물 데이터를 페이징을 통해 취득한다"() {
         given:
         Users user = addNewUser(LoginMethod.KAKAO, 'uid', 'name', UserType.NORMAL)
@@ -83,9 +82,6 @@ class NormalNormalPostControllerSpec extends Specification {
 
         '0'  | '10' | 3
     }
-
-    // TODO 페이징 에러 패턴
-
 
     def "일반 게시물 추가: 정상"() {
         given:
