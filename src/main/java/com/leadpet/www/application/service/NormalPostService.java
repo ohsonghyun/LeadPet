@@ -114,4 +114,13 @@ public class NormalPostService {
         this.normalPostsRepository.deleteById(normalPostId);
         return normalPostId;
     }
+
+    /**
+     * 전체 일반 게시글의 카운트를 반환
+     *
+     * @return {@code int}
+     */
+    public Long getAllNormalPostCount() {
+        return this.normalPostsRepository.count();
+    }
 }
