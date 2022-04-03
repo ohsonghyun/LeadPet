@@ -4,14 +4,12 @@ import com.leadpet.www.application.service.NormalPostService;
 import com.leadpet.www.presentation.dto.request.post.AddNormalPostRequestDto;
 import com.leadpet.www.presentation.dto.request.post.UpdateNormalPostRequestDto;
 import com.leadpet.www.presentation.dto.request.post.normal.DeleteNormalPostRequestDto;
-import com.leadpet.www.presentation.dto.response.post.AddNormalPostResponseDto;
-import com.leadpet.www.presentation.dto.response.post.DeleteNormalPostResponseDto;
-import com.leadpet.www.presentation.dto.response.post.NormalPostResponse;
-import com.leadpet.www.presentation.dto.response.post.UpdateNormalPostResponseDto;
+import com.leadpet.www.presentation.dto.response.post.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
@@ -72,4 +70,15 @@ public class NormalPostController {
     public ResponseEntity<List<NormalPostResponse>> getAllNormalPosts(@NonNull @RequestParam final int page, @NonNull @RequestParam final int size) {
         return ResponseEntity.ok(NormalPostResponse.from(normalPostService.getNormalPostsWith(page, size)));
     }
+
+    @ApiOperation(value = "모든 일반 게시물 카운트")
+    @GetMapping("/allCount")
+    public ResponseEntity<NormalPostAllCountResponse> getAllCount() {
+        Long allCount = normalPostService.getAllNormalPostCount();
+        return ResponseEntity.ok(
+                NormalPostAllCountResponse.builder()
+                        .allCount(allCount)
+                        .build());
+    }
+
 }
