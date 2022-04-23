@@ -9,7 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +21,10 @@ import java.util.List;
  */
 @Api(tags = "게시물 컨트롤러")
 @RestController
-@RequestMapping("/v1/post/normal")
+@RequestMapping(
+        value = "/v1/post/normal",
+        produces = MediaType.APPLICATION_JSON_VALUE
+)
 @lombok.RequiredArgsConstructor
 public class NormalPostController {
 
@@ -67,8 +70,21 @@ public class NormalPostController {
             @ApiResponse(code = 400, message = "옳지 않은 파라미터")
     })
     @GetMapping("/all")
-    public ResponseEntity<List<NormalPostResponse>> getAllNormalPosts(@NonNull @RequestParam final int page, @NonNull @RequestParam final int size) {
-        return ResponseEntity.ok(NormalPostResponse.from(normalPostService.getNormalPostsWith(page, size)));
+    public ResponseEntity<ResultWrapper<List<NormalPostResponse>>> getAllNormalPosts(@NonNull @RequestParam final int page, @NonNull @RequestParam final int size) {
+        return ResponseEntity.ok(new ResultWrapper<>(NormalPostResponse.from(normalPostService.getNormalPostsWith(page, size))));
+    }
+
+    /**
+     * Wrapper class
+     * <p>배열로 반환되는 타입을 래핑해서 JSON 타입으로 반환하도록 한다</p>
+     *
+     * @param <T>
+     */
+    @lombok.Getter
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
+    class ResultWrapper<T> {
+        T result;
     }
 
     @ApiOperation(value = "모든 일반 게시물 카운트")
