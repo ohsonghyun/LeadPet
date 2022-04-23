@@ -65,7 +65,7 @@ class NormalNormalPostControllerSpec extends Specification {
                 .param('page', page)
                 .param('size', size))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath('$', Matchers.hasSize(resultSize)))
+                .andExpect(jsonPath('$.result', Matchers.hasSize(resultSize)))
         where:
         page | size | resultSize
         '0'  | '1'  | 1
