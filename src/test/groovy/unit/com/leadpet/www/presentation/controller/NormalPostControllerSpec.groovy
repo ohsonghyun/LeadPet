@@ -222,7 +222,6 @@ class NormalPostControllerSpec extends Specification {
                 .title('updatedTitle')
                 .contents('updatedContents')
                 .images(['updated1', 'updated2'])
-                .tags(['updated1', 'updated2'])
                 .userId('userId')
                 .build()
 

@@ -29,8 +29,6 @@ public class NormalPosts extends BaseTime {
     private String contents;
     @Convert(converter = StringListConverter.class)
     private List<String> images;
-    @Convert(converter = StringListConverter.class)
-    private List<String> tags;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Users user;
@@ -52,7 +50,6 @@ public class NormalPosts extends BaseTime {
         if (Objects.nonNull(updatingNormalPost.getImages())) {
             this.images = updatingNormalPost.getImages();
         }
-//        this.tags = updatingNormalPost.getTags();
         return this;
     }
 

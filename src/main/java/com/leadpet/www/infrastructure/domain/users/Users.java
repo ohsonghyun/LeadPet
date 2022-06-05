@@ -21,6 +21,7 @@ public class Users extends BaseTime {
 
     // 공통
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private LoginMethod loginMethod;
     @Column(nullable = false)
     private String uid;
@@ -30,6 +31,7 @@ public class Users extends BaseTime {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserType userType;
 
     // 보호소

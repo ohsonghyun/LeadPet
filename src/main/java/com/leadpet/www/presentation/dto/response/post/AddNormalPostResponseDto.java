@@ -18,7 +18,6 @@ public class AddNormalPostResponseDto {
     private String title;
     private String contents;
     private List<String> images;
-    private List<String> tags;
     private String userId;
 
     public static AddNormalPostResponseDto from(@NonNull final NormalPosts normalPost) {
@@ -27,7 +26,6 @@ public class AddNormalPostResponseDto {
                 .title(normalPost.getTitle())
                 .contents(normalPost.getContents())
                 .images(normalPost.getImages())
-                .tags(normalPost.getTags())
                 .userId(normalPost.getUser().getUserId())
                 .build();
     }
