@@ -34,7 +34,7 @@ public class NormalPostController {
     @ApiResponses({
             @ApiResponse(code = 404, message = "존재하지 않는 유저")
     })
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<AddNormalPostResponseDto> addNewPost(@RequestBody AddNormalPostRequestDto request) {
         return ResponseEntity.ok(
                 AddNormalPostResponseDto.from(
@@ -46,7 +46,7 @@ public class NormalPostController {
             @ApiResponse(code = 404, message = "존재하지 않는 게시글"),
             @ApiResponse(code = 403, message = "권한 없는 조작")
     })
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<UpdateNormalPostResponseDto> updatePost(@RequestBody UpdateNormalPostRequestDto request) {
         return ResponseEntity.ok(
                 UpdateNormalPostResponseDto.from(
@@ -58,7 +58,7 @@ public class NormalPostController {
             @ApiResponse(code = 404, message = "존재하지 않는 게시글"),
             @ApiResponse(code = 403, message = "권한 없는 조작")
     })
-    @DeleteMapping("/delete")
+    @DeleteMapping
     public ResponseEntity<DeleteNormalPostResponseDto> deletePost(@RequestBody DeleteNormalPostRequestDto request) {
         return ResponseEntity.ok(
                 DeleteNormalPostResponseDto.from(
