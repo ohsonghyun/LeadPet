@@ -21,7 +21,6 @@ public class AddNormalPostRequestDto {
     @NotNull
     private String contents;
     private List<String> images;
-    private List<String> tags;
 
     // 유저 판단 데이터
     @NotNull
@@ -38,7 +37,6 @@ public class AddNormalPostRequestDto {
                 .title(this.title)
                 .contents(this.contents)
                 .images(this.images)
-                .tags(this.tags)
                 .build();
     }
 }

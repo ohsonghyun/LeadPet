@@ -26,6 +26,7 @@ import java.util.function.Predicate;
  * NormalPostService
  */
 @Service
+@Transactional(readOnly = true)
 @lombok.RequiredArgsConstructor
 public class NormalPostService {
 
@@ -58,9 +59,10 @@ public class NormalPostService {
      * 신규 일반 게시물 등록
      *
      * @param newNormalPost 신규 일반 게시물
-     * @param userId {@code String}
+     * @param userId        {@code String}
      * @return {@code NormalPosts}
      */
+    @Transactional
     public NormalPosts addNewPost(@NonNull final NormalPosts newNormalPost, @NonNull final String userId) {
         // 존재하는 유저인지 확인
         Users user = usersRepository.findById(userId)
@@ -71,7 +73,6 @@ public class NormalPostService {
                         .title(newNormalPost.getTitle())
                         .contents(newNormalPost.getContents())
                         .images(newNormalPost.getImages())
-                        .tags(newNormalPost.getTags())
                         .user(user)
                         .build());
     }
@@ -80,7 +81,7 @@ public class NormalPostService {
      * 일반 게시물 수정
      *
      * @param updatingNormalPost 수정할 일반 게시물
-     * @param userId {@code String}
+     * @param userId             {@code String}
      * @return {@code NormalPosts}
      */
     @Transactional
@@ -102,9 +103,10 @@ public class NormalPostService {
      * 일반 게시글 삭제
      *
      * @param normalPostId
-     * @param userId {@code String}
+     * @param userId       {@code String}
      * @return {@code String} 삭제한 일반 게시글 ID
      */
+    @Transactional
     public String deleteNormalPost(@NonNull final String normalPostId, @NonNull final String userId) {
         NormalPosts targetPost = this.normalPostsRepository.findById(normalPostId)
                 .orElseThrow(() -> new PostNotFoundException());

@@ -19,8 +19,7 @@ public class NormalPostResponse {
     private String title;
     private String contents;
     private List<String> images;
-    private List<String> tags;
-    
+
     private String userId;
 
     public static List<NormalPostResponse> from(@NonNull final List<NormalPosts> normalPosts) {
@@ -31,7 +30,6 @@ public class NormalPostResponse {
                                 .title(normalPost.getTitle())
                                 .contents(normalPost.getContents())
                                 .images(normalPost.getImages())
-                                .tags(normalPost.getTags())
                                 .userId(normalPost.getUser().getUserId())
                                 .build())
                 .collect(Collectors.toList());

@@ -20,7 +20,6 @@ public class UpdateNormalPostResponseDto {
     private String title;
     private String contents;
     private List<String> images;
-    private List<String> tags;
 
     private String userId;
 
@@ -30,7 +29,6 @@ public class UpdateNormalPostResponseDto {
                 .title(updatedNormalPost.getTitle())
                 .contents(updatedNormalPost.getContents())
                 .images(updatedNormalPost.getImages())
-                .tags(updatedNormalPost.getTags())
                 .userId(updatedNormalPost.getUser().getUserId())
                 .build();
     }
