@@ -7,6 +7,7 @@ import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * NormalPosts
@@ -42,10 +43,16 @@ public class NormalPosts extends BaseTime {
      */
     @NonNull
     public NormalPosts update(@NonNull final NormalPosts updatingNormalPost) {
-        this.title = updatingNormalPost.getTitle();
-        this.contents = updatingNormalPost.getContents();
-        this.images = updatingNormalPost.getImages();
-        this.tags = updatingNormalPost.getTags();
+        if (Objects.nonNull(updatingNormalPost.getTitle())) {
+            this.title = updatingNormalPost.getTitle();
+        }
+        if (Objects.nonNull(updatingNormalPost.getContents())) {
+            this.contents = updatingNormalPost.getContents();
+        }
+        if (Objects.nonNull(updatingNormalPost.getImages())) {
+            this.images = updatingNormalPost.getImages();
+        }
+//        this.tags = updatingNormalPost.getTags();
         return this;
     }
 
