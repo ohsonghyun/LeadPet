@@ -36,6 +36,7 @@ public class DonationPosts extends BaseTime {
     @Column(name = "title")
     private String title;
 
+    // TODO to enum; 후원 계좌, 물품 배송
     @Column(name = "donation_method")
     private String donationMethod;
 

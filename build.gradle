@@ -1,8 +1,8 @@
 plugins {
-	id 'org.springframework.boot' version '2.6.3'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
-	id 'groovy'
+    id 'org.springframework.boot' version '2.6.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'groovy'
 }
 
 group = 'com.leadpet.www'
@@ -10,51 +10,54 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
-	// in memory DB
-	implementation 'com.h2database:h2'
+    // in memory DB
+    implementation 'com.h2database:h2'
 
-	// help dependencies..
-	implementation 'org.apache.commons:commons-lang3:3.12.0'
+    // help dependencies..
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
 
-	// swagger
-	implementation 'io.springfox:springfox-boot-starter:3.0.0'
-	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+    // swagger
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
-	compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
 
-	// spock framework
-	testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
-	testImplementation 'org.codehaus.groovy:groovy-all:3.0.8'
-	testImplementation 'org.spockframework:spock-spring:2.1-M2-groovy-3.0'
+    // for jackson
+    compileOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3'
+
+    // spock framework
+    testImplementation 'org.spockframework:spock-core:2.1-groovy-3.0'
+    testImplementation 'org.codehaus.groovy:groovy-all:3.0.10'
+    testImplementation 'org.spockframework:spock-spring:2.1-groovy-3.0'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 sourceSets {
-	test {
-		groovy.srcDirs = ['src/test/groovy/unit', 'src/test/groovy/intg']
-		java.srcDirs = ['src/test/java/unit', 'src/test/java/intg']
-	}
+    test {
+        groovy.srcDirs = ['src/test/groovy/unit', 'src/test/groovy/intg']
+        java.srcDirs = ['src/test/java/unit', 'src/test/java/intg']
+    }
 }

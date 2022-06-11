@@ -6,10 +6,12 @@ import com.leadpet.www.infrastructure.domain.posts.DonationPosts;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.stereotype.Service;
 
 /**
  * DonationPostService
  */
+@Service
 @lombok.RequiredArgsConstructor
 public class DonationPostService {
 
@@ -40,7 +42,7 @@ public class DonationPostService {
                 .user(user)
                 .build();
 
-        // 존재하면 새로운 도네이션 피드를 저장
+        // 새로운 도네이션 피드를 저장
         return donationPostsRepository.save(donationPostWithUser);
     }
 }
