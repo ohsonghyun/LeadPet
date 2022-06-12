@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * NormalPostController
  */
-@Api(tags = "게시물 컨트롤러")
+@Api(tags = "일반 게시물 컨트롤러")
 @RestController
 @RequestMapping(
         value = "/v1/post/normal",

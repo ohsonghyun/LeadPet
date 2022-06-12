@@ -2,8 +2,6 @@ package com.leadpet.www.presentation.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.leadpet.www.application.service.NormalPostService
-import com.leadpet.www.infrastructure.db.NormalPostsRepository
-import com.leadpet.www.infrastructure.db.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
@@ -15,16 +13,11 @@ import com.leadpet.www.presentation.dto.request.post.AddNormalPostRequestDto
 import com.leadpet.www.presentation.dto.request.post.UpdateNormalPostRequestDto
 import com.leadpet.www.presentation.dto.request.post.normal.DeleteNormalPostRequestDto
 import org.hamcrest.Matchers
-import org.mockito.BDDMockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.springframework.web.context.WebApplicationContext
-import spock.lang.Ignore
 import spock.lang.Specification
 
 import static org.mockito.ArgumentMatchers.isA
@@ -41,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(NormalPostController.class)
 class NormalPostControllerSpec extends Specification {
-    private final String NORMAL_POST_URL = "/v1/post/normal"
+    private static final String NORMAL_POST_URL = "/v1/post/normal"
 
     @Autowired
     MockMvc mvc
@@ -107,7 +100,7 @@ class NormalPostControllerSpec extends Specification {
                 )
 
         expect:
-        mvc.perform(post(NORMAL_POST_URL + '/add')
+        mvc.perform(post(NORMAL_POST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(
                         AddNormalPostRequestDto.builder()
@@ -140,7 +133,7 @@ class NormalPostControllerSpec extends Specification {
                 .build()
 
         expect:
-        mvc.perform(post(NORMAL_POST_URL + '/add')
+        mvc.perform(post(NORMAL_POST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(addNormalPostRequestDto)))
                 .andExpect(status().isNotFound())
@@ -173,7 +166,7 @@ class NormalPostControllerSpec extends Specification {
                 .build()
 
         expect:
-        mvc.perform(put(NORMAL_POST_URL + '/update')
+        mvc.perform(put(NORMAL_POST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(updateNormalPostRequestDto)))
                 .andExpect(status().isOk())
@@ -194,7 +187,7 @@ class NormalPostControllerSpec extends Specification {
                 .thenThrow(new PostNotFoundException())
 
         expect:
-        mvc.perform(put(NORMAL_POST_URL + '/update')
+        mvc.perform(put(NORMAL_POST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(
                         UpdateNormalPostRequestDto.builder()
@@ -226,7 +219,7 @@ class NormalPostControllerSpec extends Specification {
                 .build()
 
         expect:
-        mvc.perform(put(NORMAL_POST_URL + '/update')
+        mvc.perform(put(NORMAL_POST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(updateNormalPostRequestDto)))
                 .andExpect(status().isForbidden())
@@ -243,7 +236,7 @@ class NormalPostControllerSpec extends Specification {
                 .thenReturn(postId)
 
         expect:
-        mvc.perform(delete(NORMAL_POST_URL + '/delete')
+        mvc.perform(delete(NORMAL_POST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(
                         DeleteNormalPostRequestDto.builder()
@@ -265,7 +258,7 @@ class NormalPostControllerSpec extends Specification {
                 .thenThrow(new PostNotFoundException())
 
         expect:
-        mvc.perform(delete(NORMAL_POST_URL + '/delete')
+        mvc.perform(delete(NORMAL_POST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(
                         DeleteNormalPostRequestDto.builder()
@@ -283,7 +276,7 @@ class NormalPostControllerSpec extends Specification {
                 .thenThrow(new UnauthorizedUserException())
 
         expect:
-        mvc.perform(delete(NORMAL_POST_URL + '/delete')
+        mvc.perform(delete(NORMAL_POST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(
                         DeleteNormalPostRequestDto.builder()

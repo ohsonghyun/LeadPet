@@ -47,6 +47,7 @@ public class NormalPosts extends BaseTime {
         if (Objects.nonNull(updatingNormalPost.getContents())) {
             this.contents = updatingNormalPost.getContents();
         }
+        // TODO image 수정은 전체 리스트를 받게 되는게 맞나? 그게 아니라면 로직 변경 필요.
         if (Objects.nonNull(updatingNormalPost.getImages())) {
             this.images = updatingNormalPost.getImages();
         }
