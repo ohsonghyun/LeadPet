@@ -1,7 +1,9 @@
 package com.leadpet.www.infrastructure.domain.posts;
 
 import com.leadpet.www.infrastructure.db.converter.StringListConverter;
-import com.leadpet.www.infrastructure.domain.BaseTime;
+import com.leadpet.www.infrastructure.domain.pet.AnimalType;
+import com.leadpet.www.infrastructure.domain.pet.Gender;
+import com.leadpet.www.infrastructure.domain.pet.Neutering;
 import com.leadpet.www.infrastructure.domain.users.Users;
 
 import javax.persistence.*;
@@ -9,43 +11,49 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * DonationPosts
+ * AdoptionPosts
  */
 @Entity
 @lombok.Getter
 @lombok.NoArgsConstructor
 @lombok.AllArgsConstructor
 @lombok.Builder
-public class DonationPosts extends BaseTime {
+public class AdoptionPosts {
 
     @Id
-    @Column(name = "donation_post_id")
-    private String donationPostId;
+    @Column(name = "adoption_post_id")
+    private String adoptionPostId;
 
-    /**
-     * 게시 시작일
-     */
     @Column(name = "start_date")
     private LocalDateTime startDate;
 
-    /**
-     * 게시 종료일
-     */
     @Column(name = "end_date")
     private LocalDateTime endDate;
+
+    @Column(name = "euthanasia_date")
+    private LocalDateTime euthanasiaDate;
 
     @Column(name = "title")
     private String title;
 
-    // TODO to enum; 후원 계좌, 물품 배송
-    @Column(name = "donation_method")
-    private String donationMethod;
-
-    @Lob
     @Column(name = "contents")
     private String contents;
 
-    @Column(name = "images")
+    @Column(name = "animal_type")
+    @Enumerated(value = EnumType.STRING)
+    private AnimalType animalType;
+
+    @Column(name = "species")
+    private String species;
+
+    @Column(name = "gender")
+    @Enumerated(value = EnumType.STRING)
+    private Gender gender;
+
+    @Column(name = "neutering")
+    @Enumerated(value = EnumType.STRING)
+    private Neutering neutering;
+
     @Convert(converter = StringListConverter.class)
     private List<String> images;
 
