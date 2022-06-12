@@ -2,6 +2,7 @@ package com.leadpet.www.application.service
 
 import com.leadpet.www.infrastructure.db.AdoptionPostsRepository
 import com.leadpet.www.infrastructure.db.UsersRepository
+import com.leadpet.www.infrastructure.domain.pet.AnimalType
 import com.leadpet.www.infrastructure.domain.pet.Gender
 import com.leadpet.www.infrastructure.domain.pet.Neutering
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts
@@ -85,8 +86,8 @@ class AdoptionPostServiceSpec extends Specification {
         result.getUser().getUserId() == userId
 
         where:
-        postId   | userId   | title   | contents   | animalType   | species   | gender      | neutering     | images           | startDate           | endDate
-        'postId' | 'userId' | 'title' | 'contents' | 'animalType' | 'species' | Gender.MALE | Neutering.YES | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
+        postId   | userId   | title   | contents   | animalType     | species   | gender      | neutering     | images           | startDate           | endDate
+        'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'species' | Gender.MALE | Neutering.YES | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
     }
 
     def "userId가 존재하지 않으면 에러"() {
@@ -115,8 +116,8 @@ class AdoptionPostServiceSpec extends Specification {
         thrown(UserNotFoundException)
 
         where:
-        postId   | userId   | title   | contents   | animalType   | species   | gender      | neutering     | images           | startDate           | endDate
-        'postId' | 'userId' | 'title' | 'contents' | 'animalType' | 'species' | Gender.MALE | Neutering.YES | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
+        postId   | userId   | title   | contents   | animalType     | species   | gender      | neutering     | images           | startDate           | endDate
+        'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'species' | Gender.MALE | Neutering.YES | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
     }
 
 }

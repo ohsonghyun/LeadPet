@@ -1,6 +1,7 @@
 package com.leadpet.www.infrastructure.domain.posts
 
 import com.leadpet.www.infrastructure.db.AdoptionPostsRepository
+import com.leadpet.www.infrastructure.domain.pet.AnimalType
 import com.leadpet.www.infrastructure.domain.pet.Gender
 import com.leadpet.www.infrastructure.domain.pet.Neutering
 import org.springframework.beans.factory.annotation.Autowired
@@ -61,7 +62,7 @@ class AdoptionPostsSpec extends Specification {
         saved.getEuthanasiaDate() == endDate
 
         where:
-        postId   | title   | contents   | animalType   | species   | gender      | neutering     | images           | startDate           | endDate
-        'postId' | 'title' | 'contents' | 'animalType' | 'species' | Gender.MALE | Neutering.YES | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
+        postId   | title   | contents   | animalType     | species   | gender      | neutering     | images           | startDate           | endDate
+        'postId' | 'title' | 'contents' | AnimalType.DOG | 'species' | Gender.MALE | Neutering.YES | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
     }
 }

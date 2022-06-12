@@ -1,6 +1,7 @@
 package com.leadpet.www.infrastructure.domain.posts;
 
 import com.leadpet.www.infrastructure.db.converter.StringListConverter;
+import com.leadpet.www.infrastructure.domain.pet.AnimalType;
 import com.leadpet.www.infrastructure.domain.pet.Gender;
 import com.leadpet.www.infrastructure.domain.pet.Neutering;
 import com.leadpet.www.infrastructure.domain.users.Users;
@@ -38,9 +39,9 @@ public class AdoptionPosts {
     @Column(name = "contents")
     private String contents;
 
-    // TODO enum
     @Column(name = "animal_type")
-    private String animalType;
+    @Enumerated(value = EnumType.STRING)
+    private AnimalType animalType;
 
     @Column(name = "species")
     private String species;
