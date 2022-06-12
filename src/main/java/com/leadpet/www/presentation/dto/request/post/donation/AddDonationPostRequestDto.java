@@ -1,7 +1,6 @@
 package com.leadpet.www.presentation.dto.request.post.donation;
 
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts;
-import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import io.swagger.annotations.ApiModel;
 
 import javax.validation.constraints.NotNull;
