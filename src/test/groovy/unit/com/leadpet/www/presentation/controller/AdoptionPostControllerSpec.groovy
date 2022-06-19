@@ -12,19 +12,24 @@ import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.presentation.dto.request.post.adoption.AddAdoptionPostRequestDto
 import com.leadpet.www.presentation.dto.request.post.donation.AddDonationPostRequestDto
+import com.leadpet.www.presentation.dto.response.post.adoption.AdoptionPostPageResponseDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import java.time.LocalDateTime
 
 import static org.mockito.ArgumentMatchers.isA
 import static org.mockito.Mockito.doThrow
 import static org.mockito.Mockito.when
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -132,5 +137,38 @@ class AdoptionPostControllerSpec extends Specification {
         'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'species' | Gender.MALE | Neutering.YES | ['img1', 'img2']
     }
 
+    def "[입양 피드 취득]: 정상"() {
+        given:
+        when(adoptionPostService.searchAll(isA(Pageable.class)))
+                .thenReturn(new PageImpl<AdoptionPostPageResponseDto>(
+                        List.of(
+                                AdoptionPosts.builder()
+                                        .adoptionPostId('postId')
+                                        .startDate(startDate)
+                                        .endDate(endDate)
+                                        .euthanasiaDate(endDate)
+                                        .title('title')
+                                        .contents('contents')
+                                        .animalType(AnimalType.DOG)
+                                        .species('species')
+                                        .gender(Gender.MALE)
+                                        .neutering(Neutering.YES)
+                                        .images(['img1', 'img2'])
+                                        .build()
+                        )
+                ))
+
+        expect:
+        mvc.perform(get(ADOPTION_POST_URL + '?page=0&size=5')
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('\$.content.size()').value(1))
+                .andExpect(jsonPath('\$.totalElements').value(1))
+                .andExpect(jsonPath('\$.totalPages').value(1))
+
+        where:
+        startDate           | endDate
+        LocalDateTime.now() | LocalDateTime.now().plusDays(10)
+    }
 
 }

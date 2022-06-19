@@ -2,19 +2,14 @@ package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.application.service.AdoptionPostService;
 import com.leadpet.www.presentation.dto.request.post.adoption.AddAdoptionPostRequestDto;
-import com.leadpet.www.presentation.dto.request.post.donation.AddDonationPostRequestDto;
 import com.leadpet.www.presentation.dto.response.post.adoption.AddAdoptionPostResponseDto;
-import com.leadpet.www.presentation.dto.response.post.donation.AddDonationPostResponseDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import com.leadpet.www.presentation.dto.response.post.adoption.AdoptionPostPageResponseDto;
+import io.swagger.annotations.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * AdoptionPostController
@@ -39,5 +34,11 @@ public class AdoptionPostController {
         return ResponseEntity.ok(
                 AddAdoptionPostResponseDto.from(
                         adoptionPostService.addNewPost(newAdoptionPost.toAdoptionPost(), newAdoptionPost.getUserId())));
+    }
+
+    @ApiOperation(value = "입양 게시물 취득 (페이지네이션)")
+    @GetMapping
+    public ResponseEntity<Page<AdoptionPostPageResponseDto>> searchAdoptionPosts(Pageable pageable) {
+        return ResponseEntity.ok(adoptionPostService.searchAll(pageable));
     }
 }

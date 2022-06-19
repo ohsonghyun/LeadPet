@@ -67,21 +67,19 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-sourceSets {
-    test {
-        groovy.srcDirs = ['src/test/groovy/unit', 'src/test/groovy/intg']
-        java.srcDirs = ['src/test/java/unit', 'src/test/java/intg']
-    }
-}
 def querydslDir = "$buildDir/generated/querydsl"
 
 querydsl {
     jpa = true
     querydslSourcesDir = querydslDir
 }
-//sourceSets {
-//    main.java.srcDir querydslDir
-//}
+sourceSets {
+    main.java.srcDir querydslDir
+    test {
+        groovy.srcDirs = ['src/test/groovy/unit', 'src/test/groovy/intg']
+        java.srcDirs = ['src/test/java/unit', 'src/test/java/intg']
+    }
+}
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
