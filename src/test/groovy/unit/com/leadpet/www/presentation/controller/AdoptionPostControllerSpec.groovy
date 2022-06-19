@@ -137,7 +137,7 @@ class AdoptionPostControllerSpec extends Specification {
         'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'species' | Gender.MALE | Neutering.YES | ['img1', 'img2']
     }
 
-    def "[입양 피드 취득]: 정상"() {
+    def "[입양 피드 목록 취득]: 정상"() {
         given:
         when(adoptionPostService.searchAll(isA(Pageable.class)))
                 .thenReturn(new PageImpl<AdoptionPostPageResponseDto>(
