@@ -1,8 +1,10 @@
 package com.leadpet.www.infrastructure.domain.posts
 
+import com.leadpet.www.TestConfig
 import com.leadpet.www.infrastructure.db.DonationPostsRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.context.annotation.Import
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 
@@ -14,6 +16,7 @@ import java.time.LocalDateTime
  * DonationPostsSpec
  */
 @DataJpaTest
+@Import(TestConfig.class)
 @Transactional
 class DonationPostsSpec extends Specification {
 
