@@ -87,7 +87,6 @@ class AdoptionPostsSpec extends Specification {
                             .neutering(Neutering.YES)
                             .images(['img1', 'img2'])
                             .build()
-
             )
         }
 
