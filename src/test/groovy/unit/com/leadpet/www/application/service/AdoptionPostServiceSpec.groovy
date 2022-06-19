@@ -8,6 +8,12 @@ import com.leadpet.www.infrastructure.domain.pet.Neutering
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
+import com.leadpet.www.presentation.dto.response.post.adoption.AddAdoptionPostResponseDto
+import com.leadpet.www.presentation.dto.response.post.adoption.AdoptionPostPageResponseDto
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import spock.lang.Specification
 
 import java.time.LocalDateTime
@@ -118,6 +124,42 @@ class AdoptionPostServiceSpec extends Specification {
         where:
         postId   | userId   | title   | contents   | animalType     | species   | gender      | neutering     | images           | startDate           | endDate
         'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'species' | Gender.MALE | Neutering.YES | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
+    }
+
+    def "입양 피드 검색(pagination)"() {
+        given:
+        // 입양 포스트 5개 생성
+        List<AddAdoptionPostResponseDto> content = new ArrayList<>()
+        for (int i = 0; i < 5; i++) {
+            content.add(
+                    AdoptionPosts.builder()
+                            .adoptionPostId('postId' + i)
+                            .startDate(startDate)
+                            .endDate(endDate)
+                            .euthanasiaDate(endDate.plusDays(i))
+                            .title('title')
+                            .contents('contents')
+                            .animalType(AnimalType.DOG)
+                            .species('species')
+                            .gender(Gender.MALE)
+                            .neutering(Neutering.YES)
+                            .images(['img1', 'img2'])
+                            .build()
+            )
+        }
+        adoptionPostsRepository.searchAll(_ as Pageable) >> new PageImpl<AdoptionPostPageResponseDto>(content, pageRequest, totalSize)
+
+        when:
+        final result = adoptionPostService.searchAll(pageRequest)
+
+        then:
+        result != null
+        result.getContent().size() == 5
+        result.getTotalElements() == 20
+
+        where:
+        pageRequest          | totalSize | startDate           | endDate
+        PageRequest.of(0, 5) | 20        | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
     }
 
 }

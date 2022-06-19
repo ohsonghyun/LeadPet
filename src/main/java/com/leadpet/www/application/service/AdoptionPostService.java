@@ -3,10 +3,12 @@ package com.leadpet.www.application.service;
 import com.leadpet.www.infrastructure.db.AdoptionPostsRepository;
 import com.leadpet.www.infrastructure.db.UsersRepository;
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts;
-import com.leadpet.www.infrastructure.domain.posts.DonationPosts;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
+import com.leadpet.www.presentation.dto.response.post.adoption.AdoptionPostPageResponseDto;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -49,5 +51,15 @@ public class AdoptionPostService {
 
         // 새로운 도네이션 피드를 저장
         return adoptionPostsRepository.save(adoptionPostWithUser);
+    }
+
+    /**
+     * 입양 피드 리스트를 반환 (페이지네이션 포함)
+     *
+     * @param pageable
+     * @return {@code Page<AdoptionPostPageResponseDto>}
+     */
+    public Page<AdoptionPostPageResponseDto> searchAll(Pageable pageable) {
+        return adoptionPostsRepository.searchAll(pageable);
     }
 }
