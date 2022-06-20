@@ -1,6 +1,5 @@
 package com.leadpet.www.infrastructure.db;
 
-import com.leadpet.www.infrastructure.domain.posts.AdoptionPostRepositoryCustom;
 import com.leadpet.www.presentation.dto.response.post.adoption.AdoptionPostPageResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
