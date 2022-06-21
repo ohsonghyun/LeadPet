@@ -85,4 +85,13 @@ class DonationPostsSpec extends Specification {
         20         | LocalDateTime.now() | now.minusDays(1) | now.plusDays(10)
     }
 
+    def "기부 피드 페이지네이션: 데이터가 없는 경우"() {
+        when:
+        final result = donationPostsRepository.searchAll(PageRequest.of(0, 5))
+
+        then:
+        result.getContent().size() == 0
+        result.getTotalElements() == 0
+    }
+
 }
