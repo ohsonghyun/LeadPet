@@ -3,16 +3,16 @@ package com.leadpet.www.presentation.controller;
 import com.leadpet.www.application.service.DonationPostService;
 import com.leadpet.www.presentation.dto.request.post.donation.AddDonationPostRequestDto;
 import com.leadpet.www.presentation.dto.response.post.donation.AddDonationPostResponseDto;
+import com.leadpet.www.presentation.dto.response.post.donation.DonationPostPageResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * DonationPostController
@@ -37,5 +37,11 @@ public class DonationPostController {
         return ResponseEntity.ok(
                 AddDonationPostResponseDto.from(
                         donationPostService.addNewPost(newDonationPost.toDontaionPost(), newDonationPost.getUserId())));
+    }
+
+    @ApiOperation(value = "기부 게시물 취득 (페이지네이션)")
+    @GetMapping
+    public ResponseEntity<Page<DonationPostPageResponseDto>> searchDonationPosts(Pageable pageable) {
+        return ResponseEntity.ok(donationPostService.searchAll(pageable));
     }
 }

@@ -7,7 +7,6 @@ import com.leadpet.www.infrastructure.domain.pet.AnimalType
 import com.leadpet.www.infrastructure.domain.pet.Gender
 import com.leadpet.www.infrastructure.domain.pet.Neutering
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts
-import com.leadpet.www.infrastructure.domain.posts.DonationPosts
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.presentation.dto.request.post.adoption.AddAdoptionPostRequestDto
@@ -22,7 +21,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import spock.lang.Specification
-import spock.lang.Unroll
 
 import java.time.LocalDateTime
 
@@ -142,7 +140,7 @@ class AdoptionPostControllerSpec extends Specification {
         when(adoptionPostService.searchAll(isA(Pageable.class)))
                 .thenReturn(new PageImpl<AdoptionPostPageResponseDto>(
                         List.of(
-                                AdoptionPosts.builder()
+                                AdoptionPostPageResponseDto.builder()
                                         .adoptionPostId('postId')
                                         .startDate(startDate)
                                         .endDate(endDate)
@@ -154,6 +152,7 @@ class AdoptionPostControllerSpec extends Specification {
                                         .gender(Gender.MALE)
                                         .neutering(Neutering.YES)
                                         .images(['img1', 'img2'])
+                                        .userId('userId')
                                         .build()
                         )
                 ))
