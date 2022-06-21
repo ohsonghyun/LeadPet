@@ -8,9 +8,7 @@ import com.leadpet.www.infrastructure.domain.pet.Neutering
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
-import com.leadpet.www.presentation.dto.response.post.adoption.AddAdoptionPostResponseDto
 import com.leadpet.www.presentation.dto.response.post.adoption.AdoptionPostPageResponseDto
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -129,10 +127,10 @@ class AdoptionPostServiceSpec extends Specification {
     def "입양 피드 검색(pagination)"() {
         given:
         // 입양 포스트 5개 생성
-        List<AddAdoptionPostResponseDto> content = new ArrayList<>()
+        List<AdoptionPostPageResponseDto> content = new ArrayList<>()
         for (int i = 0; i < 5; i++) {
             content.add(
-                    AdoptionPosts.builder()
+                    AdoptionPostPageResponseDto.builder()
                             .adoptionPostId('postId' + i)
                             .startDate(startDate)
                             .endDate(endDate)
@@ -144,6 +142,7 @@ class AdoptionPostServiceSpec extends Specification {
                             .gender(Gender.MALE)
                             .neutering(Neutering.YES)
                             .images(['img1', 'img2'])
+                            .userId('userId' + i)
                             .build()
             )
         }
@@ -155,7 +154,7 @@ class AdoptionPostServiceSpec extends Specification {
         then:
         result != null
         result.getContent().size() == 5
-        result.getTotalElements() == 20
+        result.getTotalElements() == totalSize
 
         where:
         pageRequest          | totalSize | startDate           | endDate

@@ -10,6 +10,7 @@ import java.util.List;
  */
 @ApiModel("기부 게시물 페이지네이션 Response")
 @lombok.Getter
+@lombok.Builder
 @lombok.RequiredArgsConstructor
 public class DonationPostPageResponseDto {
     private final String donationPostId;
