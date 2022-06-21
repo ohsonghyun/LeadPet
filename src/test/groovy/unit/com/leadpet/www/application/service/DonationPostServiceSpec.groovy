@@ -2,9 +2,14 @@ package com.leadpet.www.application.service
 
 import com.leadpet.www.infrastructure.db.DonationPostsRepository
 import com.leadpet.www.infrastructure.db.UsersRepository
+import com.leadpet.www.infrastructure.domain.donation.DonationMethod
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
+import com.leadpet.www.presentation.dto.response.post.donation.DonationPostPageResponseDto
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import spock.lang.Specification
 
 import java.time.LocalDateTime
@@ -71,8 +76,8 @@ class DonationPostServiceSpec extends Specification {
         result.getUser().getUserId() == userId
 
         where:
-        userId        | postId        | startDate           | endDate               | title        | donationMethod        | contents       | images
-        'dummyUserId' | 'dummyPostId' | LocalDateTime.now() | startDate.plusDays(5) | 'dummyTitle' | 'dummyDonationMethod' | 'dummyContent' | ['img1', 'img2']
+        userId        | postId        | startDate           | endDate               | title        | donationMethod         | contents       | images
+        'dummyUserId' | 'dummyPostId' | LocalDateTime.now() | startDate.plusDays(5) | 'dummyTitle' | DonationMethod.ACCOUNT | 'dummyContent' | ['img1', 'img2']
     }
 
     def "userId가 존재하지 않으면 에러"() {
@@ -96,8 +101,40 @@ class DonationPostServiceSpec extends Specification {
         thrown(UserNotFoundException)
 
         where:
-        userId   | startDate           | endDate               | title        | donationMethod        | contents       | images
-        'userId' | LocalDateTime.now() | startDate.plusDays(5) | 'dummyTitle' | 'dummyDonationMethod' | 'dummyContent' | ['img1', 'img2']
+        userId   | startDate           | endDate               | title        | donationMethod         | contents       | images
+        'userId' | LocalDateTime.now() | startDate.plusDays(5) | 'dummyTitle' | DonationMethod.ACCOUNT | 'dummyContent' | ['img1', 'img2']
+    }
+
+    def "기부 피드 검색(pagination)"() {
+        given:
+        List<DonationPostPageResponseDto> content = new ArrayList<>()
+        for (int i = 0; i < 5; i++) {
+            content.add(
+                    DonationPostPageResponseDto.builder()
+                            .donationPostId('postId' + i)
+                            .startDate(startDate)
+                            .endDate(endDate)
+                            .title('title')
+                            .donationMethod(DonationMethod.ACCOUNT)
+                            .contents('contents')
+                            .images(['img1', 'img2'])
+                            .userId('userId' + i)
+                            .build())
+        }
+
+        donationPostsRepository.searchAll(_ as Pageable) >> new PageImpl<DonationPostPageResponseDto>(content, pageRequest, totalSize)
+
+        when:
+        final result = donationPostService.searchAll(pageRequest)
+
+        then:
+        result != null
+        result.getContent().size() == 5
+        result.getTotalElements() == totalSize
+
+        where:
+        pageRequest          | totalSize | startDate           | endDate
+        PageRequest.of(0, 5) | 20        | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
     }
 
 }

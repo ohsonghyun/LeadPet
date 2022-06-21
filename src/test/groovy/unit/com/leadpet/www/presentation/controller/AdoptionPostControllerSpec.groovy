@@ -3,11 +3,11 @@ package com.leadpet.www.presentation.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.leadpet.www.application.service.AdoptionPostService
+import com.leadpet.www.infrastructure.domain.donation.DonationMethod
 import com.leadpet.www.infrastructure.domain.pet.AnimalType
 import com.leadpet.www.infrastructure.domain.pet.Gender
 import com.leadpet.www.infrastructure.domain.pet.Neutering
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts
-import com.leadpet.www.infrastructure.domain.posts.DonationPosts
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.presentation.dto.request.post.adoption.AddAdoptionPostRequestDto
@@ -22,7 +22,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import spock.lang.Specification
-import spock.lang.Unroll
 
 import java.time.LocalDateTime
 
@@ -59,11 +58,10 @@ class AdoptionPostControllerSpec extends Specification {
                 .content(mapper
                         .registerModule(new JavaTimeModule())
                         .writeValueAsString(
-                                AddDonationPostRequestDto.builder()
+                                AddAdoptionPostRequestDto.builder()
                                         .startDate(startDate)
                                         .endDate(endDate)
                                         .title(title)
-                                        .donationMethod(donationMethod)
                                         .contents(contents)
                                         .images(images)
                                         .userId(userId)
@@ -72,8 +70,8 @@ class AdoptionPostControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.error.detail').value('Error: 존재하지 않는 유저'))
 
         where:
-        title   | contents   | images           | userId   | startDate           | endDate               | donationMethod
-        'title' | 'contents' | ['img1', 'img2'] | 'uidkko' | LocalDateTime.now() | startDate.plusDays(5) | 'donationMethod'
+        title   | contents   | images           | userId   | startDate           | endDate
+        'title' | 'contents' | ['img1', 'img2'] | 'uidkko' | LocalDateTime.now() | startDate.plusDays(5)
     }
 
     def "[입양 피드 추가]: 정상"() {
@@ -121,7 +119,7 @@ class AdoptionPostControllerSpec extends Specification {
                                         .build())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('\$.adoptionPostId').value(postId))
-                .andExpect(jsonPath('\$.startDate').value(startDate.toString()))
+                .andExpect(jsonPath('\$.startDate').isNotEmpty())
                 .andExpect(jsonPath('\$.endDate').value(endDate.toString()))
                 .andExpect(jsonPath('\$.euthanasiaDate').value(euthanasiaDate.toString()))
                 .andExpect(jsonPath('\$.title').value(title))
@@ -142,7 +140,7 @@ class AdoptionPostControllerSpec extends Specification {
         when(adoptionPostService.searchAll(isA(Pageable.class)))
                 .thenReturn(new PageImpl<AdoptionPostPageResponseDto>(
                         List.of(
-                                AdoptionPosts.builder()
+                                AdoptionPostPageResponseDto.builder()
                                         .adoptionPostId('postId')
                                         .startDate(startDate)
                                         .endDate(endDate)
@@ -154,6 +152,7 @@ class AdoptionPostControllerSpec extends Specification {
                                         .gender(Gender.MALE)
                                         .neutering(Neutering.YES)
                                         .images(['img1', 'img2'])
+                                        .userId('userId')
                                         .build()
                         )
                 ))

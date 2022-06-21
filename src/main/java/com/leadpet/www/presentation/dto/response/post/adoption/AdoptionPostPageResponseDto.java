@@ -13,6 +13,7 @@ import java.util.List;
  */
 @ApiModel("입양 게시물 페이지네이션 Response")
 @lombok.Getter
+@lombok.Builder
 @lombok.RequiredArgsConstructor
 public class AdoptionPostPageResponseDto {
     private final String adoptionPostId;

@@ -3,13 +3,21 @@ package com.leadpet.www.presentation.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.leadpet.www.application.service.DonationPostService
+import com.leadpet.www.infrastructure.domain.donation.DonationMethod
+import com.leadpet.www.infrastructure.domain.pet.AnimalType
+import com.leadpet.www.infrastructure.domain.pet.Gender
+import com.leadpet.www.infrastructure.domain.pet.Neutering
+import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.presentation.dto.request.post.donation.AddDonationPostRequestDto
+import com.leadpet.www.presentation.dto.response.post.donation.DonationPostPageResponseDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -20,6 +28,7 @@ import java.time.LocalDateTime
 import static org.mockito.ArgumentMatchers.isA
 import static org.mockito.Mockito.doThrow
 import static org.mockito.Mockito.when
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -63,7 +72,7 @@ class DonationPostControllerSpec extends Specification {
 
         where:
         title   | contents   | images           | userId   | startDate           | endDate               | donationMethod
-        'title' | 'contents' | ['img1', 'img2'] | 'uidkko' | LocalDateTime.now() | startDate.plusDays(5) | 'donationMethod'
+        'title' | 'contents' | ['img1', 'img2'] | 'uidkko' | LocalDateTime.now() | startDate.plusDays(5) | DonationMethod.ACCOUNT
     }
 
     def "[기부 피드 추가]: 정상"() {
@@ -103,16 +112,48 @@ class DonationPostControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.donationPostId').value('DP_dummy'))
                 .andExpect(jsonPath('\$.startDate').isNotEmpty())
                 .andExpect(jsonPath('\$.endDate').isNotEmpty())
-                .andExpect(jsonPath('\$.donationMethod').value(donationMethod))
+                .andExpect(jsonPath('\$.donationMethod').value(donationMethod.name()))
                 .andExpect(jsonPath('\$.title').value(title))
                 .andExpect(jsonPath('\$.contents').value(contents))
                 .andExpect(jsonPath('\$.images').value(images))
                 .andExpect(jsonPath('\$.userId').value(userId))
 
         where:
-        userId   | title        | donationMethod        | contents       | images
-        'userId' | 'dummyTitle' | 'dummyDonationMethod' | 'dummyContent' | ['img1', 'img2']
+        userId   | title        | donationMethod         | contents       | images
+        'userId' | 'dummyTitle' | DonationMethod.ACCOUNT | 'dummyContent' | ['img1', 'img2']
     }
 
+    def "[기부 피드 목록 취득]: 정상"() {
+        when(donationPostService.searchAll(isA(Pageable.class)))
+                .thenReturn(new PageImpl<DonationPostPageResponseDto>(
+                        List.of(
+                                AdoptionPosts.builder()
+                                        .adoptionPostId('postId')
+                                        .startDate(startDate)
+                                        .endDate(endDate)
+                                        .euthanasiaDate(endDate)
+                                        .title('title')
+                                        .contents('contents')
+                                        .animalType(AnimalType.DOG)
+                                        .species('species')
+                                        .gender(Gender.MALE)
+                                        .neutering(Neutering.YES)
+                                        .images(['img1', 'img2'])
+                                        .build()
+                        )
+                ))
+
+        expect:
+        mvc.perform(get(DONATION_POST_URL + '?page=0&size=5')
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('\$.content.size()').value(1))
+                .andExpect(jsonPath('\$.totalElements').value(1))
+                .andExpect(jsonPath('\$.totalPages').value(1))
+
+        where:
+        startDate           | endDate
+        LocalDateTime.now() | LocalDateTime.now().plusDays(10)
+    }
 
 }

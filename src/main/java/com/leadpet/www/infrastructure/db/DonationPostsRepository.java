@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * DonationPostsRepository
  */
 @Repository
-public interface DonationPostsRepository extends JpaRepository<DonationPosts, String> {
+public interface DonationPostsRepository extends JpaRepository<DonationPosts, String>, DonationPostRepositoryCustom {
 }

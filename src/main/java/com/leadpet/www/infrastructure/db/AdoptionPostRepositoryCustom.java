@@ -1,4 +1,4 @@
-package com.leadpet.www.infrastructure.domain.posts;
+package com.leadpet.www.infrastructure.db;
 
 import com.leadpet.www.presentation.dto.response.post.adoption.AdoptionPostPageResponseDto;
 import org.springframework.data.domain.Page;

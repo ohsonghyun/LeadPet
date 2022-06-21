@@ -2,6 +2,7 @@ package com.leadpet.www.infrastructure.domain.posts;
 
 import com.leadpet.www.infrastructure.db.converter.StringListConverter;
 import com.leadpet.www.infrastructure.domain.BaseTime;
+import com.leadpet.www.infrastructure.domain.donation.DonationMethod;
 import com.leadpet.www.infrastructure.domain.users.Users;
 
 import javax.persistence.*;
@@ -37,9 +38,9 @@ public class DonationPosts extends BaseTime {
     @Column(name = "title")
     private String title;
 
-    // TODO to enum; 후원 계좌, 물품 배송
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "donation_method")
-    private String donationMethod;
+    private DonationMethod donationMethod;
 
     @Lob
     @Column(name = "contents")

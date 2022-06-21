@@ -5,7 +5,10 @@ import com.leadpet.www.infrastructure.db.UsersRepository;
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
+import com.leadpet.www.presentation.dto.response.post.donation.DonationPostPageResponseDto;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -44,5 +47,15 @@ public class DonationPostService {
 
         // 새로운 도네이션 피드를 저장
         return donationPostsRepository.save(donationPostWithUser);
+    }
+
+    /**
+     * 기부 피드 목록 취득 (페이지네이션)
+     *
+     * @param pageable 페이징 정보
+     * @return {@code Page<DonationPostPageResponseDto>}
+     */
+    public Page<DonationPostPageResponseDto> searchAll(Pageable pageable) {
+        return donationPostsRepository.searchAll(pageable);
     }
 }
