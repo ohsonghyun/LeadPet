@@ -10,7 +10,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.schema.AlternateTypeRule;
 import springfox.documentation.schema.AlternateTypeRules;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
@@ -66,10 +65,21 @@ public class SwaggerConfig {
     @ApiModel
     @lombok.Getter
     private static class Page {
-        @ApiModelProperty(value = "페이지 번호 0..N")
+        @ApiModelProperty(
+                notes = "페이지 번호",
+                example = "0",
+                required = true,
+                value = "페이지 번호 0..N"
+        )
         private Integer page;
 
-        @ApiModelProperty(value = "페이지 크기", allowableValues = "range[1, 100]")
+        @ApiModelProperty(
+                notes = "페이지 크기",
+                example = "1",
+                required = true,
+                value = "페이지 크기",
+                allowableValues = "range[1, 100]"
+        )
         private Integer size;
     }
 }

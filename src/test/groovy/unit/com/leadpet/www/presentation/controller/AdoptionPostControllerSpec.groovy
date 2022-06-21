@@ -3,6 +3,7 @@ package com.leadpet.www.presentation.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.leadpet.www.application.service.AdoptionPostService
+import com.leadpet.www.infrastructure.domain.donation.DonationMethod
 import com.leadpet.www.infrastructure.domain.pet.AnimalType
 import com.leadpet.www.infrastructure.domain.pet.Gender
 import com.leadpet.www.infrastructure.domain.pet.Neutering
@@ -57,11 +58,10 @@ class AdoptionPostControllerSpec extends Specification {
                 .content(mapper
                         .registerModule(new JavaTimeModule())
                         .writeValueAsString(
-                                AddDonationPostRequestDto.builder()
+                                AddAdoptionPostRequestDto.builder()
                                         .startDate(startDate)
                                         .endDate(endDate)
                                         .title(title)
-                                        .donationMethod(donationMethod)
                                         .contents(contents)
                                         .images(images)
                                         .userId(userId)
@@ -70,8 +70,8 @@ class AdoptionPostControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.error.detail').value('Error: 존재하지 않는 유저'))
 
         where:
-        title   | contents   | images           | userId   | startDate           | endDate               | donationMethod
-        'title' | 'contents' | ['img1', 'img2'] | 'uidkko' | LocalDateTime.now() | startDate.plusDays(5) | 'donationMethod'
+        title   | contents   | images           | userId   | startDate           | endDate
+        'title' | 'contents' | ['img1', 'img2'] | 'uidkko' | LocalDateTime.now() | startDate.plusDays(5)
     }
 
     def "[입양 피드 추가]: 정상"() {
@@ -119,7 +119,7 @@ class AdoptionPostControllerSpec extends Specification {
                                         .build())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('\$.adoptionPostId').value(postId))
-                .andExpect(jsonPath('\$.startDate').value(startDate.toString()))
+                .andExpect(jsonPath('\$.startDate').isNotEmpty())
                 .andExpect(jsonPath('\$.endDate').value(endDate.toString()))
                 .andExpect(jsonPath('\$.euthanasiaDate').value(euthanasiaDate.toString()))
                 .andExpect(jsonPath('\$.title').value(title))

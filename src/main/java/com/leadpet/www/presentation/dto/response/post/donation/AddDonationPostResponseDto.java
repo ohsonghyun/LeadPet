@@ -1,5 +1,6 @@
 package com.leadpet.www.presentation.dto.response.post.donation;
 
+import com.leadpet.www.infrastructure.domain.donation.DonationMethod;
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts;
 import io.swagger.annotations.ApiModel;
 import org.springframework.lang.NonNull;
@@ -18,7 +19,7 @@ public class AddDonationPostResponseDto {
     private String donationPostId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private String donationMethod;
+    private DonationMethod donationMethod;
     private String title;
     private String contents;
     private List<String> images;

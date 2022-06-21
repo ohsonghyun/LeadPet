@@ -1,5 +1,6 @@
 package com.leadpet.www.presentation.dto.response.post.donation;
 
+import com.leadpet.www.infrastructure.domain.donation.DonationMethod;
 import io.swagger.annotations.ApiModel;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ public class DonationPostPageResponseDto {
     private final LocalDateTime startDate;
     private final LocalDateTime endDate;
     private final String title;
-    private final String donationMethod;
+    private final DonationMethod donationMethod;
     private final String contents;
     private final List<String> images;
     private final String userId;

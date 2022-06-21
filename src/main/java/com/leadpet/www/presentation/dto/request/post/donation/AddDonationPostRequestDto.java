@@ -1,5 +1,6 @@
 package com.leadpet.www.presentation.dto.request.post.donation;
 
+import com.leadpet.www.infrastructure.domain.donation.DonationMethod;
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts;
 import io.swagger.annotations.ApiModel;
 
@@ -24,7 +25,7 @@ public class AddDonationPostRequestDto {
     @NotNull
     private String title;
     @NotNull
-    private String donationMethod;
+    private DonationMethod donationMethod;
     @NotNull
     private String contents;
     private List<String> images;

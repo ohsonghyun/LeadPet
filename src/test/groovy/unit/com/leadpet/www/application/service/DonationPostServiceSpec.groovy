@@ -2,6 +2,7 @@ package com.leadpet.www.application.service
 
 import com.leadpet.www.infrastructure.db.DonationPostsRepository
 import com.leadpet.www.infrastructure.db.UsersRepository
+import com.leadpet.www.infrastructure.domain.donation.DonationMethod
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
@@ -75,8 +76,8 @@ class DonationPostServiceSpec extends Specification {
         result.getUser().getUserId() == userId
 
         where:
-        userId        | postId        | startDate           | endDate               | title        | donationMethod        | contents       | images
-        'dummyUserId' | 'dummyPostId' | LocalDateTime.now() | startDate.plusDays(5) | 'dummyTitle' | 'dummyDonationMethod' | 'dummyContent' | ['img1', 'img2']
+        userId        | postId        | startDate           | endDate               | title        | donationMethod         | contents       | images
+        'dummyUserId' | 'dummyPostId' | LocalDateTime.now() | startDate.plusDays(5) | 'dummyTitle' | DonationMethod.ACCOUNT | 'dummyContent' | ['img1', 'img2']
     }
 
     def "userId가 존재하지 않으면 에러"() {
@@ -100,8 +101,8 @@ class DonationPostServiceSpec extends Specification {
         thrown(UserNotFoundException)
 
         where:
-        userId   | startDate           | endDate               | title        | donationMethod        | contents       | images
-        'userId' | LocalDateTime.now() | startDate.plusDays(5) | 'dummyTitle' | 'dummyDonationMethod' | 'dummyContent' | ['img1', 'img2']
+        userId   | startDate           | endDate               | title        | donationMethod         | contents       | images
+        'userId' | LocalDateTime.now() | startDate.plusDays(5) | 'dummyTitle' | DonationMethod.ACCOUNT | 'dummyContent' | ['img1', 'img2']
     }
 
     def "기부 피드 검색(pagination)"() {
@@ -114,7 +115,7 @@ class DonationPostServiceSpec extends Specification {
                             .startDate(startDate)
                             .endDate(endDate)
                             .title('title')
-                            .donationMethod('donationMethod')
+                            .donationMethod(DonationMethod.ACCOUNT)
                             .contents('contents')
                             .images(['img1', 'img2'])
                             .userId('userId' + i)

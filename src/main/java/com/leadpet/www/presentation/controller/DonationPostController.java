@@ -4,10 +4,7 @@ import com.leadpet.www.application.service.DonationPostService;
 import com.leadpet.www.presentation.dto.request.post.donation.AddDonationPostRequestDto;
 import com.leadpet.www.presentation.dto.response.post.donation.AddDonationPostResponseDto;
 import com.leadpet.www.presentation.dto.response.post.donation.DonationPostPageResponseDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -33,7 +30,9 @@ public class DonationPostController {
             @ApiResponse(code = 404, message = "존재하지 않는 유저")
     })
     @PostMapping
-    public ResponseEntity<AddDonationPostResponseDto> addDonationPost(@RequestBody AddDonationPostRequestDto newDonationPost) {
+    public ResponseEntity<AddDonationPostResponseDto> addDonationPost(
+            @RequestBody AddDonationPostRequestDto newDonationPost
+    ) {
         return ResponseEntity.ok(
                 AddDonationPostResponseDto.from(
                         donationPostService.addNewPost(newDonationPost.toDontaionPost(), newDonationPost.getUserId())));

@@ -3,6 +3,7 @@ package com.leadpet.www.presentation.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.leadpet.www.application.service.DonationPostService
+import com.leadpet.www.infrastructure.domain.donation.DonationMethod
 import com.leadpet.www.infrastructure.domain.pet.AnimalType
 import com.leadpet.www.infrastructure.domain.pet.Gender
 import com.leadpet.www.infrastructure.domain.pet.Neutering
@@ -71,7 +72,7 @@ class DonationPostControllerSpec extends Specification {
 
         where:
         title   | contents   | images           | userId   | startDate           | endDate               | donationMethod
-        'title' | 'contents' | ['img1', 'img2'] | 'uidkko' | LocalDateTime.now() | startDate.plusDays(5) | 'donationMethod'
+        'title' | 'contents' | ['img1', 'img2'] | 'uidkko' | LocalDateTime.now() | startDate.plusDays(5) | DonationMethod.ACCOUNT
     }
 
     def "[기부 피드 추가]: 정상"() {
@@ -111,15 +112,15 @@ class DonationPostControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.donationPostId').value('DP_dummy'))
                 .andExpect(jsonPath('\$.startDate').isNotEmpty())
                 .andExpect(jsonPath('\$.endDate').isNotEmpty())
-                .andExpect(jsonPath('\$.donationMethod').value(donationMethod))
+                .andExpect(jsonPath('\$.donationMethod').value(donationMethod.name()))
                 .andExpect(jsonPath('\$.title').value(title))
                 .andExpect(jsonPath('\$.contents').value(contents))
                 .andExpect(jsonPath('\$.images').value(images))
                 .andExpect(jsonPath('\$.userId').value(userId))
 
         where:
-        userId   | title        | donationMethod        | contents       | images
-        'userId' | 'dummyTitle' | 'dummyDonationMethod' | 'dummyContent' | ['img1', 'img2']
+        userId   | title        | donationMethod         | contents       | images
+        'userId' | 'dummyTitle' | DonationMethod.ACCOUNT | 'dummyContent' | ['img1', 'img2']
     }
 
     def "[기부 피드 목록 취득]: 정상"() {
