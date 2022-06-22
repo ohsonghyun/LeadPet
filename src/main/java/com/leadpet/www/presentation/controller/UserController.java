@@ -14,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ import java.util.List;
 @Api(tags = "유저 컨트롤러")
 @RestController
 @RequestMapping("/v1/user")
+@Slf4j
 @lombok.RequiredArgsConstructor
 public class UserController {
 
@@ -52,6 +54,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<LogInResponseDto> logIn(@Valid @RequestBody final LogInRequestDto logInRequestDto) {
         if (!logInRequestDto.hasAllRequiredValue()) {
+            log.info("로그인 필수 데이터 입력 누락");
             throw new UnsatisfiedRequirementException("Error: 필수 데이터 입력 누락");
         }
         return ResponseEntity.ok(LogInResponseDto.from(userService.logIn(logInRequestDto.toUsers())));

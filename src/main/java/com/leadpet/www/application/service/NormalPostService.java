@@ -4,13 +4,13 @@ import com.leadpet.www.infrastructure.db.NormalPostsRepository;
 import com.leadpet.www.infrastructure.db.UsersRepository;
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import com.leadpet.www.infrastructure.domain.users.Users;
-import com.leadpet.www.infrastructure.exception.UnauthorizedUserException;
 import com.leadpet.www.infrastructure.exception.PostNotFoundException;
+import com.leadpet.www.infrastructure.exception.UnauthorizedUserException;
 import com.leadpet.www.infrastructure.exception.WrongArgumentsException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
@@ -19,13 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
  * NormalPostService
  */
 @Service
+@Slf4j
 @Transactional(readOnly = true)
 @lombok.RequiredArgsConstructor
 public class NormalPostService {
@@ -40,6 +40,7 @@ public class NormalPostService {
      */
     public List<NormalPosts> getNormalPostsWith(final int page, final int size) {
         if (checkNegative.test(page) || !checkPositive.test(size)) {
+            log.warn("[NormalPostService] 페이징 관련 파라미터 에러 page: {}, size: {}", page, size);
             throw new WrongArgumentsException("Error: 옳지 않은 파라미터");
         }
         return normalPostsRepository.findAll(PageRequest.of(page, size, Sort.by("createdDate"))).getContent();
@@ -92,6 +93,7 @@ public class NormalPostService {
         // 권한이 없는 유저는 게시물 획득 불가
         Users author = targetPost.getUser();
         if (Objects.isNull(author) || ObjectUtils.notEqual(author.getUserId(), userId)) {
+            log.error("[NormalPostService] 게시글 수정 권한 없는 유저 에러 userId: {}", userId);
             throw new UnauthorizedUserException();
         }
 
@@ -111,6 +113,7 @@ public class NormalPostService {
         NormalPosts targetPost = this.normalPostsRepository.findById(normalPostId)
                 .orElseThrow(() -> new PostNotFoundException());
         if (ObjectUtils.notEqual(userId, targetPost.getUser().getUserId())) {
+            log.error("[NormalPostService] 게시글 삭제 권한 없는 유저 에러 userId: {}", userId);
             throw new UnauthorizedUserException();
         }
         this.normalPostsRepository.deleteById(normalPostId);
