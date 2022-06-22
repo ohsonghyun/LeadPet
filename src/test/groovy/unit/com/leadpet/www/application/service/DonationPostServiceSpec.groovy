@@ -1,7 +1,7 @@
 package com.leadpet.www.application.service
 
-import com.leadpet.www.infrastructure.db.DonationPostsRepository
-import com.leadpet.www.infrastructure.db.UsersRepository
+import com.leadpet.www.infrastructure.db.donationPost.DonationPostsRepository
+import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.donation.DonationMethod
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts
 import com.leadpet.www.infrastructure.domain.users.Users

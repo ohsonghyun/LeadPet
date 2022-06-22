@@ -1,4 +1,4 @@
-package com.leadpet.www.infrastructure.db;
+package com.leadpet.www.infrastructure.db.adoptionPost;
 
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts;
 import org.springframework.data.jpa.repository.JpaRepository;

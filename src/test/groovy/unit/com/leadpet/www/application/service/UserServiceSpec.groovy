@@ -1,6 +1,6 @@
 package com.leadpet.www.application.service
 
-import com.leadpet.www.infrastructure.db.UsersRepository
+import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users

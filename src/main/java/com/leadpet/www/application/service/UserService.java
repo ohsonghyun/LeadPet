@@ -1,6 +1,6 @@
 package com.leadpet.www.application.service;
 
-import com.leadpet.www.infrastructure.db.UsersRepository;
+import com.leadpet.www.infrastructure.db.users.UsersRepository;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
@@ -61,9 +61,9 @@ public class UserService {
      * 로그인 유형과 UID로 특정 유저를 검색
      *
      * @param loginMethod 로그인 유형
-     * @param uid {@code String}
-     * @param email {@code String}
-     * @param password {@code String}
+     * @param uid         {@code String}
+     * @param email       {@code String}
+     * @param password    {@code String}
      * @return {@code Users}
      */
     @Nullable

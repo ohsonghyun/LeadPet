@@ -1,7 +1,7 @@
 package com.leadpet.www.application.service;
 
-import com.leadpet.www.infrastructure.db.AdoptionPostsRepository;
-import com.leadpet.www.infrastructure.db.UsersRepository;
+import com.leadpet.www.infrastructure.db.adoptionPost.AdoptionPostsRepository;
+import com.leadpet.www.infrastructure.db.users.UsersRepository;
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
