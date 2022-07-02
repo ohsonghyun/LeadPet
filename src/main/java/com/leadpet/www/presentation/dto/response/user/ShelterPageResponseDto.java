@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiModel;
 @lombok.AllArgsConstructor
 public class ShelterPageResponseDto {
 
+    private String userId;
     /**
      * 보호소명
      */

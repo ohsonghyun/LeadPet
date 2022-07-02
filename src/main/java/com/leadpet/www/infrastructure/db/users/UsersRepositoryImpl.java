@@ -67,6 +67,7 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
 
             shelterPageResponseDto.add(
                     ShelterPageResponseDto.builder()
+                            .userId(shelter.getUserId())
                             .shelterName(shelter.getShelterName())
                             .allFeedCount(normalPostCount + donationPostCount + adoptionPostCount)
                             .assessmentStatus(shelter.getShelterAssessmentStatus())

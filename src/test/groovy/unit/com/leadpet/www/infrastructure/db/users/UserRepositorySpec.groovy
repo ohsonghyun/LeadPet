@@ -91,6 +91,7 @@ class UserRepositorySpec extends Specification {
         result.getTotalElements() == totalElement
         result.getContent().size() == size
         result.getContent().get(0) instanceof ShelterPageResponseDto
+        result.getContent().get(0).getUserId() != null
         result.getContent().get(0).getAllFeedCount() == 9
         result.getContent().get(0).getAssessmentStatus() == AssessmentStatus.PENDING
         result.getTotalPages() == totalPages
