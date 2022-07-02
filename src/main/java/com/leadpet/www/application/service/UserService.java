@@ -5,24 +5,25 @@ import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
-import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto;
-import org.apache.commons.lang3.ObjectUtils;
-import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
+import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
 import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException;
+import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @lombok.RequiredArgsConstructor
 public class UserService {
@@ -108,5 +109,20 @@ public class UserService {
     public Page<ShelterPageResponseDto> searchShelters(SearchShelterCondition searchShelterCondition, Pageable pageable) {
         Page<ShelterPageResponseDto> sheltersPage = usersRepository.searchShelters(searchShelterCondition, pageable);
         return Objects.isNull(sheltersPage) ? new PageImpl<>(Collections.EMPTY_LIST) : sheltersPage;
+    }
+
+    /**
+     * 보호소 디테일 취득
+     *
+     * @param userId 보호소 유저 ID
+     * @return {@code Users}
+     */
+    @NonNull
+    public Users shelterDetail(final String userId) {
+        if (StringUtils.isBlank(userId)) {
+            log.error("[UserService] userId가 null");
+            throw new UnsatisfiedRequirementException("필수 데이터 부족");
+        }
+        return usersRepository.findShelterByUserId(userId);
     }
 }
