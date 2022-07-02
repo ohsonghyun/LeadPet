@@ -41,6 +41,11 @@ public class Users extends BaseTime {
     private String shelterManager;
     private String shelterHomePage;
 
+    // TODO 이거 내부적으로 설정하도록 해야함.
+    @Column(name = "shelter_assessment_status")
+    @Enumerated(value = EnumType.STRING)
+    private AssessmentStatus shelterAssessmentStatus;
+
     /**
      * UserId를 생성
      * <p>유저아이디는 uid + loginMethod(약자)로 구성됨</p>

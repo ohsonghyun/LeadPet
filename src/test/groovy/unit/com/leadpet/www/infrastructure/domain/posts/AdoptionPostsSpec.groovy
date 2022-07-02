@@ -1,7 +1,7 @@
 package com.leadpet.www.infrastructure.domain.posts
 
 import com.leadpet.www.TestConfig
-import com.leadpet.www.infrastructure.db.AdoptionPostsRepository
+import com.leadpet.www.infrastructure.db.adoptionPost.AdoptionPostsRepository
 import com.leadpet.www.infrastructure.domain.pet.AnimalType
 import com.leadpet.www.infrastructure.domain.pet.Gender
 import com.leadpet.www.infrastructure.domain.pet.Neutering
