@@ -12,11 +12,19 @@ import org.springframework.data.domain.Pageable;
 public interface UsersRepositoryCustom {
 
     /**
-     * 보호소 검색
+     * 보호소 목록 검색
      *
      * @param condition {@code SearchShelterCondition} 검색 조건
      * @param pageable  {@code Pageable}
      * @return {@code <Page<Users>>}
      */
     Page<ShelterPageResponseDto> searchShelters(final SearchShelterCondition condition, final Pageable pageable);
+
+    /**
+     * 보호소 디테일 검색
+     *
+     * @param userId 보호소 유저 ID
+     * @return {@code Users}
+     */
+    Users findShelterByUserId(final String userId);
 }

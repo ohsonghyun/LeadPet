@@ -35,7 +35,7 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
                 .select(users)
                 .from(users)
                 .where(
-                        users.userType.eq(UserType.SHELTER),
+                        eqUserTypeShelter(),
                         containsCityName(condition.getCityName()),
                         containsShelterName(condition.getShelterName())
                 )
@@ -80,7 +80,7 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
                 .select(users.userId.count())
                 .from(users)
                 .where(
-                        users.userType.eq(UserType.SHELTER),
+                        eqUserTypeShelter(),
                         containsCityName(condition.getCityName()),
                         containsShelterName(condition.getShelterName())
                 )
@@ -96,7 +96,7 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
      * @return {@code BooleanExpression}
      */
     @Nullable
-    private BooleanExpression containsCityName(String cityName) {
+    private BooleanExpression containsCityName(final String cityName) {
         return StringUtils.isBlank(cityName) ? null : users.shelterAddress.contains(cityName);
     }
 
@@ -107,7 +107,24 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
      * @return {@code BooleanExpression}
      */
     @Nullable
-    private BooleanExpression containsShelterName(String shelterName) {
+    private BooleanExpression containsShelterName(final String shelterName) {
         return StringUtils.isBlank(shelterName) ? null : users.shelterName.contains(shelterName);
+    }
+
+    @Nullable
+    private BooleanExpression eqUserTypeShelter() {
+        return users.userType.eq(UserType.SHELTER);
+    }
+
+    @Nullable
+    @Override
+    public Users findShelterByUserId(final String userId) {
+        return queryFactory
+                .selectFrom(users)
+                .where(
+                        users.userId.eq(userId),
+                        eqUserTypeShelter()
+                )
+                .fetchOne();
     }
 }
