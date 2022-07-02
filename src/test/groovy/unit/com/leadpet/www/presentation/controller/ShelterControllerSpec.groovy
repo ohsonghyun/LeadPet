@@ -36,7 +36,7 @@ class ShelterControllerSpec extends Specification {
         given:
         when(userService.searchShelters(isA(SearchShelterCondition.class), isA(Pageable.class)))
                 .thenReturn(new PageImpl<ShelterPageResponseDto>(
-                        List.of(new ShelterPageResponseDto("shelterName", 1, AssessmentStatus.COMPLETED))
+                        List.of(new ShelterPageResponseDto("userId1", "shelterName", 1, AssessmentStatus.COMPLETED))
                 ))
 
         expect:
