@@ -1,5 +1,9 @@
 package com.leadpet.www.presentation.controller;
 
+import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts;
+import com.leadpet.www.infrastructure.domain.posts.DonationPosts;
+import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
+import com.leadpet.www.infrastructure.domain.users.AssessmentStatus;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
@@ -22,10 +26,12 @@ import java.util.stream.IntStream;
 @lombok.RequiredArgsConstructor
 public class InitData {
     private final InitShelterService initShelterService;
+    private final InitPostService initPostService;
 
     @PostConstruct
     public void init() {
         initShelterService.init();
+        initPostService.init();
     }
 
     @Component
@@ -49,8 +55,49 @@ public class InitData {
                                 .userType(UserType.SHELTER)
                                 .shelterName(name + " 보호소")
                                 .shelterAddress(city + " 헬로우 월드 주소 어디서나 123-123")
+                                .shelterAssessmentStatus(AssessmentStatus.COMPLETED)
                                 .build());
             });
         }
+    }
+
+    @Component
+    static class InitPostService {
+
+        @PersistenceContext
+        EntityManager em;
+
+        @Transactional
+        public void init() {
+            List<Users> allUsers = em.createQuery("select u from Users u").getResultList();
+            for (Users user : allUsers) {
+                for (int i = 0; i < 3; i++) {
+                    em.persist(
+                            NormalPosts.builder()
+                                    .normalPostId("NP_" + user.getUserId() + i)
+                                    .title("title" + user.getUserId() + i)
+                                    .contents("contents" + user.getUserId() + i)
+                                    .user(user)
+                                    .build());
+                    em.persist(
+                            DonationPosts.builder()
+                                    .donationPostId("DP_" + user.getUserId() + i)
+                                    .title("title" + user.getUserId() + i)
+                                    .contents("contents" + user.getUserId() + i)
+                                    .user(user)
+                                    .build());
+                    em.persist(
+                            AdoptionPosts.builder()
+                                    .adoptionPostId("AP_" + user.getUserId() + i)
+                                    .title("title" + user.getUserId() + i)
+                                    .contents("contents" + user.getUserId() + i)
+                                    .user(user)
+                                    .build());
+                }
+            }
+
+
+        }
+
     }
 }
