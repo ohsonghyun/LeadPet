@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import spock.lang.Specification
+import spock.lang.Unroll
 
 /**
  * UserServiceSpec
@@ -194,12 +195,18 @@ class UserServiceSpec extends Specification {
         'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.SHELTER | '토르 보호소'    | '서울특별시 헬로우 월드 주소 어디서나 123-123' | AssessmentStatus.PENDING
     }
 
-    def "보호소 디테일 취득: userId가 null"() {
+    @Unroll("#testCase")
+    def "보호소 디테일 취득: 에러"() {
         when:
-        userService.shelterDetail(null)
+        userService.shelterDetail(userId)
 
         then:
-        thrown(UnsatisfiedRequirementException)
+        thrown(exception)
+
+        where:
+        testCase             | userId     | exception
+        'userId가 null인 경우'   | null       | UnsatisfiedRequirementException
+        '존재하지 않는 userId인 경우' | 'notExist' | UserNotFoundException
     }
 
     // -------------------------------------------------------------------------------------

@@ -119,10 +119,16 @@ public class UserService {
      */
     @NonNull
     public Users shelterDetail(final String userId) {
+        // 여기에 들어올 가능성은 희박하지만..
         if (StringUtils.isBlank(userId)) {
             log.error("[UserService] userId가 null");
-            throw new UnsatisfiedRequirementException("필수 데이터 부족");
+            throw new UnsatisfiedRequirementException("Error: 필수 데이터 부족");
         }
-        return usersRepository.findShelterByUserId(userId);
+        Users shelter = usersRepository.findShelterByUserId(userId);
+        if (Objects.isNull(shelter)) {
+            log.error("[UserService] 존재하지 않는 보호소: {}", userId);
+            throw new UserNotFoundException("Error: 존재하지 않는 보호소");
+        }
+        return shelter;
     }
 }
