@@ -1,17 +1,25 @@
 package com.leadpet.www.application.service;
 
 import com.leadpet.www.infrastructure.db.users.UsersRepository;
+import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
+import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto;
 import org.apache.commons.lang3.ObjectUtils;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
 import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -87,5 +95,18 @@ public class UserService {
     @NonNull
     public List<Users> getUserListBy(@NonNull final UserType userType) {
         return usersRepository.findByUserType(userType);
+    }
+
+    /**
+     * 보호소 리스트 취득
+     *
+     * @param searchShelterCondition {@code SearchShelterCondition} 보호소 리스트 취득 조건
+     * @param pageable               {@code Pageable}
+     * @return {@code Page<ShelterPageResponseDto>}
+     */
+    @NonNull
+    public Page<ShelterPageResponseDto> searchShelters(SearchShelterCondition searchShelterCondition, Pageable pageable) {
+        Page<ShelterPageResponseDto> sheltersPage = usersRepository.searchShelters(searchShelterCondition, pageable);
+        return Objects.isNull(sheltersPage) ? new PageImpl<>(Collections.EMPTY_LIST) : sheltersPage;
     }
 }

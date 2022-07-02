@@ -1,12 +1,20 @@
 package com.leadpet.www.application.service
 
 import com.leadpet.www.infrastructure.db.users.UsersRepository
+import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition
+import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException
+import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import spock.lang.Specification
+
+import java.awt.print.Pageable
 
 /**
  * UserServiceSpec
@@ -131,6 +139,27 @@ class UserServiceSpec extends Specification {
 
         then:
         result.size() == 3
+    }
+
+    def "보호소의 피드 리스트 취득"() {
+        given:
+        usersRepository.searchShelters(_, _) >> new PageImpl<ShelterPageResponseDto>(
+                List.of(
+                        new ShelterPageResponseDto("Shelter1", 3, AssessmentStatus.PENDING),
+                        new ShelterPageResponseDto("Shelter2", 2, AssessmentStatus.COMPLETED),
+                        new ShelterPageResponseDto("Shelter3", 1, AssessmentStatus.COMPLETED)
+                ),
+                PageRequest.of(0, 5),
+                3
+        )
+
+        when:
+        Page<ShelterPageResponseDto> result = userService.searchShelters(new SearchShelterCondition(), PageRequest.of(0, 5))
+
+        then:
+        result.getContent().size() == 3
+        result.getTotalPages() == 1
+        result.getTotalElements() == 3
     }
 
     // -------------------------------------------------------------------------------------
