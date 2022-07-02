@@ -121,4 +121,40 @@ class UserRepositorySpec extends Specification {
         '보호소명으로 검색하는 경우'       | null         | 'Hulk10'
         '지역명 + 보호소명으로 검색하는 경우' | '부산'         | 'Hulk10'
     }
+
+    def "보호소 디테일 조회"() {
+        given:
+        usersRepository.save(
+                Users.builder()
+                        .userId(userId)
+                        .loginMethod(loginMethod)
+                        .uid(uid)
+                        .name(name)
+                        .userType(userType)
+                        .shelterName(shelterName)
+                        .shelterAddress(shelterAddress)
+                        .shelterAssessmentStatus(shelterAssessmentStatus)
+                        .build())
+
+        em.flush()
+        em.clear()
+
+        when:
+        Users shelter = usersRepository.findShelterByUserId('userId')
+
+        then:
+        shelter != null
+        shelter.getUserId() == userId
+        shelter.getLoginMethod() == loginMethod
+        shelter.getUid() == uid
+        shelter.getName() == name
+        shelter.getUserType() == userType
+        shelter.getShelterName() == shelterName
+        shelter.getShelterAddress() == shelterAddress
+        shelter.getShelterAssessmentStatus() == shelterAssessmentStatus
+
+        where:
+        userId   | loginMethod       | uid   | name   | userType         | shelterName | shelterAddress                 | shelterAssessmentStatus
+        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.SHELTER | '토르 보호소'    | '서울특별시 헬로우 월드 주소 어디서나 123-123' | AssessmentStatus.PENDING
+    }
 }
