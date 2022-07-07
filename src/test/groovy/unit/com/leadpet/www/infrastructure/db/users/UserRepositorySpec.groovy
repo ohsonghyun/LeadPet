@@ -140,7 +140,7 @@ class UserRepositorySpec extends Specification {
         em.clear()
 
         when:
-        Users shelter = usersRepository.findShelterByUserId('userId')
+        Users shelter = usersRepository.findShelterByUserId(userId)
 
         then:
         shelter != null
@@ -156,5 +156,35 @@ class UserRepositorySpec extends Specification {
         where:
         userId   | loginMethod       | uid   | name   | userType         | shelterName | shelterAddress                 | shelterAssessmentStatus
         'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.SHELTER | '토르 보호소'    | '서울특별시 헬로우 월드 주소 어디서나 123-123' | AssessmentStatus.PENDING
+    }
+
+    def "유저 디테일 조회"() {
+        given:
+        usersRepository.save(
+                Users.builder()
+                        .userId(userId)
+                        .loginMethod(loginMethod)
+                        .uid(uid)
+                        .name(name)
+                        .userType(userType)
+                        .build())
+
+        em.flush()
+        em.clear()
+
+        when:
+        Users user = usersRepository.findNormalUserByUserId(userId)
+
+        then:
+        user != null
+        user.getUserId() == userId
+        user.getLoginMethod() == loginMethod
+        user.getUid() == uid
+        user.getName() == name
+        user.getUserType() == userType
+
+        where:
+        userId   | loginMethod       | uid   | name   | userType
+        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.NORMAL
     }
 }

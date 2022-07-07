@@ -27,4 +27,12 @@ public interface UsersRepositoryCustom {
      * @return {@code Users}
      */
     Users findShelterByUserId(final String userId);
+
+    /**
+     * 일반 유저 디테일 검색
+     *
+     * @param userId {@code String} 일반 유저 ID
+     * @return {@code Users}
+     */
+    Users findNormalUserByUserId(final String userId);
 }

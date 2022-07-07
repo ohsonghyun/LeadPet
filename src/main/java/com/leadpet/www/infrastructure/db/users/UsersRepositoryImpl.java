@@ -89,6 +89,30 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
         return new PageImpl<>(shelterPageResponseDto, pageable, total);
     }
 
+    @Nullable
+    @Override
+    public Users findShelterByUserId(final String userId) {
+        return queryFactory
+                .selectFrom(users)
+                .where(
+                        users.userId.eq(userId),
+                        eqUserTypeShelter()
+                )
+                .fetchOne();
+    }
+
+    @Nullable
+    @Override
+    public Users findNormalUserByUserId(final String userId) {
+        return queryFactory
+                .selectFrom(users)
+                .where(
+                        users.userId.eq(userId),
+                        eqUserTypeNormal()
+                )
+                .fetchOne();
+    }
+
     /**
      * 보호소 주소 조건 추가
      *
@@ -111,20 +135,24 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
         return StringUtils.isBlank(shelterName) ? null : users.shelterName.contains(shelterName);
     }
 
+    /**
+     * 유저타입 보호소 조건
+     *
+     * @return {@code BooleanExpression}
+     */
     @Nullable
     private BooleanExpression eqUserTypeShelter() {
         return users.userType.eq(UserType.SHELTER);
     }
 
+    /**
+     * 유저타입 일반유저 조건
+     *
+     * @return {@code BooleanExpression}
+     */
     @Nullable
-    @Override
-    public Users findShelterByUserId(final String userId) {
-        return queryFactory
-                .selectFrom(users)
-                .where(
-                        users.userId.eq(userId),
-                        eqUserTypeShelter()
-                )
-                .fetchOne();
+    private BooleanExpression eqUserTypeNormal() {
+        return users.userType.eq(UserType.NORMAL);
     }
+
 }
