@@ -131,4 +131,24 @@ public class UserService {
         }
         return shelter;
     }
+
+    /**
+     * 일반 유저 디테일 취득
+     *
+     * @param userId {@code String}
+     * @return {@code Users}
+     */
+    public Users normalUserDetail(final String userId) {
+        // 여기에 들어올 가능성은 희박하지만..
+        if (StringUtils.isBlank(userId)) {
+            log.error("[UserService] userId가 null");
+            throw new UnsatisfiedRequirementException("Error: 필수 데이터 부족");
+        }
+        Users normalUser = usersRepository.findNormalUserByUserId(userId);
+        if (Objects.isNull(normalUser)) {
+            log.error("[UserService] 존재하지 않는 유저: {}", userId);
+            throw new UserNotFoundException("Error: 존재하지 않는 유저");
+        }
+        return normalUser;
+    }
 }

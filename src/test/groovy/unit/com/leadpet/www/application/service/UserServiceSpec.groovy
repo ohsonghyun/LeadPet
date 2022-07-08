@@ -209,6 +209,49 @@ class UserServiceSpec extends Specification {
         '존재하지 않는 userId인 경우' | 'notExist' | UserNotFoundException
     }
 
+    def "일반 유저 디테일 취득: 정상"() {
+        given:
+        usersRepository.findNormalUserByUserId(_) >>
+                Users.builder()
+                        .userId(userId)
+                        .loginMethod(loginMethod)
+                        .uid(uid)
+                        .name(name)
+                        .userType(userType)
+                        .build()
+
+        when:
+        Users normalUser = userService.normalUserDetail(userId)
+
+        then:
+        normalUser != null
+        normalUser.getUserId() == userId
+        normalUser.getLoginMethod() == loginMethod
+        normalUser.getUid() == uid
+        normalUser.getName() == name
+        normalUser.getUserType() == userType
+
+        where:
+        userId   | loginMethod       | uid   | name   | userType
+        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.NORMAL
+    }
+
+    // TODO 역시 보호소 디테일하고 내부 로직은 공유하고 서비스에서 따로 분리하는게 좋을까?
+    // DRY 관점으로 정말 동일로직으로 합쳐도 될지 생각 필요. 판단 후에 리팩토링
+    @Unroll("#testCase")
+    def "일반 유저 디테일 취득: 에러"() {
+        when:
+        userService.normalUserDetail(userId)
+
+        then:
+        thrown(exception)
+
+        where:
+        testCase             | userId     | exception
+        'userId가 null인 경우'   | null       | UnsatisfiedRequirementException
+        '존재하지 않는 userId인 경우' | 'notExist' | UserNotFoundException
+    }
+
     // -------------------------------------------------------------------------------------
 
     private Users createUser(String userId, LoginMethod loginMethod, String uid, String email, String password, String profileImage,
