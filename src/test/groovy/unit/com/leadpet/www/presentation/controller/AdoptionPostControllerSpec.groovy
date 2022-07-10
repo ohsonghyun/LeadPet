@@ -78,7 +78,7 @@ class AdoptionPostControllerSpec extends Specification {
         given:
         final startDate = LocalDateTime.now()
         final endDate = startDate.plusDays(5)
-        final euthanasiaDate = endDate.plusDays(5)
+        final euthanasiaDate = endDate.plusDays(5).withNano(0)
 
         when(adoptionPostService.addNewPost(isA(AdoptionPosts.class), isA(String.class)))
                 .thenReturn(

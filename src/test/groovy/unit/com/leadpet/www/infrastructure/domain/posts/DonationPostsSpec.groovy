@@ -52,8 +52,8 @@ class DonationPostsSpec extends Specification {
         saved.getEndDate() == endDate
 
         where:
-        postId   | title   | contents   | images           | startDate           | endDate
-        'postId' | 'title' | 'contents' | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
+        postId   | title   | contents   | images           | startDate                       | endDate
+        'postId' | 'title' | 'contents' | ['img1', 'img2'] | LocalDateTime.now().withNano(0) | LocalDateTime.now().plusDays(10).withNano(0)
     }
 
     def "기부 피드 페이지네이션: 데이터가 있는 경우"() {
