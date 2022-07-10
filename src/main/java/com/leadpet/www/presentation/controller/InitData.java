@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -84,6 +85,8 @@ public class InitData {
                                     .donationPostId("DP_" + user.getUserId() + i)
                                     .title("title" + user.getUserId() + i)
                                     .contents("contents" + user.getUserId() + i)
+                                    .startDate(LocalDateTime.now().minusDays(1))
+                                    .endDate(LocalDateTime.now().plusDays((int) (Math.random() * 10)))
                                     .user(user)
                                     .build());
                     em.persist(
