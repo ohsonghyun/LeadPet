@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  * NormalPostsRepository
  */
 @Repository
-public interface NormalPostsRepository extends JpaRepository<NormalPosts, String> {
+public interface NormalPostsRepository extends JpaRepository<NormalPosts, String>, NormalPostsRepositoryCustom {
 }

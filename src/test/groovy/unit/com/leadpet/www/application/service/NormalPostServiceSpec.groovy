@@ -8,6 +8,7 @@ import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 
 import spock.lang.Specification
@@ -36,20 +37,27 @@ class NormalPostServiceSpec extends Specification {
                 .userType(UserType.NORMAL)
                 .build()
 
-        normalPostsRepository.findAll(_ as Pageable) >> new PageImpl(
+        normalPostsRepository.searchAll(_ as Pageable) >> new PageImpl(
                 List.of(
                         NormalPosts.builder().normalPostId("NP_a").title("title").contents("contents").user(user).build(),
                         NormalPosts.builder().normalPostId("NP_b").title("title").contents("contents").user(user).build(),
                         NormalPosts.builder().normalPostId("NP_c").title("title").contents("contents").user(user).build()
-                )
+                ),
+                pageable,
+                total
         )
 
         when:
-        final result = normalPostService.getNormalPostsWith(1, 2)
+        final result = normalPostService.getNormalPostsWith(pageable)
 
         then:
-        result.size() == 3
-        result.get(0) instanceof NormalPosts
+        result.getTotalElements() == 3
+        result.getTotalPages() == 1
+        result.getContent().size() == 3
+
+        where:
+        pageable             | total
+        PageRequest.of(0, 3) | 3
     }
 
     def "일반 게시글 추가: 정상"() {

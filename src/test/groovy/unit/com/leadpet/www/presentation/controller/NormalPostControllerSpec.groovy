@@ -12,10 +12,13 @@ import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.presentation.dto.request.post.AddNormalPostRequestDto
 import com.leadpet.www.presentation.dto.request.post.UpdateNormalPostRequestDto
 import com.leadpet.www.presentation.dto.request.post.normal.DeleteNormalPostRequestDto
+import com.leadpet.www.presentation.dto.response.post.NormalPostResponse
 import org.hamcrest.Matchers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Specification
@@ -43,39 +46,34 @@ class NormalPostControllerSpec extends Specification {
 
     def "[모든 일반 게시물 취득] Service로부터 받은 데이터를 DTO를 통해 반환한다"() {
         given:
-        when(normalPostService.getNormalPostsWith(1, 2))
+        when(normalPostService.getNormalPostsWith(isA(Pageable.class)))
                 .thenReturn(
-                        List.of(
-                                NormalPosts.builder()
-                                        .normalPostId("dummyId")
-                                        .title("dummyTitle")
-                                        .contents("dummyContents")
-                                        .user(
-                                                Users.builder()
-                                                        .userId("dummyUserId")
-                                                        .loginMethod(LoginMethod.APPLE)
-                                                        .uid("dummyUid")
-                                                        .name("dummyName")
-                                                        .userType(UserType.NORMAL)
-                                                        .build())
-                                        .build()))
+                        new PageImpl<NormalPostResponse>(
+                                List.of(
+                                        NormalPosts.builder()
+                                                .normalPostId("dummyId")
+                                                .title("dummyTitle")
+                                                .contents("dummyContents")
+                                                .user(
+                                                        Users.builder()
+                                                                .userId("dummyUserId")
+                                                                .loginMethod(LoginMethod.APPLE)
+                                                                .uid("dummyUid")
+                                                                .name("dummyName")
+                                                                .userType(UserType.NORMAL)
+                                                                .build())
+                                                .build()
+                                )
+                        ))
 
         expect:
-        mvc.perform(get(NORMAL_POST_URL + "/all")
-                .param('page', '1')
-                .param('size', '2'))
+        mvc.perform(get(NORMAL_POST_URL + '?page=0&size=5')
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath('$.result', Matchers.hasSize(1)))
-                .andExpect(jsonPath('$.result[0].normalPostId', Matchers.is('dummyId')))
-                .andExpect(jsonPath('$.result[0].title', Matchers.is('dummyTitle')))
-                .andExpect(jsonPath('$.result[0].contents', Matchers.is('dummyContents')))
+                .andExpect(jsonPath('\$.content.size()').value(1))
+                .andExpect(jsonPath('\$.totalElements').value(1))
+                .andExpect(jsonPath('\$.totalPages').value(1))
     }
-
-    // TODO write test
-//    @Ignore
-//    def "[모든 일반 게시물 취득] 예상외 데이터가 들어왔을 때 에러 반환: BAD_REQUEST"() {
-//
-//    }
 
     def "[신규 일반 게시물 추가] Service로부터 받은 데이터를 DTO를 통해 반환한다"() {
         given:
