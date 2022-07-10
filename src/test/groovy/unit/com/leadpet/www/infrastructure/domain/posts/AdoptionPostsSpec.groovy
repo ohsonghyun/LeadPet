@@ -66,8 +66,8 @@ class AdoptionPostsSpec extends Specification {
         saved.getEuthanasiaDate() == endDate
 
         where:
-        postId   | title   | contents   | animalType     | species   | gender      | neutering     | images           | startDate           | endDate
-        'postId' | 'title' | 'contents' | AnimalType.DOG | 'species' | Gender.MALE | Neutering.YES | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
+        postId   | title   | contents   | animalType     | species   | gender      | neutering     | images           | startDate                       | endDate
+        'postId' | 'title' | 'contents' | AnimalType.DOG | 'species' | Gender.MALE | Neutering.YES | ['img1', 'img2'] | LocalDateTime.now().withNano(0) | LocalDateTime.now().plusDays(10).withNano(0)
     }
 
     def "입양 피드 페이지네이션: 데이터가 있는 경우"() {
