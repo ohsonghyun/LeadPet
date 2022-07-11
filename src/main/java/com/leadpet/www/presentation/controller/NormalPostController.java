@@ -4,17 +4,19 @@ import com.leadpet.www.application.service.NormalPostService;
 import com.leadpet.www.presentation.dto.request.post.AddNormalPostRequestDto;
 import com.leadpet.www.presentation.dto.request.post.UpdateNormalPostRequestDto;
 import com.leadpet.www.presentation.dto.request.post.normal.DeleteNormalPostRequestDto;
-import com.leadpet.www.presentation.dto.response.post.*;
+import com.leadpet.www.presentation.dto.response.post.AddNormalPostResponseDto;
+import com.leadpet.www.presentation.dto.response.post.DeleteNormalPostResponseDto;
+import com.leadpet.www.presentation.dto.response.post.NormalPostResponse;
+import com.leadpet.www.presentation.dto.response.post.UpdateNormalPostResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * NormalPostController
@@ -66,35 +68,9 @@ public class NormalPostController {
     }
 
     @ApiOperation(value = "모든 일반 게시물 취득")
-    @ApiResponses({
-            @ApiResponse(code = 400, message = "옳지 않은 파라미터")
-    })
-    @GetMapping("/all")
-    public ResponseEntity<ResultWrapper<List<NormalPostResponse>>> getAllNormalPosts(@NonNull @RequestParam final int page, @NonNull @RequestParam final int size) {
-        return ResponseEntity.ok(new ResultWrapper<>(NormalPostResponse.from(normalPostService.getNormalPostsWith(page, size))));
-    }
-
-    /**
-     * Wrapper class
-     * <p>배열로 반환되는 타입을 래핑해서 JSON 타입으로 반환하도록 한다</p>
-     *
-     * @param <T>
-     */
-    @lombok.Getter
-    @lombok.NoArgsConstructor
-    @lombok.AllArgsConstructor
-    class ResultWrapper<T> {
-        T result;
-    }
-
-    @ApiOperation(value = "모든 일반 게시물 카운트")
-    @GetMapping("/allCount")
-    public ResponseEntity<NormalPostAllCountResponse> getAllCount() {
-        Long allCount = normalPostService.getAllNormalPostCount();
-        return ResponseEntity.ok(
-                NormalPostAllCountResponse.builder()
-                        .allCount(allCount)
-                        .build());
+    @GetMapping
+    public ResponseEntity<Page<NormalPostResponse>> getAllNormalPosts(final Pageable pageable) {
+        return ResponseEntity.ok(normalPostService.getNormalPostsWith(pageable));
     }
 
 }

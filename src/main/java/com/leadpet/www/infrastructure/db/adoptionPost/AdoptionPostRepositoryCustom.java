@@ -8,5 +8,11 @@ import org.springframework.data.domain.Pageable;
  * AdoptionPostRepositoryCustom
  */
 public interface AdoptionPostRepositoryCustom {
+    /**
+     * 모든 입양 피드를 반환 (페이지네이션)
+     *
+     * @param pageable
+     * @return {@code Page<AdoptionPostPageResponseDto>}
+     */
     Page<AdoptionPostPageResponseDto> searchAll(Pageable pageable);
 }
