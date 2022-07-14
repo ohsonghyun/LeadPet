@@ -1,37 +1,22 @@
 package com.leadpet.www.presentation.dto.response.post;
 
-import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import io.swagger.annotations.ApiModel;
 import lombok.AccessLevel;
-import lombok.NonNull;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * AllNormalPostsResponse
  */
 @ApiModel("일반 게시물 Response")
 @lombok.Getter
+@lombok.RequiredArgsConstructor
 @lombok.Builder(access = AccessLevel.PRIVATE)
 public class NormalPostResponse {
-    private String normalPostId;
-    private String title;
-    private String contents;
-    private List<String> images;
+    private final String normalPostId;
+    private final String title;
+    private final String contents;
+    private final List<String> images;
 
-    private String userId;
-
-    public static List<NormalPostResponse> from(@NonNull final List<NormalPosts> normalPosts) {
-        return normalPosts
-                .stream().map(normalPost ->
-                        NormalPostResponse.builder()
-                                .normalPostId(normalPost.getNormalPostId())
-                                .title(normalPost.getTitle())
-                                .contents(normalPost.getContents())
-                                .images(normalPost.getImages())
-                                .userId(normalPost.getUser().getUserId())
-                                .build())
-                .collect(Collectors.toList());
-    }
+    private final String userId;
 }

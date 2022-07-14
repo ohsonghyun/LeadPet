@@ -78,7 +78,7 @@ class AdoptionPostControllerSpec extends Specification {
         given:
         final startDate = LocalDateTime.now()
         final endDate = startDate.plusDays(5)
-        final euthanasiaDate = endDate.plusDays(5)
+        final euthanasiaDate = endDate.plusDays(5).withNano(0)
 
         when(adoptionPostService.addNewPost(isA(AdoptionPosts.class), isA(String.class)))
                 .thenReturn(
@@ -120,7 +120,7 @@ class AdoptionPostControllerSpec extends Specification {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('\$.adoptionPostId').value(postId))
                 .andExpect(jsonPath('\$.startDate').isNotEmpty())
-                .andExpect(jsonPath('\$.endDate').value(endDate.toString()))
+                .andExpect(jsonPath('\$.endDate').isNotEmpty())
                 .andExpect(jsonPath('\$.euthanasiaDate').value(euthanasiaDate.toString()))
                 .andExpect(jsonPath('\$.title').value(title))
                 .andExpect(jsonPath('\$.contents').value(contents))

@@ -1,12 +1,20 @@
 package com.leadpet.www.application.service
 
-import com.leadpet.www.infrastructure.db.UsersRepository
+import com.leadpet.www.infrastructure.db.users.UsersRepository
+import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition
+import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
+import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException
+import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import spock.lang.Specification
+import spock.lang.Unroll
 
 /**
  * UserServiceSpec
@@ -131,6 +139,74 @@ class UserServiceSpec extends Specification {
 
         then:
         result.size() == 3
+    }
+
+    def "보호소의 피드 리스트 취득"() {
+        given:
+        usersRepository.searchShelters(_, _) >> new PageImpl<ShelterPageResponseDto>(
+                List.of(
+                        new ShelterPageResponseDto('userId1', "Shelter1", 3, AssessmentStatus.PENDING),
+                        new ShelterPageResponseDto('userId2', "Shelter2", 2, AssessmentStatus.COMPLETED),
+                        new ShelterPageResponseDto('userId3', "Shelter3", 1, AssessmentStatus.COMPLETED)
+                ),
+                PageRequest.of(0, 5),
+                3
+        )
+
+        when:
+        Page<ShelterPageResponseDto> result = userService.searchShelters(new SearchShelterCondition(), PageRequest.of(0, 5))
+
+        then:
+        result.getContent().size() == 3
+        result.getTotalPages() == 1
+        result.getTotalElements() == 3
+    }
+
+    def "보호소 디테일 취득: 정상"() {
+        given:
+        usersRepository.findShelterByUserId(_) >>
+                Users.builder()
+                        .userId(userId)
+                        .loginMethod(loginMethod)
+                        .uid(uid)
+                        .name(name)
+                        .userType(userType)
+                        .shelterName(shelterName)
+                        .shelterAddress(shelterAddress)
+                        .shelterAssessmentStatus(shelterAssessmentStatus)
+                        .build()
+
+        when:
+        Users shelter = userService.shelterDetail(userId)
+
+        then:
+        shelter != null
+        shelter.getUserId() == userId
+        shelter.getLoginMethod() == loginMethod
+        shelter.getUid() == uid
+        shelter.getName() == name
+        shelter.getUserType() == userType
+        shelter.getShelterName() == shelterName
+        shelter.getShelterAddress() == shelterAddress
+        shelter.getShelterAssessmentStatus() == shelterAssessmentStatus
+
+        where:
+        userId   | loginMethod       | uid   | name   | userType         | shelterName | shelterAddress                 | shelterAssessmentStatus
+        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.SHELTER | '토르 보호소'    | '서울특별시 헬로우 월드 주소 어디서나 123-123' | AssessmentStatus.PENDING
+    }
+
+    @Unroll("#testCase")
+    def "보호소 디테일 취득: 에러"() {
+        when:
+        userService.shelterDetail(userId)
+
+        then:
+        thrown(exception)
+
+        where:
+        testCase             | userId     | exception
+        'userId가 null인 경우'   | null       | UnsatisfiedRequirementException
+        '존재하지 않는 userId인 경우' | 'notExist' | UserNotFoundException
     }
 
     // -------------------------------------------------------------------------------------

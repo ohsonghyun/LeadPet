@@ -1,4 +1,4 @@
-package com.leadpet.www.infrastructure.db;
+package com.leadpet.www.infrastructure.db.donationPost;
 
 import com.leadpet.www.presentation.dto.response.post.donation.DonationPostPageResponseDto;
 import com.querydsl.core.types.Projections;

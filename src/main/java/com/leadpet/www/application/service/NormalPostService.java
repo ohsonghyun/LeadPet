@@ -1,25 +1,26 @@
 package com.leadpet.www.application.service;
 
-import com.leadpet.www.infrastructure.db.NormalPostsRepository;
-import com.leadpet.www.infrastructure.db.UsersRepository;
+import com.leadpet.www.infrastructure.db.normalPost.NormalPostsRepository;
+import com.leadpet.www.infrastructure.db.users.UsersRepository;
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.infrastructure.exception.PostNotFoundException;
 import com.leadpet.www.infrastructure.exception.UnauthorizedUserException;
 import com.leadpet.www.infrastructure.exception.WrongArgumentsException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
+import com.leadpet.www.presentation.dto.response.post.NormalPostResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 /**
  * NormalPostService
@@ -36,25 +37,11 @@ public class NormalPostService {
     /**
      * 페이징으로 지정한 일반 게시물 취득
      *
-     * @return {@code List<NormalPosts>}
+     * @return {@code List<NormalPostResponse>}
      */
-    public List<NormalPosts> getNormalPostsWith(final int page, final int size) {
-        if (checkNegative.test(page) || !checkPositive.test(size)) {
-            log.warn("[NormalPostService] 페이징 관련 파라미터 에러 page: {}, size: {}", page, size);
-            throw new WrongArgumentsException("Error: 옳지 않은 파라미터");
-        }
-        return normalPostsRepository.findAll(PageRequest.of(page, size, Sort.by("createdDate"))).getContent();
+    public Page<NormalPostResponse> getNormalPostsWith(final Pageable pageable) {
+        return normalPostsRepository.searchAll(pageable);
     }
-
-    /**
-     * 양의 정수인지 확인
-     */
-    private Predicate<Integer> checkPositive = num -> num > 0;
-
-    /**
-     * 음의 정수인지 확인
-     */
-    private Predicate<Integer> checkNegative = num -> num < 0;
 
     /**
      * 신규 일반 게시물 등록
@@ -120,12 +107,4 @@ public class NormalPostService {
         return normalPostId;
     }
 
-    /**
-     * 전체 일반 게시글의 카운트를 반환
-     *
-     * @return {@code int}
-     */
-    public Long getAllNormalPostCount() {
-        return this.normalPostsRepository.count();
-    }
 }
