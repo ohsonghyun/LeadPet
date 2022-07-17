@@ -6,6 +6,7 @@ import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
+import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.presentation.dto.request.user.LogInRequestDto
 import com.leadpet.www.presentation.dto.request.user.SignUpUserRequestDto
 import org.hamcrest.Matchers
@@ -18,6 +19,8 @@ import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import static org.mockito.ArgumentMatchers.isA
+import static org.mockito.Mockito.when
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -184,5 +187,45 @@ class UserControllerSpec extends Specification {
         mvc.perform(get(USER_URL + '/list').param('ut', 'wrongParam'))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath('\$.error.detail').value('Error: 잘못 된 파라미터'))
+    }
+
+    @Unroll
+    def "[유저 디테일 취득]정상"() {
+        given:
+        when(userService.normalUserDetail(isA(String.class)))
+                .thenReturn(
+                        Users.builder()
+                                .userId(userId)
+                                .email(email)
+                                .shelterPhoneNumber(shelterPhoneNumber)
+                                .build())
+
+        expect:
+        mvc.perform(get(USER_URL + '/' + userId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('\$.userId').value(userId))
+                .andExpect(jsonPath('\$.email').value(email))
+                .andExpect(jsonPath('\$shelterPhoneNumber').isEmpty())
+
+        where:
+        userId   | email            | shelterPhoneNumber
+        'userId' | 'test@gmail.com' | ''
+    }
+
+    def "[유저 디테일 취득]에러: userId가 null"(){
+        given:
+        when(userService.normalUserDetail(isA(String.class)))
+                .thenThrow(new UserNotFoundException())
+
+        expect:
+        mvc.perform(get(USER_URL + '/' + userId)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(responseStatus)
+
+        where:
+        testCase                  | userId     | responseStatus
+        'userId가 null인 경우'      | ''         | status().isBadRequest()
+        '존재하지 않는 userId인 경우' | 'notExist' | status().isNotFound()
     }
 }

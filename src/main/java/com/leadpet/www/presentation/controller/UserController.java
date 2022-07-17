@@ -7,7 +7,6 @@ import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
 import com.leadpet.www.presentation.controller.annotation.UserTypes;
 import com.leadpet.www.presentation.dto.request.user.LogInRequestDto;
 import com.leadpet.www.presentation.dto.request.user.SignUpUserRequestDto;
-import com.leadpet.www.presentation.dto.response.shelter.ShelterDetailDto;
 import com.leadpet.www.presentation.dto.response.user.LogInResponseDto;
 import com.leadpet.www.presentation.dto.response.user.SignUpUserResponseDto;
 import com.leadpet.www.presentation.dto.response.user.UserListResponseDto;
@@ -71,7 +70,8 @@ public class UserController {
     @ApiOperation(value = "유저 디테일 취득")
     @ApiResponses({
             @ApiResponse(code = 200, message = "유저 디테일 취득 성공"),
-            @ApiResponse(code = 404, message = "존재하지 않는 유저")
+            @ApiResponse(code = 404, message = "존재하지 않는 유저"),
+            @ApiResponse(code = 400, message = "필수 테이터 부족")
     })
     @GetMapping("/{userId}")
     public ResponseEntity<Users> getUserDetail(@PathVariable final String userId) {
