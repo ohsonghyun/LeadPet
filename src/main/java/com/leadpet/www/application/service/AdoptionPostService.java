@@ -1,6 +1,7 @@
 package com.leadpet.www.application.service;
 
 import com.leadpet.www.infrastructure.db.adoptionPost.AdoptionPostsRepository;
+import com.leadpet.www.infrastructure.db.adoptionPost.condition.SearchAdoptionPostCondition;
 import com.leadpet.www.infrastructure.db.users.UsersRepository;
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts;
 import com.leadpet.www.infrastructure.domain.users.Users;
@@ -9,6 +10,7 @@ import com.leadpet.www.presentation.dto.response.post.adoption.AdoptionPostPageR
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 /**
@@ -56,10 +58,14 @@ public class AdoptionPostService {
     /**
      * 입양 피드 리스트를 반환 (페이지네이션 포함)
      *
+     * @param condition {@code SearchAdoptionPostCondition}
      * @param pageable
      * @return {@code Page<AdoptionPostPageResponseDto>}
      */
-    public Page<AdoptionPostPageResponseDto> searchAll(Pageable pageable) {
-        return adoptionPostsRepository.searchAll(pageable);
+    public Page<AdoptionPostPageResponseDto> searchAll(
+            @NonNull final SearchAdoptionPostCondition condition,
+            final Pageable pageable
+    ) {
+        return adoptionPostsRepository.searchAll(condition, pageable);
     }
 }

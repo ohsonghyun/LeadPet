@@ -2,6 +2,7 @@ package com.leadpet.www.presentation.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.leadpet.www.application.service.NormalPostService
+import com.leadpet.www.infrastructure.db.normalPost.condition.SearchNormalPostCondition
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
@@ -46,7 +47,7 @@ class NormalPostControllerSpec extends Specification {
 
     def "[모든 일반 게시물 취득] Service로부터 받은 데이터를 DTO를 통해 반환한다"() {
         given:
-        when(normalPostService.getNormalPostsWith(isA(Pageable.class)))
+        when(normalPostService.getNormalPostsWith(isA(SearchNormalPostCondition), isA(Pageable)))
                 .thenReturn(
                         new PageImpl<NormalPostResponse>(
                                 List.of(

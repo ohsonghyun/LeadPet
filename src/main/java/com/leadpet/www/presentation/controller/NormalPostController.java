@@ -1,6 +1,7 @@
 package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.application.service.NormalPostService;
+import com.leadpet.www.infrastructure.db.normalPost.condition.SearchNormalPostCondition;
 import com.leadpet.www.presentation.dto.request.post.AddNormalPostRequestDto;
 import com.leadpet.www.presentation.dto.request.post.UpdateNormalPostRequestDto;
 import com.leadpet.www.presentation.dto.request.post.normal.DeleteNormalPostRequestDto;
@@ -69,8 +70,11 @@ public class NormalPostController {
 
     @ApiOperation(value = "모든 일반 게시물 취득")
     @GetMapping
-    public ResponseEntity<Page<NormalPostResponse>> getAllNormalPosts(final Pageable pageable) {
-        return ResponseEntity.ok(normalPostService.getNormalPostsWith(pageable));
+    public ResponseEntity<Page<NormalPostResponse>> getAllNormalPosts(
+            final SearchNormalPostCondition condition,
+            final Pageable pageable
+    ) {
+        return ResponseEntity.ok(normalPostService.getNormalPostsWith(condition, pageable));
     }
 
 }

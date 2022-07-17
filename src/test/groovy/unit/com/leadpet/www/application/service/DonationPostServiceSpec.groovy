@@ -1,6 +1,7 @@
 package com.leadpet.www.application.service
 
 import com.leadpet.www.infrastructure.db.donationPost.DonationPostsRepository
+import com.leadpet.www.infrastructure.db.donationPost.condition.SearchDonationPostCondition
 import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.donation.DonationMethod
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts
@@ -122,10 +123,12 @@ class DonationPostServiceSpec extends Specification {
                             .build())
         }
 
-        donationPostsRepository.searchAll(_ as Pageable) >> new PageImpl<DonationPostPageResponseDto>(content, pageRequest, totalSize)
+        donationPostsRepository.searchAll(_ as SearchDonationPostCondition, _ as Pageable) >> new PageImpl<DonationPostPageResponseDto>(content, pageRequest, totalSize)
 
         when:
-        final result = donationPostService.searchAll(pageRequest)
+        final result = donationPostService.searchAll(
+                SearchDonationPostCondition.builder().build(),
+                pageRequest)
 
         then:
         result != null

@@ -1,6 +1,7 @@
 package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.application.service.AdoptionPostService;
+import com.leadpet.www.infrastructure.db.adoptionPost.condition.SearchAdoptionPostCondition;
 import com.leadpet.www.presentation.dto.request.post.adoption.AddAdoptionPostRequestDto;
 import com.leadpet.www.presentation.dto.response.post.adoption.AddAdoptionPostResponseDto;
 import com.leadpet.www.presentation.dto.response.post.adoption.AdoptionPostPageResponseDto;
@@ -30,7 +31,7 @@ public class AdoptionPostController {
             @ApiResponse(code = 404, message = "존재하지 않는 유저")
     })
     @PostMapping
-    public ResponseEntity<AddAdoptionPostResponseDto> addAdoptionPost(@RequestBody AddAdoptionPostRequestDto newAdoptionPost) {
+    public ResponseEntity<AddAdoptionPostResponseDto> addAdoptionPost(@RequestBody final AddAdoptionPostRequestDto newAdoptionPost) {
         return ResponseEntity.ok(
                 AddAdoptionPostResponseDto.from(
                         adoptionPostService.addNewPost(newAdoptionPost.toAdoptionPost(), newAdoptionPost.getUserId())));
@@ -38,7 +39,10 @@ public class AdoptionPostController {
 
     @ApiOperation(value = "입양 게시물 취득 (페이지네이션)")
     @GetMapping
-    public ResponseEntity<Page<AdoptionPostPageResponseDto>> searchAdoptionPosts(Pageable pageable) {
-        return ResponseEntity.ok(adoptionPostService.searchAll(pageable));
+    public ResponseEntity<Page<AdoptionPostPageResponseDto>> searchAdoptionPosts(
+            final SearchAdoptionPostCondition condition,
+            final Pageable pageable
+    ) {
+        return ResponseEntity.ok(adoptionPostService.searchAll(condition, pageable));
     }
 }

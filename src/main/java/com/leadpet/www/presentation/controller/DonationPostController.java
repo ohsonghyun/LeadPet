@@ -1,6 +1,7 @@
 package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.application.service.DonationPostService;
+import com.leadpet.www.infrastructure.db.donationPost.condition.SearchDonationPostCondition;
 import com.leadpet.www.presentation.dto.request.post.donation.AddDonationPostRequestDto;
 import com.leadpet.www.presentation.dto.response.post.donation.AddDonationPostResponseDto;
 import com.leadpet.www.presentation.dto.response.post.donation.DonationPostPageResponseDto;
@@ -40,7 +41,10 @@ public class DonationPostController {
 
     @ApiOperation(value = "기부 게시물 취득 (페이지네이션)")
     @GetMapping
-    public ResponseEntity<Page<DonationPostPageResponseDto>> searchDonationPosts(Pageable pageable) {
-        return ResponseEntity.ok(donationPostService.searchAll(pageable));
+    public ResponseEntity<Page<DonationPostPageResponseDto>> searchDonationPosts(
+            final SearchDonationPostCondition condition,
+            final Pageable pageable
+    ) {
+        return ResponseEntity.ok(donationPostService.searchAll(condition, pageable));
     }
 }

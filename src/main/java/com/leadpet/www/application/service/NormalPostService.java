@@ -1,6 +1,7 @@
 package com.leadpet.www.application.service;
 
 import com.leadpet.www.infrastructure.db.normalPost.NormalPostsRepository;
+import com.leadpet.www.infrastructure.db.normalPost.condition.SearchNormalPostCondition;
 import com.leadpet.www.infrastructure.db.users.UsersRepository;
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import com.leadpet.www.infrastructure.domain.users.Users;
@@ -32,10 +33,15 @@ public class NormalPostService {
     /**
      * 페이징으로 지정한 일반 게시물 취득
      *
+     * @param condition {@code SearchNormalPostCondition}
+     * @param pageable  {@code Pageable}
      * @return {@code List<NormalPostResponse>}
      */
-    public Page<NormalPostResponse> getNormalPostsWith(final Pageable pageable) {
-        return normalPostsRepository.searchAll(pageable);
+    public Page<NormalPostResponse> getNormalPostsWith(
+            @NonNull final SearchNormalPostCondition condition,
+            final Pageable pageable
+    ) {
+        return normalPostsRepository.searchAll(condition, pageable);
     }
 
     /**
