@@ -38,6 +38,7 @@ public class UserService {
      */
     public Users saveNewUser(@NonNull final Users newUser) {
         if (!newUser.hasAllRequiredValues()) {
+            log.error("필수 데이터 누락\t{}", newUser.getUserId());
             throw new UnsatisfiedRequirementException("Error: 필수 입력 데이터 누락");
         }
 
@@ -46,6 +47,7 @@ public class UserService {
         // https://discord.com/channels/933332878232809493/934390730972069938/952454407340060722
         Users userInDb = findUserBy(newUser.getLoginMethod(), newUser.getUid(), newUser.getEmail(), newUser.getPassword());
         if (Objects.nonNull(userInDb)) {
+            log.error("이미 존재하는 유저:\tUserId: {}\tuid: {}", userInDb.getUserId(), userInDb.getUid());
             throw new UserAlreadyExistsException("Error: 이미 존재하는 유저");
         }
         newUser.createUserId();
@@ -61,6 +63,7 @@ public class UserService {
     public Users logIn(@NonNull final Users user) {
         Users userInDb = findUserBy(user.getLoginMethod(), user.getUid(), user.getEmail(), user.getPassword());
         if (Objects.isNull(userInDb)) {
+            log.info("로그인 실패:\t존재하지 않는 유저:\tuserId: {}\tuid: {}", user.getUserId(), user.getUid());
             throw new UserNotFoundException("Error: 존재하지 않는 유저");
         }
         return userInDb;
@@ -79,6 +82,7 @@ public class UserService {
     Users findUserBy(@NonNull final LoginMethod loginMethod, @NonNull final String uid, @Nullable final String email, @Nullable final String password) {
         if (loginMethod == LoginMethod.EMAIL) {
             if (ObjectUtils.anyNull(email, password)) {
+                log.info("Email Login 필수 데이터 누락:\tuid: {}", uid);
                 throw new UnsatisfiedRequirementException("Error: 필수 데이터 누락");
             }
             return usersRepository.findByLoginMethodAndUidAndEmailAndPassword(loginMethod, uid, email, password);

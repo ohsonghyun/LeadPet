@@ -6,12 +6,16 @@ import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.infrastructure.exception.PostNotFoundException;
 import com.leadpet.www.infrastructure.exception.UnauthorizedUserException;
+import com.leadpet.www.infrastructure.exception.WrongArgumentsException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
 import com.leadpet.www.presentation.dto.response.post.NormalPostResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +26,7 @@ import java.util.Objects;
  * NormalPostService
  */
 @Service
+@Slf4j
 @Transactional(readOnly = true)
 @lombok.RequiredArgsConstructor
 public class NormalPostService {
@@ -75,6 +80,7 @@ public class NormalPostService {
         // 권한이 없는 유저는 게시물 획득 불가
         Users author = targetPost.getUser();
         if (Objects.isNull(author) || ObjectUtils.notEqual(author.getUserId(), userId)) {
+            log.error("[NormalPostService] 게시글 수정 권한 없는 유저 에러 userId: {}", userId);
             throw new UnauthorizedUserException();
         }
 
@@ -94,6 +100,7 @@ public class NormalPostService {
         NormalPosts targetPost = this.normalPostsRepository.findById(normalPostId)
                 .orElseThrow(() -> new PostNotFoundException());
         if (ObjectUtils.notEqual(userId, targetPost.getUser().getUserId())) {
+            log.error("[NormalPostService] 게시글 삭제 권한 없는 유저 에러 userId: {}", userId);
             throw new UnauthorizedUserException();
         }
         this.normalPostsRepository.deleteById(normalPostId);
