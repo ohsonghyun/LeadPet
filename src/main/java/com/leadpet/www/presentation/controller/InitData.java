@@ -26,13 +26,53 @@ import java.util.stream.IntStream;
 @Component
 @lombok.RequiredArgsConstructor
 public class InitData {
+    private final InitNormalUserService initNormalUserService;
     private final InitShelterService initShelterService;
     private final InitPostService initPostService;
 
     @PostConstruct
     public void init() {
         initShelterService.init();
+        initNormalUserService.init();
         initPostService.init();
+    }
+
+    @Component
+    static class InitNormalUserService {
+        @PersistenceContext
+        EntityManager em;
+
+        @Transactional
+        public void init() {
+            List<String> names = List.of("김땡땡", "박뫄뫄", "곽붕붕");
+            // KAKAO
+            IntStream.range(101, 130).forEach(idx -> {
+                final String name = names.get((int) (Math.random() * names.size())) + idx;
+                em.persist(
+                        Users.builder()
+                                .userId("uidkko" + idx)
+                                .loginMethod(LoginMethod.KAKAO)
+                                .name(name)
+                                .uid("uid" + idx)
+                                .userType(UserType.NORMAL)
+                                .build());
+            });
+
+            // EMAIL
+            IntStream.range(131, 160).forEach(idx -> {
+                final String name = names.get((int) (Math.random() * names.size())) + idx;
+                em.persist(
+                        Users.builder()
+                                .userId("uidkko" + idx)
+                                .loginMethod(LoginMethod.EMAIL)
+                                .name(name)
+                                .uid("uid" + idx)
+                                .userType(UserType.NORMAL)
+                                .email("email" + idx + "@email.com")
+                                .password("password")
+                                .build());
+            });
+        }
     }
 
     @Component
