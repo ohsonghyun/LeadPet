@@ -1,5 +1,6 @@
 package com.leadpet.www.infrastructure.db.adoptionPost;
 
+import com.leadpet.www.infrastructure.db.adoptionPost.condition.SearchAdoptionPostCondition;
 import com.leadpet.www.presentation.dto.response.post.adoption.AdoptionPostPageResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,10 +10,11 @@ import org.springframework.data.domain.Pageable;
  */
 public interface AdoptionPostRepositoryCustom {
     /**
-     * 모든 입양 피드를 반환 (페이지네이션)
+     * 조건에 맞는 모든 입양 피드를 반환 (페이지네이션)
      *
-     * @param pageable
+     * @param condition {@code SearchAdoptionPostCodition}
+     * @param pageable  {@code Pageable}
      * @return {@code Page<AdoptionPostPageResponseDto>}
      */
-    Page<AdoptionPostPageResponseDto> searchAll(Pageable pageable);
+    Page<AdoptionPostPageResponseDto> searchAll(SearchAdoptionPostCondition condition, Pageable pageable);
 }

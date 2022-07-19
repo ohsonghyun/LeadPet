@@ -120,22 +120,28 @@ public class InitData {
                                     .contents("contents" + user.getUserId() + i)
                                     .user(user)
                                     .build());
-                    em.persist(
-                            DonationPosts.builder()
-                                    .donationPostId("DP_" + user.getUserId() + i)
-                                    .title("title" + user.getUserId() + i)
-                                    .contents("contents" + user.getUserId() + i)
-                                    .startDate(LocalDateTime.now().minusDays(1))
-                                    .endDate(LocalDateTime.now().plusDays((int) (Math.random() * 10)))
-                                    .user(user)
-                                    .build());
-                    em.persist(
-                            AdoptionPosts.builder()
-                                    .adoptionPostId("AP_" + user.getUserId() + i)
-                                    .title("title" + user.getUserId() + i)
-                                    .contents("contents" + user.getUserId() + i)
-                                    .user(user)
-                                    .build());
+
+                    // 보호소만 기부/입양 피드 작성
+                    // TODO 이거 로직에서도 추가해야하지 않나?
+
+                    if (user.getUserType() == UserType.SHELTER) {
+                        em.persist(
+                                DonationPosts.builder()
+                                        .donationPostId("DP_" + user.getUserId() + i)
+                                        .title("title" + user.getUserId() + i)
+                                        .contents("contents" + user.getUserId() + i)
+                                        .startDate(LocalDateTime.now().minusDays(1))
+                                        .endDate(LocalDateTime.now().plusDays((int) (Math.random() * 10)))
+                                        .user(user)
+                                        .build());
+                        em.persist(
+                                AdoptionPosts.builder()
+                                        .adoptionPostId("AP_" + user.getUserId() + i)
+                                        .title("title" + user.getUserId() + i)
+                                        .contents("contents" + user.getUserId() + i)
+                                        .user(user)
+                                        .build());
+                    }
                 }
             }
 

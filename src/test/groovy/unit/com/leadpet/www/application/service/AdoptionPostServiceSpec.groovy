@@ -1,6 +1,7 @@
 package com.leadpet.www.application.service
 
 import com.leadpet.www.infrastructure.db.adoptionPost.AdoptionPostsRepository
+import com.leadpet.www.infrastructure.db.adoptionPost.condition.SearchAdoptionPostCondition
 import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.pet.AnimalType
 import com.leadpet.www.infrastructure.domain.pet.Gender
@@ -146,10 +147,10 @@ class AdoptionPostServiceSpec extends Specification {
                             .build()
             )
         }
-        adoptionPostsRepository.searchAll(_ as Pageable) >> new PageImpl<AdoptionPostPageResponseDto>(content, pageRequest, totalSize)
+        adoptionPostsRepository.searchAll(_ as SearchAdoptionPostCondition, _ as Pageable) >> new PageImpl<AdoptionPostPageResponseDto>(content, pageRequest, totalSize)
 
         when:
-        final result = adoptionPostService.searchAll(pageRequest)
+        final result = adoptionPostService.searchAll(SearchAdoptionPostCondition.builder().build(), pageRequest)
 
         then:
         result != null

@@ -1,6 +1,7 @@
 package com.leadpet.www.application.service;
 
 import com.leadpet.www.infrastructure.db.donationPost.DonationPostsRepository;
+import com.leadpet.www.infrastructure.db.donationPost.condition.SearchDonationPostCondition;
 import com.leadpet.www.infrastructure.db.users.UsersRepository;
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts;
 import com.leadpet.www.infrastructure.domain.users.Users;
@@ -9,6 +10,7 @@ import com.leadpet.www.presentation.dto.response.post.donation.DonationPostPageR
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 /**
@@ -52,10 +54,14 @@ public class DonationPostService {
     /**
      * 기부 피드 목록 취득 (페이지네이션)
      *
-     * @param pageable 페이징 정보
+     * @param condition {@code SearchDonationPostCondition}
+     * @param pageable  페이징 정보
      * @return {@code Page<DonationPostPageResponseDto>}
      */
-    public Page<DonationPostPageResponseDto> searchAll(Pageable pageable) {
-        return donationPostsRepository.searchAll(pageable);
+    public Page<DonationPostPageResponseDto> searchAll(
+            @NonNull final SearchDonationPostCondition condition,
+            final Pageable pageable
+    ) {
+        return donationPostsRepository.searchAll(condition, pageable);
     }
 }

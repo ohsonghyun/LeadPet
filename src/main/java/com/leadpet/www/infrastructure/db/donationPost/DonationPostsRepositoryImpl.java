@@ -1,12 +1,15 @@
 package com.leadpet.www.infrastructure.db.donationPost;
 
+import com.leadpet.www.infrastructure.db.donationPost.condition.SearchDonationPostCondition;
 import com.leadpet.www.presentation.dto.response.post.donation.DonationPostPageResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +25,7 @@ public class DonationPostsRepositoryImpl implements DonationPostRepositoryCustom
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<DonationPostPageResponseDto> searchAll(Pageable pageable) {
+    public Page<DonationPostPageResponseDto> searchAll(@NonNull final SearchDonationPostCondition condition, final Pageable pageable) {
         List<DonationPostPageResponseDto> content = queryFactory
                 .select(Projections.constructor(
                         DonationPostPageResponseDto.class,
@@ -37,7 +40,8 @@ public class DonationPostsRepositoryImpl implements DonationPostRepositoryCustom
                 ))
                 .from(donationPosts)
                 .where(
-                        betweenStartDateAndEndDate()
+                        betweenStartDateAndEndDate(),
+                        eqUserIdWith(condition.getUserId())
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -47,7 +51,8 @@ public class DonationPostsRepositoryImpl implements DonationPostRepositoryCustom
                 .select(donationPosts.donationPostId.count())
                 .from(donationPosts)
                 .where(
-                        betweenStartDateAndEndDate()
+                        betweenStartDateAndEndDate(),
+                        eqUserIdWith(condition.getUserId())
                 )
                 .fetchOne();
 
@@ -65,5 +70,9 @@ public class DonationPostsRepositoryImpl implements DonationPostRepositoryCustom
 
     private BooleanExpression endDateGoe(final LocalDateTime targetTime) {
         return donationPosts.endDate.goe(targetTime);
+    }
+
+    private BooleanExpression eqUserIdWith(final String userId) {
+        return StringUtils.isBlank(userId) ? null : donationPosts.user.userId.eq(userId);
     }
 }

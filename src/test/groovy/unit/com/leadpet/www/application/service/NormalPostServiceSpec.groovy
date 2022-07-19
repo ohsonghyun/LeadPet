@@ -1,6 +1,7 @@
 package com.leadpet.www.application.service
 
 import com.leadpet.www.infrastructure.db.normalPost.NormalPostsRepository
+import com.leadpet.www.infrastructure.db.normalPost.condition.SearchNormalPostCondition
 import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
@@ -37,7 +38,7 @@ class NormalPostServiceSpec extends Specification {
                 .userType(UserType.NORMAL)
                 .build()
 
-        normalPostsRepository.searchAll(_ as Pageable) >> new PageImpl(
+        normalPostsRepository.searchAll(_ as SearchNormalPostCondition, _ as Pageable) >> new PageImpl(
                 List.of(
                         NormalPosts.builder().normalPostId("NP_a").title("title").contents("contents").user(user).build(),
                         NormalPosts.builder().normalPostId("NP_b").title("title").contents("contents").user(user).build(),
@@ -48,7 +49,9 @@ class NormalPostServiceSpec extends Specification {
         )
 
         when:
-        final result = normalPostService.getNormalPostsWith(pageable)
+        final result = normalPostService.getNormalPostsWith(
+                SearchNormalPostCondition.builder().build(),
+                pageable)
 
         then:
         result.getTotalElements() == 3

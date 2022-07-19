@@ -1,13 +1,15 @@
 package com.leadpet.www.infrastructure.db.normalPost;
 
-import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
-import com.leadpet.www.infrastructure.domain.posts.QNormalPosts;
+import com.leadpet.www.infrastructure.db.normalPost.condition.SearchNormalPostCondition;
 import com.leadpet.www.presentation.dto.response.post.NormalPostResponse;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 
@@ -21,9 +23,8 @@ public class NormalPostsRepositoryImpl implements NormalPostsRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-
     @Override
-    public Page<NormalPostResponse> searchAll(Pageable pageable) {
+    public Page<NormalPostResponse> searchAll(@NonNull final SearchNormalPostCondition condition, final Pageable pageable) {
         final List<NormalPostResponse> content = queryFactory
                 .select(
                         Projections.constructor(
@@ -36,6 +37,7 @@ public class NormalPostsRepositoryImpl implements NormalPostsRepositoryCustom {
                         )
                 )
                 .from(normalPosts)
+                .where(eqUserIdWith(condition.getUserId()))
                 .orderBy(normalPosts.createdDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -43,7 +45,18 @@ public class NormalPostsRepositoryImpl implements NormalPostsRepositoryCustom {
         final Long total = queryFactory
                 .select(normalPosts.normalPostId.count())
                 .from(normalPosts)
+                .where(eqUserIdWith(condition.getUserId()))
                 .fetchOne();
         return new PageImpl<>(content, pageable, total);
+    }
+
+    /**
+     * 특정 UserId 조건
+     *
+     * @param userId {@code String}
+     * @return {@code BooleanExpression}
+     */
+    private BooleanExpression eqUserIdWith(final String userId) {
+        return StringUtils.isBlank(userId) ? null : normalPosts.user.userId.eq(userId);
     }
 }

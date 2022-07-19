@@ -1,11 +1,15 @@
 package com.leadpet.www.infrastructure.db.adoptionPost;
 
+import com.leadpet.www.infrastructure.db.adoptionPost.condition.SearchAdoptionPostCondition;
 import com.leadpet.www.presentation.dto.response.post.adoption.AdoptionPostPageResponseDto;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 
@@ -20,7 +24,7 @@ public class AdoptionPostsRepositoryImpl implements AdoptionPostRepositoryCustom
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<AdoptionPostPageResponseDto> searchAll(Pageable pageable) {
+    public Page<AdoptionPostPageResponseDto> searchAll(@NonNull final SearchAdoptionPostCondition condition, final Pageable pageable) {
         List<AdoptionPostPageResponseDto> content = queryFactory
                 .select(
                         Projections.constructor(
@@ -39,6 +43,7 @@ public class AdoptionPostsRepositoryImpl implements AdoptionPostRepositoryCustom
                                 adoptionPosts.user.userId.as("userId")
                         ))
                 .from(adoptionPosts)
+                .where(eqUserIdWith(condition.getUserId()))
                 .orderBy(adoptionPosts.euthanasiaDate.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -47,8 +52,19 @@ public class AdoptionPostsRepositoryImpl implements AdoptionPostRepositoryCustom
         Long total = queryFactory
                 .select(adoptionPosts.count())
                 .from(adoptionPosts)
+                .where(eqUserIdWith(condition.getUserId()))
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, total);
+    }
+
+    /**
+     * 특정 UserId 조건
+     *
+     * @param userId {@code String}
+     * @return {@code BooleanExpression}
+     */
+    private BooleanExpression eqUserIdWith(final String userId) {
+        return StringUtils.isBlank(userId) ? null : adoptionPosts.user.userId.eq(userId);
     }
 }

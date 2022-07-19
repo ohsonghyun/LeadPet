@@ -3,6 +3,7 @@ package com.leadpet.www.presentation.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.leadpet.www.application.service.DonationPostService
+import com.leadpet.www.infrastructure.db.donationPost.condition.SearchDonationPostCondition
 import com.leadpet.www.infrastructure.domain.donation.DonationMethod
 import com.leadpet.www.infrastructure.domain.pet.AnimalType
 import com.leadpet.www.infrastructure.domain.pet.Gender
@@ -124,7 +125,7 @@ class DonationPostControllerSpec extends Specification {
     }
 
     def "[기부 피드 목록 취득]: 정상"() {
-        when(donationPostService.searchAll(isA(Pageable.class)))
+        when(donationPostService.searchAll(isA(SearchDonationPostCondition), isA(Pageable)))
                 .thenReturn(new PageImpl<DonationPostPageResponseDto>(
                         List.of(
                                 AdoptionPosts.builder()
