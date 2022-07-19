@@ -9,6 +9,7 @@ import com.leadpet.www.presentation.dto.request.user.LogInRequestDto;
 import com.leadpet.www.presentation.dto.request.user.SignUpUserRequestDto;
 import com.leadpet.www.presentation.dto.response.user.LogInResponseDto;
 import com.leadpet.www.presentation.dto.response.user.SignUpUserResponseDto;
+import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto;
 import com.leadpet.www.presentation.dto.response.user.UserListResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -74,7 +75,7 @@ public class UserController {
             @ApiResponse(code = 400, message = "필수 테이터 부족")
     })
     @GetMapping("/{userId}")
-    public ResponseEntity<Users> getUserDetail(@PathVariable final String userId) {
+    public ResponseEntity<UserDetailResponseDto> getUserDetail(@PathVariable final String userId) {
         return ResponseEntity.ok(userService.normalUserDetail(userId));
     }
 

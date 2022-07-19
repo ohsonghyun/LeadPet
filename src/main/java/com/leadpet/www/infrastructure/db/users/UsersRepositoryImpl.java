@@ -4,6 +4,8 @@ import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto;
+import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.commons.lang3.StringUtils;
@@ -110,6 +112,24 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
                         users.userId.eq(userId),
                         eqUserTypeNormal()
                 )
+                .fetchOne();
+    }
+
+    @Override
+    public UserDetailResponseDto findNormalUserDetailByUserId(String userId) {
+        // todo 총 댓글수 넣어야됨
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                UserDetailResponseDto.class,
+                                users.userId,
+                                users.email,
+                                donationPosts.user.userId.count().as("allDonationCount")
+                        ))
+                .from(users)
+                .join(donationPosts).on(users.userId.eq(donationPosts.user.userId))
+                .where(users.userId.eq(userId),
+                        eqUserTypeNormal())
                 .fetchOne();
     }
 
