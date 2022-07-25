@@ -3,6 +3,7 @@ package com.leadpet.www.presentation.dto.response.post;
 import io.swagger.annotations.ApiModel;
 import lombok.AccessLevel;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -17,6 +18,7 @@ public class NormalPostResponse {
     private final String title;
     private final String contents;
     private final List<String> images;
+    private final LocalDateTime createdDate;
 
     private final String userId;
 }

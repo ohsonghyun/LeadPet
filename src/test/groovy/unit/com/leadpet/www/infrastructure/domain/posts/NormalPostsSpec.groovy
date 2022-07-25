@@ -12,6 +12,7 @@ import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
+import com.leadpet.www.presentation.dto.response.post.NormalPostResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
@@ -162,6 +163,14 @@ class NormalPostsSpec extends Specification {
 
         then:
         result.getContent().size() == 5
+        result.getContent().get(0) instanceof NormalPostResponse
+        result.getContent().get(0).getUserId() != null
+        result.getContent().get(0).getNormalPostId() != null
+        result.getContent().get(0).getImages().isEmpty()
+        result.getContent().get(0).getContents() != null
+        result.getContent().get(0).getTitle() != null
+        result.getContent().get(0).getUserId() != null
+        // TODO createdTime 도 테스트 하고 싶은데 DI 가 안 되는 듯.. 어떻게해야하지?
         result.getTotalElements() == expectedNumOfPosts
 
         where:
