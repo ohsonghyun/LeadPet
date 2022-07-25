@@ -1,5 +1,6 @@
 package com.leadpet.www.presentation.controller;
 
+import com.leadpet.www.infrastructure.domain.breed.Breed;
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts;
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts;
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
@@ -29,12 +30,14 @@ public class InitData {
     private final InitNormalUserService initNormalUserService;
     private final InitShelterService initShelterService;
     private final InitPostService initPostService;
+    private final InitBreedService initBreedService;
 
     @PostConstruct
     public void init() {
         initShelterService.init();
         initNormalUserService.init();
         initPostService.init();
+        initBreedService.init();
     }
 
     @Component
@@ -104,7 +107,6 @@ public class InitData {
 
     @Component
     static class InitPostService {
-
         @PersistenceContext
         EntityManager em;
 
@@ -144,8 +146,50 @@ public class InitData {
                     }
                 }
             }
+        }
+    }
+
+    @Component
+    static class InitBreedService {
+        @PersistenceContext
+        EntityManager em;
+
+        @Transactional
+        public void init() {
+            // 좀 더 좋은 코드로 바꾸자.. 지금은 졸리니까 기백으로 밀어 붙인다
+            // 가
+            em.persist(
+                    Breed.builder()
+                            .breedId("breedId0")
+                            .category("가")
+                            .breedName("골든 리트리버")
+                            .build());
+            em.persist(
+                    Breed.builder()
+                            .breedId("breedId1")
+                            .category("가")
+                            .breedName("고든셰터")
+                            .build());
+            // 사
+            em.persist(
+                    Breed.builder()
+                            .breedId("breedId2")
+                            .category("사")
+                            .breedName("시츄")
+                            .build());
+            em.persist(
+                    Breed.builder()
+                            .breedId("breedId3")
+                            .category("사")
+                            .breedName("스피츠")
+                            .build());
+            em.persist(
+                    Breed.builder()
+                            .breedId("breedId4")
+                            .category("사")
+                            .breedName("시바")
+                            .build());
 
         }
-
     }
 }
