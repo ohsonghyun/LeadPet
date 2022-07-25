@@ -33,6 +33,7 @@ public class NormalPostsRepositoryImpl implements NormalPostsRepositoryCustom {
                                 normalPosts.title,
                                 normalPosts.contents,
                                 normalPosts.images,
+                                normalPosts.createdDate,
                                 normalPosts.user.userId.as("userId")
                         )
                 )
