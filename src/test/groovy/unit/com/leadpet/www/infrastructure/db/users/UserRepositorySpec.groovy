@@ -52,6 +52,8 @@ class UserRepositorySpec extends Specification {
                             .shelterName(name + " 보호소")
                             .shelterAddress(city + " 헬로우 월드 주소 어디서나 123-123")
                             .shelterAssessmentStatus(AssessmentStatus.PENDING)
+                            .shelterHomePage("www." + name + ".com")
+                            .shelterPhoneNumber("010-" + idx + "12-1234")
                             .build())
 
         })

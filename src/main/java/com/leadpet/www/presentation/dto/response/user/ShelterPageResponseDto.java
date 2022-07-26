@@ -26,4 +26,16 @@ public class ShelterPageResponseDto {
      * 승인 요청 여부
      */
     private AssessmentStatus assessmentStatus;
+    /**
+     * 보호소 주소
+     */
+    private String shelterAddress;
+    /**
+     * 연락처
+     */
+    private String shelterPhoneNumber;
+    /**
+     * 웹사이트 주소
+     */
+    private String shelterHomePage;
 }
