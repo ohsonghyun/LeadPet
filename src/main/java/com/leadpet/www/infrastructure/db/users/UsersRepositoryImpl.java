@@ -4,6 +4,8 @@ import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto;
+import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.commons.lang3.StringUtils;
@@ -89,6 +91,37 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
         return new PageImpl<>(shelterPageResponseDto, pageable, total);
     }
 
+    @Nullable
+    @Override
+    public Users findShelterByUserId(final String userId) {
+        return queryFactory
+                .selectFrom(users)
+                .where(
+                        users.userId.eq(userId),
+                        eqUserTypeShelter()
+                )
+                .fetchOne();
+    }
+
+    @Nullable
+    @Override
+    public UserDetailResponseDto findNormalUserDetailByUserId(String userId) {
+        // todo 총 댓글수 넣어야됨
+        List<UserDetailResponseDto> userDetail = queryFactory
+                .select(
+                        Projections.constructor(
+                                UserDetailResponseDto.class,
+                                users.userId,
+                                users.email
+                        ))
+                .from(users)
+                .where(users.userId.eq(userId),
+                        eqUserTypeNormal())
+                .fetch();
+
+        return userDetail.isEmpty() ? null : userDetail.get(0);
+    }
+
     /**
      * 보호소 주소 조건 추가
      *
@@ -111,20 +144,24 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
         return StringUtils.isBlank(shelterName) ? null : users.shelterName.contains(shelterName);
     }
 
+    /**
+     * 유저타입 보호소 조건
+     *
+     * @return {@code BooleanExpression}
+     */
     @Nullable
     private BooleanExpression eqUserTypeShelter() {
         return users.userType.eq(UserType.SHELTER);
     }
 
+    /**
+     * 유저타입 일반유저 조건
+     *
+     * @return {@code BooleanExpression}
+     */
     @Nullable
-    @Override
-    public Users findShelterByUserId(final String userId) {
-        return queryFactory
-                .selectFrom(users)
-                .where(
-                        users.userId.eq(userId),
-                        eqUserTypeShelter()
-                )
-                .fetchOne();
+    private BooleanExpression eqUserTypeNormal() {
+        return users.userType.eq(UserType.NORMAL);
     }
+
 }

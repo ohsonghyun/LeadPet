@@ -6,6 +6,7 @@ import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
+import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.presentation.dto.request.user.LogInRequestDto
 import com.leadpet.www.presentation.dto.request.user.SignUpUserRequestDto
 import org.hamcrest.Matchers
@@ -184,5 +185,32 @@ class UserControllerSpec extends Specification {
         mvc.perform(get(USER_URL + '/list').param('ut', 'wrongParam'))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath('\$.error.detail').value('Error: 잘못 된 파라미터'))
+    }
+
+    @Unroll
+    def "[유저 디테일 취득]정상"() {
+        given:
+        userService.saveNewUser(Users.builder().loginMethod(LoginMethod.KAKAO).uid('uid1').email(email).name('name1').userType(UserType.NORMAL).build())
+
+        expect:
+        mvc.perform(get(USER_URL + '/' + userId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('\$.userId').value(userId))
+                .andExpect(jsonPath('\$.email').value(email))
+
+        where:
+        userId    | email            | shelterPhoneNumber
+        'uid1kko' | 'test@gmail.com' | ''
+    }
+
+    def "[유저 디테일 취득]에러: #testCase"() {
+        expect:
+        mvc.perform(get(USER_URL + '/' + userId))
+                .andExpect(responseStatus)
+
+        where:
+        testCase             | expectedException                              | userId     | responseStatus
+        '존재하지 않는 userId인 경우' | new UserNotFoundException("Error: 존재하지 않는 유저") | 'notExist' | status().isNotFound()
     }
 }
