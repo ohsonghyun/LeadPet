@@ -105,32 +105,21 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
 
     @Nullable
     @Override
-    public Users findNormalUserByUserId(final String userId) {
-        return queryFactory
-                .selectFrom(users)
-                .where(
-                        users.userId.eq(userId),
-                        eqUserTypeNormal()
-                )
-                .fetchOne();
-    }
-
-    @Override
     public UserDetailResponseDto findNormalUserDetailByUserId(String userId) {
         // todo 총 댓글수 넣어야됨
-        return queryFactory
+        List<UserDetailResponseDto> userDetail = queryFactory
                 .select(
                         Projections.constructor(
                                 UserDetailResponseDto.class,
                                 users.userId,
-                                users.email,
-                                donationPosts.user.userId.count().as("allDonationCount")
+                                users.email
                         ))
                 .from(users)
-                .join(donationPosts).on(users.userId.eq(donationPosts.user.userId))
                 .where(users.userId.eq(userId),
                         eqUserTypeNormal())
-                .fetchOne();
+                .fetch();
+
+        return userDetail.isEmpty() ? null : userDetail.get(0);
     }
 
     /**

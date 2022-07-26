@@ -10,6 +10,7 @@ import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto
+import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
@@ -173,15 +174,12 @@ class UserRepositorySpec extends Specification {
         em.clear()
 
         when:
-        Users user = usersRepository.findNormalUserByUserId(userId)
+        UserDetailResponseDto userDetailResponseDto = usersRepository.findNormalUserDetailByUserId(userId)
 
         then:
-        user != null
-        user.getUserId() == userId
-        user.getLoginMethod() == loginMethod
-        user.getUid() == uid
-        user.getName() == name
-        user.getUserType() == userType
+        userDetailResponseDto != null
+        userDetailResponseDto.getUserId() == userId
+        userDetailResponseDto.getEmail() == null // 이메일 로그인인 경우에는 null 아님. TODO 리팩토링 필요!
 
         where:
         userId   | loginMethod       | uid   | name   | userType

@@ -9,7 +9,8 @@ import lombok.AccessLevel;
 
 @ApiModel("유저 디테일 Response")
 @lombok.Getter
-@lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
+@lombok.NoArgsConstructor
+@lombok.AllArgsConstructor
 @lombok.Builder
 public class UserDetailResponseDto {
 
@@ -18,12 +19,12 @@ public class UserDetailResponseDto {
     /**
      * 총 댓글 수
      */
-    private long allReplyCount;
+    // TODO
+//    private long allReplyCount;
     /**
      * 총 기부 수
      */
-    private long allDonationCount;
-
-
+    // TODO 기부는 어떻게? 어디서? 데이터가 없다.
+//    private long allDonationCount;
 
 }

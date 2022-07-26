@@ -19,8 +19,6 @@ import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static org.mockito.ArgumentMatchers.isA
-import static org.mockito.Mockito.when
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -192,13 +190,7 @@ class UserControllerSpec extends Specification {
     @Unroll
     def "[유저 디테일 취득]정상"() {
         given:
-        when(userService.normalUserDetail(isA(String.class)))
-                .thenReturn(
-                        Users.builder()
-                                .userId(userId)
-                                .email(email)
-                                .shelterPhoneNumber(shelterPhoneNumber)
-                                .build())
+        userService.saveNewUser(Users.builder().loginMethod(LoginMethod.KAKAO).uid('uid1').email(email).name('name1').userType(UserType.NORMAL).build())
 
         expect:
         mvc.perform(get(USER_URL + '/' + userId)
@@ -206,26 +198,19 @@ class UserControllerSpec extends Specification {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('\$.userId').value(userId))
                 .andExpect(jsonPath('\$.email').value(email))
-                .andExpect(jsonPath('\$shelterPhoneNumber').isEmpty())
 
         where:
-        userId   | email            | shelterPhoneNumber
-        'userId' | 'test@gmail.com' | ''
+        userId    | email            | shelterPhoneNumber
+        'uid1kko' | 'test@gmail.com' | ''
     }
 
-    def "[유저 디테일 취득]에러: userId가 null"(){
-        given:
-        when(userService.normalUserDetail(isA(String.class)))
-                .thenThrow(new UserNotFoundException())
-
+    def "[유저 디테일 취득]에러: #testCase"() {
         expect:
-        mvc.perform(get(USER_URL + '/' + userId)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(responseStatus)
+        mvc.perform(get(USER_URL + '/' + userId))
+                .andExpect(responseStatus)
 
         where:
-        testCase                  | userId     | responseStatus
-        'userId가 null인 경우'      | ''         | status().isBadRequest()
-        '존재하지 않는 userId인 경우' | 'notExist' | status().isNotFound()
+        testCase             | expectedException                              | userId     | responseStatus
+        '존재하지 않는 userId인 경우' | new UserNotFoundException("Error: 존재하지 않는 유저") | 'notExist' | status().isNotFound()
     }
 }

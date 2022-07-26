@@ -10,6 +10,7 @@ import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto
+import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -211,29 +212,23 @@ class UserServiceSpec extends Specification {
 
     def "일반 유저 디테일 취득: 정상"() {
         given:
-        usersRepository.findNormalUserByUserId(_) >>
-                Users.builder()
+        usersRepository.findNormalUserDetailByUserId(_) >>
+                UserDetailResponseDto.builder()
                         .userId(userId)
-                        .loginMethod(loginMethod)
-                        .uid(uid)
-                        .name(name)
-                        .userType(userType)
+                        .email(email)
                         .build()
 
         when:
-        Users normalUser = userService.normalUserDetail(userId)
+        UserDetailResponseDto userDetailResponseDto = userService.normalUserDetail(userId)
 
         then:
-        normalUser != null
-        normalUser.getUserId() == userId
-        normalUser.getLoginMethod() == loginMethod
-        normalUser.getUid() == uid
-        normalUser.getName() == name
-        normalUser.getUserType() == userType
+        userDetailResponseDto != null
+        userDetailResponseDto.getUserId() == userId
+        userDetailResponseDto.getEmail() == email
 
         where:
-        userId   | loginMethod       | uid   | name   | userType
-        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.NORMAL
+        userId   | email
+        'userId' | 'test@email.com'
     }
 
     // TODO 역시 보호소 디테일하고 내부 로직은 공유하고 서비스에서 따로 분리하는게 좋을까?
