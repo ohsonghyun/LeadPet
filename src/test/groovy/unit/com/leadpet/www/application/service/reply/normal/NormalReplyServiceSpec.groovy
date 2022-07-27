@@ -148,4 +148,61 @@ class NormalReplyServiceSpec extends Specification {
         replyId   | userId
         'replyId' | 'userId'
     }
+
+    def "[댓글 수정] 성공"() {
+        given:
+        normalReplyRepository.findById(_ as String) >> Optional.of(
+                NormalReply.builder()
+                        .normalReplyId(replyId)
+                        .userId(userId)
+                        .content('oldContent')
+                        .build())
+
+        when:
+        def updatedReply = normalReplyService.updateContent(userId, replyId, newContent)
+
+        then:
+        updatedReply.getNormalReplyId() == replyId
+        updatedReply.getUserId() == userId
+        updatedReply.getContent() == newContent
+
+        where:
+        userId   | replyId   | newContent
+        'userId' | 'replyId' | 'newContent'
+    }
+
+    def "[댓글 수정] 존재하지 않는 댓글 에러"() {
+        given:
+        normalReplyRepository.findById(_ as String) >> Optional.empty()
+
+        when:
+        normalReplyService.updateContent(userId, replyId, newContent)
+
+        then:
+        thrown(ReplyNotFoundException)
+
+        where:
+        userId   | replyId   | newContent
+        'userId' | 'replyId' | 'newContent'
+    }
+
+    def "[댓글 수정] 작성자가 아닌 유저가 댓글 수정하려면 에러"() {
+        given:
+        normalReplyRepository.findById(_ as String) >> Optional.of(
+                NormalReply.builder()
+                        .normalReplyId(replyId)
+                        .userId('userId')
+                        .content('replyContent')
+                        .build())
+
+        when:
+        normalReplyService.updateContent('wrongUserId', replyId, 'newContent')
+
+        then:
+        thrown(UnauthorizedUserException)
+
+        where:
+        replyId   | userId
+        'replyId' | 'userId'
+    }
 }

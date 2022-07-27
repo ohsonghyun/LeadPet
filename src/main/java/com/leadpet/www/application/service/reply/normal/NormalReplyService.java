@@ -15,6 +15,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -23,6 +24,7 @@ import java.util.Objects;
  */
 @Service
 @Slf4j
+@Transactional(readOnly = true)
 @lombok.RequiredArgsConstructor
 public class NormalReplyService {
 
@@ -38,6 +40,7 @@ public class NormalReplyService {
      * @param content      {@code String} 댓글 내용
      * @return {@code NormalReply} 추가한 댓글
      */
+    @Transactional
     public NormalReply saveReply(final String normalPostId, final String userId, final String content) {
         NormalPosts normalPosts = normalPostsRepository.findById(normalPostId)
                 .orElseThrow(() -> {
@@ -67,6 +70,7 @@ public class NormalReplyService {
      * @param replyId {@code String} 삭제 대상 댓글ID
      * @return {@code String} 삭제한 댓글ID
      */
+    @Transactional
     public String deleteReply(final String userId, final String replyId) {
         NormalReply deletingReply = normalReplyRepository.findById(replyId)
                 .orElseThrow(() -> {
@@ -80,5 +84,32 @@ public class NormalReplyService {
         }
 
         return replyId;
+    }
+
+
+    /**
+     * 댓글 수정
+     * <p>내용만 수정 가능</p>
+     *
+     * @param userId     {@code String} 수정 요청한 유저ID
+     * @param replyId    {@code String} 수정 대상 댓글ID
+     * @param newContent {@code String} 새로운 댓글 내용
+     * @return {@code NormalReply} 수정된 댓글 정보
+     */
+    @Transactional
+    public NormalReply updateContent(final String userId, final String replyId, final String newContent) {
+        NormalReply updatingReply = normalReplyRepository.findById(replyId)
+                .orElseThrow(() -> {
+                    log.error("[NormalReplyService] 존재하지 않는 일상 댓글 ID: {}", replyId);
+                    return new ReplyNotFoundException("Error: 존재하지 않는 댓글");
+                });
+
+        if (!ObjectUtils.defaultIfNull(updatingReply.getUserId(), StringUtils.EMPTY).equals(userId)) {
+            log.error("[NormalReplyService] 수정 권한이 없는 유저: {}", userId);
+            throw new UnauthorizedUserException("Error: 수정 권한이 없는 유저");
+        }
+
+        updatingReply.updateContent(newContent);
+        return updatingReply;
     }
 }
