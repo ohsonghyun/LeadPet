@@ -7,6 +7,8 @@ import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.reply.normal.NormalReply
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.PostNotFoundException
+import com.leadpet.www.infrastructure.exception.ReplyNotFoundException
+import com.leadpet.www.infrastructure.exception.UnauthorizedUserException
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import spock.lang.Specification
 
@@ -58,7 +60,7 @@ class NormalReplyServiceSpec extends Specification {
         'replyId' | 'userId' | 'normalPostId' | 'replyContent'
     }
 
-    def "존재하지 않는 일상피드ID인 경우 에러"() {
+    def "[일상피드 댓글 추가] 존재하지 않는 일상피드ID인 경우 에러"() {
         given:
         normalPostsRepository.findById(_ as String) >> Optional.empty()
 
@@ -73,7 +75,7 @@ class NormalReplyServiceSpec extends Specification {
         'replyId' | 'userId' | 'normalPostId' | 'replyContent'
     }
 
-    def "존재하지 않는 유저ID인 경우 에러"() {
+    def "[일상피드 댓글 추가] 존재하지 않는 유저ID인 경우 에러"() {
         given:
         normalPostsRepository.findById(_ as String) >> Optional.of(
                 NormalPosts.builder()
@@ -93,5 +95,57 @@ class NormalReplyServiceSpec extends Specification {
         where:
         replyId   | userId   | normalPostId   | replyContent
         'replyId' | 'userId' | 'normalPostId' | 'replyContent'
+    }
+
+    def "[댓글 삭제] 성공"() {
+        given:
+        normalReplyRepository.findById(_ as String) >> Optional.of(
+                NormalReply.builder()
+                        .normalReplyId(replyId)
+                        .userId(userId)
+                        .content('replyContent')
+                        .build())
+
+        when:
+        def deletedReplyId = normalReplyService.deleteReply(userId, replyId)
+
+        then:
+        deletedReplyId != null
+        deletedReplyId == replyId
+
+        where:
+        replyId   | userId
+        'replyId' | 'userId'
+    }
+
+    def "[댓글 삭제] 댓글이 존재 하지 않으면 에러"() {
+        given:
+        normalReplyRepository.findById(_ as String) >> Optional.empty()
+
+        when:
+        normalReplyService.deleteReply('userId', 'unknownReplyId')
+
+        then:
+        thrown(ReplyNotFoundException)
+    }
+
+    def "[댓글 삭제] 작성자가 아닌 제3자가 삭제하려면 에러"() {
+        given:
+        normalReplyRepository.findById(_ as String) >> Optional.of(
+                NormalReply.builder()
+                        .normalReplyId(replyId)
+                        .userId('userId')
+                        .content('replyContent')
+                        .build())
+
+        when:
+        normalReplyService.deleteReply('wrongUserId', replyId)
+
+        then:
+        thrown(UnauthorizedUserException)
+
+        where:
+        replyId   | userId
+        'replyId' | 'userId'
     }
 }
