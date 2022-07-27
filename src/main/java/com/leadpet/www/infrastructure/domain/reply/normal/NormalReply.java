@@ -29,4 +29,12 @@ public class NormalReply {
     @Column(name = "content")
     private String content;
 
+    /**
+     * 댓글 내용 수정
+     *
+     * @param newContent {@code String} 새로운 댓글
+     */
+    public void updateContent(final String newContent) {
+        this.content = newContent;
+    }
 }
