@@ -1,6 +1,8 @@
 package com.leadpet.www.infrastructure.domain.reply.normal;
 
+import com.leadpet.www.infrastructure.domain.BaseTime;
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
+import com.leadpet.www.infrastructure.domain.users.Users;
 import lombok.AccessLevel;
 
 import javax.persistence.*;
@@ -13,7 +15,7 @@ import javax.persistence.*;
 @lombok.Builder
 @lombok.NoArgsConstructor(access = AccessLevel.PROTECTED)
 @lombok.AllArgsConstructor
-public class NormalReply {
+public class NormalReply extends BaseTime {
 
     @Id
     @Column(name = "normal_reply_id")
@@ -23,8 +25,9 @@ public class NormalReply {
     @JoinColumn(name = "normal_post_id")
     private NormalPosts normalPost;
 
-    @Column(name = "user_id")
-    private String userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private Users user;
 
     @Column(name = "content")
     private String content;

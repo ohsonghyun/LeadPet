@@ -58,7 +58,7 @@ public class NormalReplyService {
                 NormalReply.builder()
                         .normalReplyId(String.format("NR_%s", RandomStringUtils.random(10, true, true)))
                         .normalPost(normalPosts)
-                        .userId(userId)
+                        .user(user)
                         .content(content)
                         .build());
     }
@@ -78,7 +78,9 @@ public class NormalReplyService {
                     return new ReplyNotFoundException("Error: 존재하지 않는 댓글");
                 });
 
-        if (!ObjectUtils.defaultIfNull(deletingReply.getUserId(), StringUtils.EMPTY).equals(userId)) {
+        Users user = deletingReply.getUser();
+        if (Objects.isNull(user) ||
+                !ObjectUtils.defaultIfNull(user.getUserId(), StringUtils.EMPTY).equals(userId)) {
             log.error("[NormalReplyService] 삭제 권한이 없는 유저: {}", userId);
             throw new UnauthorizedUserException("Error: 삭제 권한이 없는 유저");
         }
@@ -104,7 +106,9 @@ public class NormalReplyService {
                     return new ReplyNotFoundException("Error: 존재하지 않는 댓글");
                 });
 
-        if (!ObjectUtils.defaultIfNull(updatingReply.getUserId(), StringUtils.EMPTY).equals(userId)) {
+        Users user = updatingReply.getUser();
+        if (Objects.isNull(user) ||
+                !ObjectUtils.defaultIfNull(user.getUserId(), StringUtils.EMPTY).equals(userId)) {
             log.error("[NormalReplyService] 수정 권한이 없는 유저: {}", userId);
             throw new UnauthorizedUserException("Error: 수정 권한이 없는 유저");
         }

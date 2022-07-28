@@ -3,7 +3,11 @@ package com.leadpet.www.infrastructure.domain.reply.normal
 import com.leadpet.www.TestConfig
 import com.leadpet.www.infrastructure.db.normalPost.NormalPostsRepository
 import com.leadpet.www.infrastructure.db.reply.NormalReplyRepository
+import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
+import com.leadpet.www.infrastructure.domain.users.LoginMethod
+import com.leadpet.www.infrastructure.domain.users.UserType
+import com.leadpet.www.infrastructure.domain.users.Users
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
@@ -25,6 +29,8 @@ class NormalReplySpec extends Specification {
     EntityManager em
 
     @Autowired
+    UsersRepository usersRepository
+    @Autowired
     NormalPostsRepository normalPostsRepository
     @Autowired
     NormalReplyRepository normalReplyRepository
@@ -39,12 +45,22 @@ class NormalReplySpec extends Specification {
                 .build()
         normalPostsRepository.save(normalPost)
 
+        // 유저 생성
+        def user = usersRepository.save(
+                Users.builder()
+                        .userId(userId)
+                        .loginMethod(LoginMethod.KAKAO)
+                        .name(userName)
+                        .uid("uid")
+                        .userType(UserType.NORMAL)
+                        .build())
+
         // 댓글 생성
         normalReplyRepository.save(
                 NormalReply.builder()
                         .normalReplyId(replyId)
                         .normalPost(normalPost)
-                        .userId(userId)
+                        .user(user)
                         .content(oldReplyContent)
                         .build()
         )
@@ -59,13 +75,14 @@ class NormalReplySpec extends Specification {
 
         then:
         def updatedReply = normalReplyRepository.findById(replyId).orElseThrow()
-        updatedReply.getUserId() == userId
         updatedReply.getNormalPost().getNormalPostId() == postId
         updatedReply.getContent() == newReplyContent
+        updatedReply.getUser().getUserId() == userId
+        updatedReply.getUser().getName() == userName
 
         where:
-        replyId   | postId   | postTitle | postContent     | userId   | oldReplyContent     | newReplyContent
-        'replyId' | 'postId' | 'title'   | 'post contents' | 'userId' | 'old reply content' | 'new reply content'
+        replyId   | postId   | postTitle | postContent     | userId   | userName   | oldReplyContent     | newReplyContent
+        'replyId' | 'postId' | 'title'   | 'post contents' | 'userId' | 'userName' | 'old reply content' | 'new reply content'
     }
 
 }

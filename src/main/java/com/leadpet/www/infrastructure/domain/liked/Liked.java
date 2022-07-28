@@ -1,5 +1,7 @@
 package com.leadpet.www.infrastructure.domain.liked;
 
+import com.leadpet.www.infrastructure.domain.BaseTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,7 +15,7 @@ import javax.persistence.Id;
 @lombok.NoArgsConstructor
 @lombok.AllArgsConstructor
 @lombok.Builder
-public class Liked {
+public class Liked extends BaseTime {
     @Id
     @Column(name = "liked_id")
     private String likedId;

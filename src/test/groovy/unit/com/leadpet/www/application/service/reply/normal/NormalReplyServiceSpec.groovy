@@ -43,7 +43,7 @@ class NormalReplyServiceSpec extends Specification {
         normalReplyRepository.save(_ as NormalReply) >>
                 NormalReply.builder()
                         .normalReplyId(replyId)
-                        .userId(userId)
+                        .user(Users.builder().userId(userId).name(userName).build())
                         .content(replyContent)
                         .build()
 
@@ -52,12 +52,13 @@ class NormalReplyServiceSpec extends Specification {
 
         then:
         savedReply.getNormalReplyId() == replyId
-        savedReply.getUserId() == userId
+        savedReply.getUser().getUserId() == userId
+        savedReply.getUser().getName() == userName
         savedReply.getContent() == replyContent
 
         where:
-        replyId   | userId   | normalPostId   | replyContent
-        'replyId' | 'userId' | 'normalPostId' | 'replyContent'
+        replyId   | userId   | userName   | normalPostId   | replyContent
+        'replyId' | 'userId' | 'userName' | 'normalPostId' | 'replyContent'
     }
 
     def "[일상피드 댓글 추가] 존재하지 않는 일상피드ID인 경우 에러"() {
@@ -102,7 +103,7 @@ class NormalReplyServiceSpec extends Specification {
         normalReplyRepository.findById(_ as String) >> Optional.of(
                 NormalReply.builder()
                         .normalReplyId(replyId)
-                        .userId(userId)
+                        .user(Users.builder().userId(userId).build())
                         .content('replyContent')
                         .build())
 
@@ -134,7 +135,7 @@ class NormalReplyServiceSpec extends Specification {
         normalReplyRepository.findById(_ as String) >> Optional.of(
                 NormalReply.builder()
                         .normalReplyId(replyId)
-                        .userId('userId')
+                        .user(Users.builder().userId(userId).build())
                         .content('replyContent')
                         .build())
 
@@ -154,7 +155,7 @@ class NormalReplyServiceSpec extends Specification {
         normalReplyRepository.findById(_ as String) >> Optional.of(
                 NormalReply.builder()
                         .normalReplyId(replyId)
-                        .userId(userId)
+                        .user(Users.builder().userId(userId).build())
                         .content('oldContent')
                         .build())
 
@@ -163,7 +164,7 @@ class NormalReplyServiceSpec extends Specification {
 
         then:
         updatedReply.getNormalReplyId() == replyId
-        updatedReply.getUserId() == userId
+        updatedReply.getUser().getUserId() == userId
         updatedReply.getContent() == newContent
 
         where:
@@ -191,7 +192,7 @@ class NormalReplyServiceSpec extends Specification {
         normalReplyRepository.findById(_ as String) >> Optional.of(
                 NormalReply.builder()
                         .normalReplyId(replyId)
-                        .userId('userId')
+                        .user(Users.builder().userId(userId).build())
                         .content('replyContent')
                         .build())
 

@@ -1,5 +1,7 @@
 package com.leadpet.www.infrastructure.domain.breed;
 
+import com.leadpet.www.infrastructure.domain.BaseTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,7 +14,7 @@ import javax.persistence.Id;
 @lombok.Builder
 @lombok.NoArgsConstructor
 @lombok.AllArgsConstructor
-public class Breed {
+public class Breed extends BaseTime {
     @Id
     @Column(name = "breed_id")
     private String breedId;

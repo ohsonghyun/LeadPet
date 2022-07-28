@@ -3,8 +3,12 @@ package com.leadpet.www.infrastructure.db.reply.normal
 import com.leadpet.www.TestConfig
 import com.leadpet.www.infrastructure.db.normalPost.NormalPostsRepository
 import com.leadpet.www.infrastructure.db.reply.NormalReplyRepository
+import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.reply.normal.NormalReply
+import com.leadpet.www.infrastructure.domain.users.LoginMethod
+import com.leadpet.www.infrastructure.domain.users.UserType
+import com.leadpet.www.infrastructure.domain.users.Users
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
@@ -26,8 +30,9 @@ class NormalReplyRepositorySpec extends Specification {
     EntityManager em
 
     @Autowired
+    UsersRepository usersRepository
+    @Autowired
     NormalPostsRepository normalPostsRepository
-
     @Autowired
     NormalReplyRepository normalReplyRepository
 
@@ -41,11 +46,21 @@ class NormalReplyRepositorySpec extends Specification {
                 .build()
         normalPostsRepository.save(normalPost)
 
+        // 유저 생성
+        def user = usersRepository.save(
+                Users.builder()
+                        .userId(userId)
+                        .loginMethod(LoginMethod.KAKAO)
+                        .name('userName')
+                        .uid('uid')
+                        .userType(UserType.NORMAL)
+                        .build())
+
         // 댓글 생성
         def normalReply = NormalReply.builder()
                 .normalReplyId(replyId)
                 .normalPost(normalPost)
-                .userId(userId)
+                .user(user)
                 .content(replyContent)
                 .build()
 
@@ -58,7 +73,7 @@ class NormalReplyRepositorySpec extends Specification {
         def result = normalReplyRepository.findById(replyId).orElseThrow()
         result.getNormalReplyId() == replyId
         result.getNormalPost().getNormalPostId() == postId
-        result.getUserId() == userId
+        result.getUser().getUserId() == userId
         result.getContent() == replyContent
 
         where:
@@ -75,11 +90,21 @@ class NormalReplyRepositorySpec extends Specification {
                 .build()
         normalPostsRepository.save(normalPost)
 
+        // 유저 생성
+        def user = usersRepository.save(
+                Users.builder()
+                        .userId(userId)
+                        .loginMethod(LoginMethod.KAKAO)
+                        .name('userName')
+                        .uid('uid')
+                        .userType(UserType.NORMAL)
+                        .build())
+
         normalReplyRepository.save(
                 NormalReply.builder()
                         .normalReplyId(replyId)
                         .normalPost(normalPost)
-                        .userId(userId)
+                        .user(user)
                         .content(replyContent)
                         .build())
         em.flush()
