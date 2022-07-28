@@ -4,9 +4,11 @@ import com.leadpet.www.application.service.reply.normal.NormalReplyService;
 import com.leadpet.www.infrastructure.domain.reply.normal.NormalReply;
 import com.leadpet.www.presentation.dto.request.reply.normal.AddNormalReplyRequestDto;
 import com.leadpet.www.presentation.dto.request.reply.normal.DeleteNormalReplyRequestDto;
+import com.leadpet.www.presentation.dto.request.reply.normal.UpdateNormalReplyRequestDto;
 import com.leadpet.www.presentation.dto.response.ErrorResponse;
 import com.leadpet.www.presentation.dto.response.reply.normal.AddNormalReplyResponse;
 import com.leadpet.www.presentation.dto.response.reply.normal.DeleteNormalReplyResponse;
+import com.leadpet.www.presentation.dto.response.reply.normal.UpdateNormalReplyResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -52,5 +54,14 @@ public class NormalReplyController {
     ) {
         String deletedReplyId = normalReplyService.deleteReply(request.getUserId(), request.getNormalReplyId());
         return ResponseEntity.ok(DeleteNormalReplyResponse.from(deletedReplyId));
+    }
+
+    @PutMapping
+    public ResponseEntity<UpdateNormalReplyResponse> addNewNormalReply(
+            @RequestBody final UpdateNormalReplyRequestDto request
+    ) {
+        NormalReply updatedReply = normalReplyService.updateContent(
+                request.getUserId(), request.getNormalReplyId(), request.getNewContent());
+        return ResponseEntity.ok(UpdateNormalReplyResponse.from(updatedReply));
     }
 }
