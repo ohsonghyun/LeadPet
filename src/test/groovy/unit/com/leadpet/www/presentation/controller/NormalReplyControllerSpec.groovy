@@ -6,19 +6,21 @@ import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.reply.normal.NormalReply
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.PostNotFoundException
+import com.leadpet.www.infrastructure.exception.ReplyNotFoundException
+import com.leadpet.www.infrastructure.exception.UnauthorizedUserException
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.presentation.dto.request.reply.normal.AddNormalReplyRequestDto
+import com.leadpet.www.presentation.dto.request.reply.normal.DeleteNormalReplyRequestDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import spock.lang.Specification
 
 import static org.mockito.ArgumentMatchers.isA
 import static org.mockito.Mockito.when
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -120,10 +122,72 @@ class NormalReplyControllerSpec extends Specification {
         where:
         errorMessage << ['Error: 존재하지 않는 유저']
     }
-//    def "[일상피드 댓글 삭제] 존재하지 않는 댓글ID"() {
-//        // TODO
-//    }
-//    def "[일상피드 댓글 삭제] 삭제 권한이 없는 유저"() {
+
+    def "[일상피드 댓글 삭제] 정상"() {
+        given:
+        when(normalReplyService.deleteReply(isA(String.class), isA(String.class)))
+                .thenReturn(normalReplyId)
+
+        expect:
+        mvc.perform(delete(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                        mapper.writeValueAsString(
+                                DeleteNormalReplyRequestDto.builder()
+                                        .userId(userId)
+                                        .normalReplyId(normalReplyId)
+                                        .build()
+                        )))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('\$.normalReplyId').value(normalReplyId))
+
+        where:
+        userId   | normalReplyId
+        'userId' | 'normalReplyId'
+    }
+
+    def "[일상피드 댓글 삭제] 존재하지 않는 댓글ID"() {
+        given:
+        when(normalReplyService.deleteReply(isA(String.class), isA(String.class)))
+                .thenThrow(new ReplyNotFoundException('Error: 존재하지 않는 댓글'))
+
+        expect:
+        mvc.perform(delete(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                        mapper.writeValueAsString(
+                                DeleteNormalReplyRequestDto.builder()
+                                        .userId('userId')
+                                        .normalReplyId('normalReplyId')
+                                        .build()
+                        )))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath('\$.error.code').value(404))
+                .andExpect(jsonPath('\$.error.message').value('NOT_FOUND'))
+                .andExpect(jsonPath('\$.error.detail').value('Error: 존재하지 않는 댓글'))
+    }
+
+    def "[일상피드 댓글 삭제] 삭제 권한이 없는 유저"() {
+        given:
+        when(normalReplyService.deleteReply(isA(String.class), isA(String.class)))
+                .thenThrow(new UnauthorizedUserException("Error: 삭제 권한이 없는 유저"))
+
+        expect:
+        mvc.perform(delete(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                        mapper.writeValueAsString(
+                                DeleteNormalReplyRequestDto.builder()
+                                        .userId('userId')
+                                        .normalReplyId('normalReplyId')
+                                        .build()
+                        )))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath('\$.error.code').value(403))
+                .andExpect(jsonPath('\$.error.message').value('FORBIDDEN'))
+                .andExpect(jsonPath('\$.error.detail').value('Error: 삭제 권한이 없는 유저'))
+    }
+//    def "[일상피드 댓글 수정] 정상"() {
 //        // TODO
 //    }
 //    def "[일상피드 댓글 수정] 존재하지 않는 댓글ID"() {

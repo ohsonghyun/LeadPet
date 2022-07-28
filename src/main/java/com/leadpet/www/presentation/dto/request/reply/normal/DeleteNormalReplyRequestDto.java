@@ -5,17 +5,16 @@ import io.swagger.annotations.ApiModel;
 import lombok.AccessLevel;
 
 /**
- * AddNormalReplyRequestDto
+ * DeleteNormalReplyRequestDto
  */
-@ApiModel("일상피드 댓글 추가 리퀘스트")
+@ApiModel("일상피드 댓글 삭제 리퀘스트")
 @lombok.Getter
 @lombok.Builder
 @lombok.NoArgsConstructor(access = AccessLevel.PROTECTED)
 @lombok.AllArgsConstructor
-public class AddNormalReplyRequestDto {
+public class DeleteNormalReplyRequestDto {
 
-    private String normalPostId;
     private String userId;
-    private String content;
+    private String normalReplyId;
 
 }

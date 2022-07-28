@@ -122,7 +122,7 @@ class AdoptionPostControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.adoptionPostId').value(postId))
                 .andExpect(jsonPath('\$.startDate').isNotEmpty())
                 .andExpect(jsonPath('\$.endDate').isNotEmpty())
-                .andExpect(jsonPath('\$.euthanasiaDate').value(euthanasiaDate.toString()))
+                .andExpect(jsonPath('\$.euthanasiaDate').isNotEmpty())
                 .andExpect(jsonPath('\$.title').value(title))
                 .andExpect(jsonPath('\$.contents').value(contents))
                 .andExpect(jsonPath('\$.animalType').value(animalType.name()))
