@@ -10,10 +10,14 @@ import com.leadpet.www.infrastructure.exception.PostNotFoundException;
 import com.leadpet.www.infrastructure.exception.ReplyNotFoundException;
 import com.leadpet.www.infrastructure.exception.UnauthorizedUserException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
+import com.leadpet.www.presentation.dto.response.reply.normal.NormalReplyPageResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -115,5 +119,16 @@ public class NormalReplyService {
 
         updatingReply.updateContent(newContent);
         return updatingReply;
+    }
+
+    /**
+     * 일상피드ID를 통해 댓글 페이지네이션
+     *
+     * @param postId   {@code String}
+     * @param pageable {@code Pageable}
+     * @return {@code Page<NormalReplyPageResponseDto>}
+     */
+    public Page<NormalReplyPageResponseDto> findByPostId(final String postId, final Pageable pageable) {
+        return normalReplyRepository.findByPostId(postId, pageable);
     }
 }

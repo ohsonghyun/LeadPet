@@ -10,7 +10,12 @@ import com.leadpet.www.infrastructure.exception.PostNotFoundException
 import com.leadpet.www.infrastructure.exception.ReplyNotFoundException
 import com.leadpet.www.infrastructure.exception.UnauthorizedUserException
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
+import com.leadpet.www.presentation.dto.response.reply.normal.NormalReplyPageResponseDto
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import spock.lang.Specification
+import spock.lang.Unroll
 
 /**
  * NormalReplyServiceSpec
@@ -206,4 +211,55 @@ class NormalReplyServiceSpec extends Specification {
         replyId   | userId
         'replyId' | 'userId'
     }
+
+    @Unroll
+    def "[댓글 페이지네이션] 댓글 취득"() {
+        given:
+        normalReplyRepository.findByPostId(_ as String, _ as Pageable) >> new PageImpl<NormalReplyPageResponseDto>(
+                List.of(
+                        NormalReplyPageResponseDto.builder()
+                                .normalReplyId(replyId)
+                                .userId(userId)
+                                .userName(userName)
+                                .build()),
+                PageRequest.of(0, 5),
+                1
+        )
+
+        when:
+        def replyPagination = normalReplyService.findByPostId('postId', PageRequest.of(0, 5))
+
+        then:
+        replyPagination != null
+        replyPagination.getContent().size() == 1
+        replyPagination.getTotalPages() == 1
+        replyPagination.getSize() == 5
+        replyPagination.getContent().get(0).getNormalReplyId() == replyId
+        replyPagination.getContent().get(0).getUserId() == userId
+        replyPagination.getContent().get(0).getUserName() == userName
+
+        where:
+        replyId   | userId   | userName
+        'replyId' | 'userId' | 'userName'
+    }
+
+    @Unroll
+    def "[댓글 페이지네이션] 댓글 취득: 데이터가 없는 경우"() {
+        given:
+        normalReplyRepository.findByPostId(_ as String, _ as Pageable) >> new PageImpl<NormalReplyPageResponseDto>(
+                Collections.emptyList(),
+                PageRequest.of(0, 5),
+                0
+        )
+
+        when:
+        def replyPagination = normalReplyService.findByPostId('postId', PageRequest.of(0, 5))
+
+        then:
+        replyPagination != null
+        replyPagination.getContent().size() == 0
+        replyPagination.getTotalPages() == 0
+        replyPagination.getSize() == 5
+    }
+
 }

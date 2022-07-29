@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
@@ -127,6 +128,7 @@ class NormalReplyRepositorySpec extends Specification {
         'replyId' | 'postId' | 'title'   | 'post contents' | 'userId' | 'reply content'
     }
 
+    @Unroll(value = "#testCase")
     def "일상피드ID로 댓글 조회"() {
         given:
         def normalPost = NormalPosts.builder()
@@ -146,7 +148,7 @@ class NormalReplyRepositorySpec extends Specification {
                         .userType(UserType.NORMAL)
                         .build())
 
-        IntStream.range(0, 5).forEach(idx -> {
+        IntStream.range(0, size).forEach(idx -> {
             normalReplyRepository.save(
                     NormalReply.builder()
                             .normalReplyId(replyId + idx)
@@ -163,17 +165,20 @@ class NormalReplyRepositorySpec extends Specification {
 
         then:
         replies != null
-        replies.getContent().size() == 5
-        replies.getTotalPages() == 1
+        replies.getContent().size() == size
+        replies.getTotalPages() == totalPage
         replies.getSize() == 5
-        replies.getContent().get(0) instanceof NormalReplyPageResponseDto
-        replies.getContent().get(0).getUserId() == userId
-        replies.getContent().get(0).getUserName() == userName
-        replies.getContent().get(0).getContent() == replyContent
+        if (size > 0) {
+            replies.getContent().get(0) instanceof NormalReplyPageResponseDto
+            replies.getContent().get(0).getUserId() == userId
+            replies.getContent().get(0).getUserName() == userName
+            replies.getContent().get(0).getContent() == replyContent
+        }
 
         where:
-        replyId   | postId   | postTitle | postContent     | userId   | userName   | replyContent
-        'replyId' | 'postId' | 'title'   | 'post contents' | 'userId' | 'userName' | 'reply content'
+        testCase     | replyId   | postId   | postTitle | postContent     | userId   | userName   | replyContent    | size | totalPage
+        '데이터가 있는 경우' | 'replyId' | 'postId' | 'title'   | 'post contents' | 'userId' | 'userName' | 'reply content' | 5    | 1
+        '데이터가 없는 경우' | 'replyId' | 'postId' | 'title'   | 'post contents' | 'userId' | 'userName' | 'reply content' | 0    | 0
     }
 
 }
