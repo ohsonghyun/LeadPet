@@ -2,7 +2,7 @@ package com.leadpet.www.infrastructure.domain.reply.normal
 
 import com.leadpet.www.TestConfig
 import com.leadpet.www.infrastructure.db.normalPost.NormalPostsRepository
-import com.leadpet.www.infrastructure.db.reply.NormalReplyRepository
+import com.leadpet.www.infrastructure.db.reply.normal.NormalReplyRepository
 import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
