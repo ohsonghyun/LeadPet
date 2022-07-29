@@ -8,11 +8,14 @@ import com.leadpet.www.presentation.dto.request.reply.normal.UpdateNormalReplyRe
 import com.leadpet.www.presentation.dto.response.ErrorResponse;
 import com.leadpet.www.presentation.dto.response.reply.normal.AddNormalReplyResponse;
 import com.leadpet.www.presentation.dto.response.reply.normal.DeleteNormalReplyResponse;
+import com.leadpet.www.presentation.dto.response.reply.normal.NormalReplyPageResponseDto;
 import com.leadpet.www.presentation.dto.response.reply.normal.UpdateNormalReplyResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +58,12 @@ public class NormalReplyController {
         return ResponseEntity.ok(DeleteNormalReplyResponse.from(deletedReplyId));
     }
 
+    @ApiOperation(value = "일상피드 댓글 수정")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "정상"),
+            @ApiResponse(code = 404, message = "존재하지 않는 일상피드 댓글", response = ErrorResponse.class),
+            @ApiResponse(code = 403, message = "권한 없는 유저", response = ErrorResponse.class)
+    })
     @PutMapping
     public ResponseEntity<UpdateNormalReplyResponse> addNewNormalReply(
             @RequestBody final UpdateNormalReplyRequestDto request
@@ -62,5 +71,17 @@ public class NormalReplyController {
         NormalReply updatedReply = normalReplyService.updateContent(
                 request.getUserId(), request.getNormalReplyId(), request.getNewContent());
         return ResponseEntity.ok(UpdateNormalReplyResponse.from(updatedReply));
+    }
+
+    @ApiOperation(value = "일상피드 댓글 페이지네이션")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "정상")
+    })
+    @GetMapping
+    public ResponseEntity<Page<NormalReplyPageResponseDto>> findByPostId(
+            final String postId,
+            final Pageable pageable
+    ) {
+        return ResponseEntity.ok(normalReplyService.findByPostId(postId, pageable));
     }
 }
