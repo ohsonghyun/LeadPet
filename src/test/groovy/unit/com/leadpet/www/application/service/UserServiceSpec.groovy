@@ -176,6 +176,8 @@ class UserServiceSpec extends Specification {
                         .shelterName(shelterName)
                         .shelterAddress(shelterAddress)
                         .shelterAssessmentStatus(shelterAssessmentStatus)
+                        .shelterIntro(shelterIntro)
+                        .shelterAccount(shelterAccount)
                         .build()
 
         when:
@@ -191,10 +193,12 @@ class UserServiceSpec extends Specification {
         shelter.getShelterName() == shelterName
         shelter.getShelterAddress() == shelterAddress
         shelter.getShelterAssessmentStatus() == shelterAssessmentStatus
+        shelter.getShelterIntro() == shelterIntro
+        shelter.getShelterAccount() == shelterAccount
 
         where:
-        userId   | loginMethod       | uid   | name   | userType         | shelterName | shelterAddress                 | shelterAssessmentStatus
-        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.SHELTER | '토르 보호소'    | '서울특별시 헬로우 월드 주소 어디서나 123-123' | AssessmentStatus.PENDING
+        userId   | loginMethod       | uid   | name   | userType         | shelterName | shelterAddress                 | shelterIntro   | shelterAccount   | shelterAssessmentStatus
+        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.SHELTER | '토르 보호소'    | '서울특별시 헬로우 월드 주소 어디서나 123-123' | 'shelterIntro' | 'shelterAccount' | AssessmentStatus.PENDING
     }
 
     @Unroll("#testCase")
