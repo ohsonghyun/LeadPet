@@ -71,6 +71,7 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
                             .shelterName(shelter.getShelterName())
                             .allFeedCount(normalPostCount + donationPostCount + adoptionPostCount)
                             .assessmentStatus(shelter.getShelterAssessmentStatus())
+                            .profileImage(shelter.getProfileImage())
                             .build()
             );
         }

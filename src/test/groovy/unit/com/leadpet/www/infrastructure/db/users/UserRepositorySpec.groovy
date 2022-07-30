@@ -39,6 +39,7 @@ class UserRepositorySpec extends Specification {
     @Unroll(value = "#testName")
     def "보호소 리스트 취득"() {
         given:
+        // 보호소 추가
         IntStream.range(0, 20).forEach(idx -> {
             final String name = 'Hulk' + idx;
             final String city = idx % 2 == 0 ? '서울특별시' : '부산광역시'
@@ -52,6 +53,7 @@ class UserRepositorySpec extends Specification {
                             .shelterName(name + " 보호소")
                             .shelterAddress(city + " 헬로우 월드 주소 어디서나 123-123")
                             .shelterAssessmentStatus(AssessmentStatus.PENDING)
+                            .profileImage(profileImage)
                             .build())
 
         })
@@ -94,14 +96,15 @@ class UserRepositorySpec extends Specification {
         result.getContent().get(0).getUserId() != null
         result.getContent().get(0).getAllFeedCount() == 9
         result.getContent().get(0).getAssessmentStatus() == AssessmentStatus.PENDING
+        result.getContent().get(0).getProfileImage() == profileImage
         result.getTotalPages() == totalPages
 
         where:
-        testName               | cityNameCond | shelterName | totalElement | totalPages | size
-        '검색조건이 없는 경우'          | null         | null        | 20           | 4          | 5
-        '지역명으로 검색하는 경우'        | '서울특별시'      | null        | 10           | 2          | 5
-        '보호소명으로 검색하는 경우'       | null         | 'Hulk10'    | 1            | 1          | 1
-        '지역명 + 보호소명으로 검색하는 경우' | '서울특별시'      | 'Hulk10'    | 1            | 1          | 1
+        testName               | cityNameCond | shelterName | profileImage   | totalElement | totalPages | size
+        '검색조건이 없는 경우'          | null         | null        | 'profileImage' | 20           | 4          | 5
+        '지역명으로 검색하는 경우'        | '서울특별시'      | null        | 'profileImage' | 10           | 2          | 5
+        '보호소명으로 검색하는 경우'       | null         | 'Hulk10'    | 'profileImage' | 1            | 1          | 1
+        '지역명 + 보호소명으로 검색하는 경우' | '서울특별시'      | 'Hulk10'    | 'profileImage' | 1            | 1          | 1
     }
 
     @Unroll(value = "#testName")

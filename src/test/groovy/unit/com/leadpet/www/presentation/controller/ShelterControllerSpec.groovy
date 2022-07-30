@@ -12,11 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Specification
-
-import java.awt.print.Pageable
 
 import static org.mockito.ArgumentMatchers.isA
 import static org.mockito.Mockito.when
@@ -37,13 +36,21 @@ class ShelterControllerSpec extends Specification {
         given:
         when(userService.searchShelters(isA(SearchShelterCondition.class), isA(Pageable.class)))
                 .thenReturn(new PageImpl<ShelterPageResponseDto>(
-                        List.of(new ShelterPageResponseDto("userId1", "shelterName", 1, AssessmentStatus.COMPLETED))
+                        List.of(new ShelterPageResponseDto(userId, shetlerName, 1, assessmentStatus, profileImage))
                 ))
 
         expect:
         mvc.perform(get(SHELTER_URL + "/list")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath('\$.content[0].userId').value(userId))
+                .andExpect(jsonPath('\$.content[0].shelterName').value(shetlerName))
+                .andExpect(jsonPath('\$.content[0].assessmentStatus').value(AssessmentStatus.COMPLETED.name()))
+                .andExpect(jsonPath('\$.content[0].profileImage').value(profileImage))
+
+        where:
+        userId   | shetlerName   | assessmentStatus           | profileImage
+        'userId' | 'shelterName' | AssessmentStatus.COMPLETED | 'profileImage'
     }
 
     def "[보호소 디테일 취득] 정상"() {
