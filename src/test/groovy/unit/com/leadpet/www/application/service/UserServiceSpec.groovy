@@ -31,8 +31,8 @@ class UserServiceSpec extends Specification {
 
     def "회원가입: #testCase"() {
         setup:
-        def dbResponse = createUser(userId, loginMethod, uid, email, password, profileImage, name, userType, shelterName, shelterAddress, shelterPhoneNumber, shelterManager, shelterHomePage)
-        def newUser = createUser(null, loginMethod, uid, email, password, profileImage, name, userType, shelterName, shelterAddress, shelterPhoneNumber, shelterManager, shelterHomePage)
+        def dbResponse = createUser(userId, loginMethod, uid, email, password, profileImage, name, userType, shelterName, shelterAddress, shelterPhoneNumber, shelterManager, shelterHomePage, shelterAccount, shelterIntro)
+        def newUser = createUser(null, loginMethod, uid, email, password, profileImage, name, userType, shelterName, shelterAddress, shelterPhoneNumber, shelterManager, shelterHomePage, shelterAccount, shelterIntro)
         usersRepository.save(_) >> dbResponse
 
         when:
@@ -52,17 +52,19 @@ class UserServiceSpec extends Specification {
         savedUser.getShelterPhoneNumber() == shelterPhoneNumber
         savedUser.getShelterManager() == shelterManager
         savedUser.getShelterHomePage() == shelterHomePage
+        savedUser.getShelterIntro() == shelterIntro
+        savedUser.getShelterAccount() == shelterAccount
 
         where:
-        testCase     | loginMethod        | userId   | uid   | email             | password   | profileImage | name     | userType        | shelterName  | shelterAddress | shelterPhoneNumber | shelterManager | shelterHomePage
-        "KAKAO"      | LoginMethod.KAKAO  | "uidkko" | "uid" | null              | null       | null         | "kakao"  | UserType.NORMAL | null         | null           | null               | null           | null
-        "EMAIL"      | LoginMethod.EMAIL  | "uideml" | "uid" | "email@dummy.com" | "password" | null         | "email"  | UserType.NORMAL | null         | null           | null               | null           | null
-        "GOOGLE"     | LoginMethod.GOOGLE | "uidggl" | "uid" | "email@gmail.com" | null       | null         | "google" | UserType.NORMAL | null         | null           | null               | null           | null
-        "APPLE"      | LoginMethod.APPLE  | "uidapp" | "uid" | "email@apple.com" | null       | null         | "apple"  | UserType.NORMAL | null         | null           | null               | null           | null
-        "KAKAO 보호소"  | LoginMethod.KAKAO  | "uidkko" | "uid" | null              | null       | null         | "kakao"  | UserType.NORMAL | "kakao 보호소"  | "kakao 1-2-3"  | "123-456-7890"     | "카톡"           | "www.kko.com"
-        "EMAIL 보호소"  | LoginMethod.EMAIL  | "uideml" | "uid" | "email@dummy.com" | "password" | null         | "email"  | UserType.NORMAL | "email 보호소"  | "email 1-2-3"  | "123-456-7890"     | "이메일"          | "www.email.com"
-        "GOOGLE 보호소" | LoginMethod.GOOGLE | "uidggl" | "uid" | "email@gmail.com" | null       | null         | "google" | UserType.NORMAL | "google 보호소" | "google 1-2-3" | "123-456-7890"     | "구글"           | "www.google.com"
-        "APPLE 보호소"  | LoginMethod.APPLE  | "uidapp" | "uid" | "email@apple.com" | null       | null         | "apple"  | UserType.NORMAL | "apple 보호소"  | "apple 1-2-3"  | "123-456-7890"     | "애플"           | "www.apple.com"
+        testCase     | loginMethod        | userId   | uid   | email             | password   | profileImage | name     | userType         | shelterName  | shelterAddress | shelterPhoneNumber | shelterManager | shelterHomePage  | shelterAccount   | shelterIntro
+        "KAKAO"      | LoginMethod.KAKAO  | "uidkko" | "uid" | null              | null       | null         | "kakao"  | UserType.NORMAL  | null         | null           | null               | null           | null             | null             | null
+        "EMAIL"      | LoginMethod.EMAIL  | "uideml" | "uid" | "email@dummy.com" | "password" | null         | "email"  | UserType.NORMAL  | null         | null           | null               | null           | null             | null             | null
+        "GOOGLE"     | LoginMethod.GOOGLE | "uidggl" | "uid" | "email@gmail.com" | null       | null         | "google" | UserType.NORMAL  | null         | null           | null               | null           | null             | null             | null
+        "APPLE"      | LoginMethod.APPLE  | "uidapp" | "uid" | "email@apple.com" | null       | null         | "apple"  | UserType.NORMAL  | null         | null           | null               | null           | null             | null             | null
+        "KAKAO 보호소"  | LoginMethod.KAKAO  | "uidkko" | "uid" | null              | null       | null         | "kakao"  | UserType.SHELTER | "kakao 보호소"  | "kakao 1-2-3"  | "123-456-7890"     | "카톡"           | "www.kko.com"    | 'shelterAccount' | 'hello world'
+        "EMAIL 보호소"  | LoginMethod.EMAIL  | "uideml" | "uid" | "email@dummy.com" | "password" | null         | "email"  | UserType.SHELTER | "email 보호소"  | "email 1-2-3"  | "123-456-7890"     | "이메일"          | "www.email.com"  | 'shelterAccount' | 'hello world'
+        "GOOGLE 보호소" | LoginMethod.GOOGLE | "uidggl" | "uid" | "email@gmail.com" | null       | null         | "google" | UserType.SHELTER | "google 보호소" | "google 1-2-3" | "123-456-7890"     | "구글"           | "www.google.com" | 'shelterAccount' | 'hello world'
+        "APPLE 보호소"  | LoginMethod.APPLE  | "uidapp" | "uid" | "email@apple.com" | null       | null         | "apple"  | UserType.SHELTER | "apple 보호소"  | "apple 1-2-3"  | "123-456-7890"     | "애플"           | "www.apple.com"  | 'shelterAccount' | 'hello world'
     }
 
     def "이미 회원가입 상태라면 409-CONFLICT"() {
@@ -213,7 +215,7 @@ class UserServiceSpec extends Specification {
 
     private Users createUser(String userId, LoginMethod loginMethod, String uid, String email, String password, String profileImage,
                              String name, UserType userType, String shelterName, String shelterAddress, String shelterPhoneNumber,
-                             String shelterManager, String shelterHomePage) {
+                             String shelterManager, String shelterHomePage, String shelterAccount, String shelterIntro) {
         return Users.builder()
                 .userId(userId)
                 .loginMethod(loginMethod)
@@ -228,6 +230,8 @@ class UserServiceSpec extends Specification {
                 .shelterPhoneNumber(shelterPhoneNumber)
                 .shelterManager(shelterManager)
                 .shelterHomePage(shelterHomePage)
+                .shelterAccount(shelterAccount)
+                .shelterIntro(shelterIntro)
                 .build();
     }
 
