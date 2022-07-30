@@ -22,6 +22,10 @@ public class ShelterDetailDto {
     // TODO 보호소 계좌번호도 가지고 있는지..
 //    private String shelterAccount;
     private String shelterHomepage;
+    private String shelterManager;
+    private String profileImage;
+    private String shelterIntro;
+
 
     /**
      * Users 객체로부터 DTO 생성
@@ -37,6 +41,9 @@ public class ShelterDetailDto {
                 .shelterAddress(shelter.getShelterAddress())
                 .shelterPhoneNumber(shelter.getShelterPhoneNumber())
                 .shelterHomepage(shelter.getShelterHomePage())
+                .shelterManager(shelter.getShelterManager())
+                .profileImage(shelter.getProfileImage())
+                .shelterIntro(shelter.getShelterIntro())
                 .build();
 
     }

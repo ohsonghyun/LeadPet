@@ -59,6 +59,9 @@ class ShelterControllerSpec extends Specification {
                                 .shelterName(shelterName)
                                 .shelterAddress(shelterAddress)
                                 .shelterAssessmentStatus(shelterAssessmentStatus)
+                                .shelterManager(shelterManager)
+                                .profileImage(profileImage)
+                                .shelterIntro(shelterIntro)
                                 .build())
 
         expect:
@@ -71,10 +74,13 @@ class ShelterControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.shelterAddress').value(shelterAddress))
                 .andExpect(jsonPath('\$.shelterPhoneNumber').isEmpty())
                 .andExpect(jsonPath('\$.shelterHomepage').isEmpty())
+                .andExpect(jsonPath('\$.shelterManager').value(shelterManager))
+                .andExpect(jsonPath('\$.profileImage').value(profileImage))
+                .andExpect(jsonPath('\$.shelterIntro').value(shelterIntro))
 
         where:
-        userId   | loginMethod       | uid   | name   | userType         | shelterName | shelterAddress                 | shelterAssessmentStatus
-        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.SHELTER | '토르 보호소'    | '서울특별시 헬로우 월드 주소 어디서나 123-123' | AssessmentStatus.PENDING
+        userId   | loginMethod       | uid   | name   | userType         | shelterName | shelterAddress                 | shelterAssessmentStatus  | shelterManager   | profileImage   | shelterIntro
+        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.SHELTER | '토르 보호소'    | '서울특별시 헬로우 월드 주소 어디서나 123-123' | AssessmentStatus.PENDING | 'shelterManager' | 'profileImage' | 'shelterIntro'
     }
 
     def "[보호소 디테일 취득] 에러: userId가 null"() {
