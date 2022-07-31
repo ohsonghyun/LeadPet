@@ -39,7 +39,7 @@ public class UserService {
      */
     public Users saveNewUser(@NonNull final Users newUser) {
         if (!newUser.hasAllRequiredValues()) {
-            log.error("필수 데이터 누락\t{}", newUser.getUserId());
+            log.error("필수 데이터 누락\tuserId: {}", newUser.getUserId());
             throw new UnsatisfiedRequirementException("Error: 필수 입력 데이터 누락");
         }
 

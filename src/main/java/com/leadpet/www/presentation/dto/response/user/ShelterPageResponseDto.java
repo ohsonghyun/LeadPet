@@ -26,4 +26,8 @@ public class ShelterPageResponseDto {
      * 승인 요청 여부
      */
     private AssessmentStatus assessmentStatus;
+    /**
+     * 프로필 이미지 경로
+     */
+    private String profileImage;
 }

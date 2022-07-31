@@ -146,9 +146,9 @@ class UserServiceSpec extends Specification {
         given:
         usersRepository.searchShelters(_, _) >> new PageImpl<ShelterPageResponseDto>(
                 List.of(
-                        new ShelterPageResponseDto('userId1', "Shelter1", 3, AssessmentStatus.PENDING),
-                        new ShelterPageResponseDto('userId2', "Shelter2", 2, AssessmentStatus.COMPLETED),
-                        new ShelterPageResponseDto('userId3', "Shelter3", 1, AssessmentStatus.COMPLETED)
+                        new ShelterPageResponseDto('userId1', "Shelter1", 3, AssessmentStatus.PENDING, 'profileImage'),
+                        new ShelterPageResponseDto('userId2', "Shelter2", 2, AssessmentStatus.COMPLETED, 'profileImage'),
+                        new ShelterPageResponseDto('userId3', "Shelter3", 1, AssessmentStatus.COMPLETED, 'profileImage')
                 ),
                 PageRequest.of(0, 5),
                 3
