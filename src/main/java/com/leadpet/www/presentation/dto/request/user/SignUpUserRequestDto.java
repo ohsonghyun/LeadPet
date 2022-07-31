@@ -48,6 +48,8 @@ public class SignUpUserRequestDto {
     private String shelterManager;
     @JsonProperty("shelterHomePage")
     private String shelterHomePage;
+    @JsonProperty("shelterIntro")
+    private String shelterIntro;
 
     /**
      * Users 객체로 변환
@@ -68,6 +70,7 @@ public class SignUpUserRequestDto {
                 .shelterPhoneNumber(this.shelterPhoneNumber)
                 .shelterManager(this.shelterManager)
                 .shelterHomePage(this.shelterHomePage)
+                .shelterIntro(this.shelterIntro)
                 .build();
     }
 }

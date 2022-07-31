@@ -20,7 +20,7 @@ import java.util.Objects;
 public class NormalPosts extends BaseTime {
 
     @Id
-    @Column(unique = true, nullable = false)
+    @Column(name = "normal_post_id", unique = true, nullable = false)
     private String normalPostId;
 
     @Column(nullable = false)

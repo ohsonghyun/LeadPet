@@ -1,6 +1,7 @@
 package com.leadpet.www.infrastructure.domain.posts;
 
 import com.leadpet.www.infrastructure.db.converter.StringListConverter;
+import com.leadpet.www.infrastructure.domain.BaseTime;
 import com.leadpet.www.infrastructure.domain.pet.AnimalType;
 import com.leadpet.www.infrastructure.domain.pet.Gender;
 import com.leadpet.www.infrastructure.domain.pet.Neutering;
@@ -18,7 +19,7 @@ import java.util.List;
 @lombok.NoArgsConstructor
 @lombok.AllArgsConstructor
 @lombok.Builder
-public class AdoptionPosts {
+public class AdoptionPosts extends BaseTime {
 
     @Id
     @Column(name = "adoption_post_id")

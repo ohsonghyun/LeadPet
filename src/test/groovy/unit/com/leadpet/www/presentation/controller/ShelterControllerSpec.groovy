@@ -12,11 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Specification
-
-import java.awt.print.Pageable
 
 import static org.mockito.ArgumentMatchers.isA
 import static org.mockito.Mockito.when
@@ -37,13 +36,21 @@ class ShelterControllerSpec extends Specification {
         given:
         when(userService.searchShelters(isA(SearchShelterCondition.class), isA(Pageable.class)))
                 .thenReturn(new PageImpl<ShelterPageResponseDto>(
-                        List.of(new ShelterPageResponseDto("userId1", "shelterName", 1, AssessmentStatus.COMPLETED, "헬로우 월드 주소 123-12", "010-1234-1234", "www.thor.com"))
+                        List.of(new ShelterPageResponseDto(userId, shetlerName, 1, assessmentStatus, "헬로우 월드 주소 123-12", "010-1234-1234", "www.thor.com", profileImage))
                 ))
 
         expect:
         mvc.perform(get(SHELTER_URL + "/list")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath('\$.content[0].userId').value(userId))
+                .andExpect(jsonPath('\$.content[0].shelterName').value(shetlerName))
+                .andExpect(jsonPath('\$.content[0].assessmentStatus').value(assessmentStatus.name()))
+                .andExpect(jsonPath('\$.content[0].profileImage').value(profileImage))
+
+        where:
+        userId   | shetlerName   | assessmentStatus           | profileImage
+        'userId' | 'shelterName' | AssessmentStatus.COMPLETED | 'profileImage'
     }
 
     def "[보호소 디테일 취득] 정상"() {
@@ -61,6 +68,9 @@ class ShelterControllerSpec extends Specification {
                                 .shelterAssessmentStatus(shelterAssessmentStatus)
                                 .shelterPhoneNumber(shelterPhoneNumber)
                                 .shelterHomePage(shelterHomePage)
+                                .shelterManager(shelterManager)
+                                .profileImage(profileImage)
+                                .shelterIntro(shelterIntro)
                                 .build())
 
         expect:
@@ -73,10 +83,13 @@ class ShelterControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.shelterAddress').value(shelterAddress))
                 .andExpect(jsonPath('\$.shelterPhoneNumber').value(shelterPhoneNumber))
                 .andExpect(jsonPath('\$.shelterHomepage').value(shelterHomePage))
+                .andExpect(jsonPath('\$.shelterManager').value(shelterManager))
+                .andExpect(jsonPath('\$.profileImage').value(profileImage))
+                .andExpect(jsonPath('\$.shelterIntro').value(shelterIntro))
 
         where:
-        userId   | loginMethod       | uid   | name   | userType         | shelterName | shelterAddress                 | shelterAssessmentStatus               | shelterPhoneNumber    | shelterHomePage
-        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.SHELTER | '토르 보호소'    | '서울특별시 헬로우 월드 주소 어디서나 123-123' | AssessmentStatus.PENDING  | "010-1234-1234"       | "www.thor.com"
+        userId   | loginMethod       | uid   | name   | userType         | shelterName | shelterAddress                 | shelterAssessmentStatus  | shelterManager   | profileImage   | shelterIntro   | shelterPhoneNumber | shelterHomePage
+        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.SHELTER | '토르 보호소'    | '서울특별시 헬로우 월드 주소 어디서나 123-123' | AssessmentStatus.PENDING | 'shelterManager' | 'profileImage' | 'shelterIntro' | "010-1234-1234"    | "www.thor.com"
     }
 
     def "[보호소 디테일 취득] 에러: userId가 null"() {

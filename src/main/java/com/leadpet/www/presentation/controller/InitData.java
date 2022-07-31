@@ -4,10 +4,12 @@ import com.leadpet.www.infrastructure.domain.breed.Breed;
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts;
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts;
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
+import com.leadpet.www.infrastructure.domain.reply.normal.NormalReply;
 import com.leadpet.www.infrastructure.domain.users.AssessmentStatus;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +33,7 @@ public class InitData {
     private final InitShelterService initShelterService;
     private final InitPostService initPostService;
     private final InitBreedService initBreedService;
+    private final InitNormalReplyService initNormalReplyService;
 
     @PostConstruct
     public void init() {
@@ -38,6 +41,7 @@ public class InitData {
         initNormalUserService.init();
         initPostService.init();
         initBreedService.init();
+        initNormalReplyService.init();
     }
 
     @Component
@@ -191,5 +195,31 @@ public class InitData {
                             .build());
 
         }
+    }
+
+    @Component
+    static class InitNormalReplyService {
+
+        @PersistenceContext
+        EntityManager em;
+
+        @Transactional
+        public void init() {
+            List<NormalPosts> normalPosts = em.createQuery("select p from NormalPosts p").getResultList();
+
+            for (NormalPosts normalPost : normalPosts) {
+                int randomNum = (int) (Math.random() * 6) + 1;
+                IntStream.range(0, randomNum).forEach(idx -> {
+                    em.persist(
+                            NormalReply.builder()
+                                    .normalReplyId("NR_" + RandomStringUtils.random(10, true, true))
+                                    .user(normalPost.getUser())
+                                    .content("dummy content")
+                                    .normalPost(normalPost)
+                                    .build());
+                });
+            }
+        }
+
     }
 }

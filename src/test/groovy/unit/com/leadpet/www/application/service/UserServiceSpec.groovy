@@ -10,6 +10,7 @@ import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto
+import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -145,9 +146,9 @@ class UserServiceSpec extends Specification {
         given:
         usersRepository.searchShelters(_, _) >> new PageImpl<ShelterPageResponseDto>(
                 List.of(
-                        new ShelterPageResponseDto('userId1', "Shelter1", 3, AssessmentStatus.PENDING, "헬로우 월드 123-123", "010-1234-1233", "www.shelter1.com"),
-                        new ShelterPageResponseDto('userId2', "Shelter2", 2, AssessmentStatus.COMPLETED, "헬로우 월드 123-122", "010-1234-1232", "www.shelter2.com"),
-                        new ShelterPageResponseDto('userId3', "Shelter3", 1, AssessmentStatus.COMPLETED, "헬로우 월드 123-121", "010-1234-1231", "www.shelter3.com")
+                        new ShelterPageResponseDto('userId1', "Shelter1", 3, AssessmentStatus.PENDING, "헬로우 월드 123-123", "010-1234-1233", "www.shelter1.com", 'profileImage'),
+                        new ShelterPageResponseDto('userId2', "Shelter2", 2, AssessmentStatus.COMPLETED, "헬로우 월드 123-122", "010-1234-1232", "www.shelter2.com", 'profileImage'),
+                        new ShelterPageResponseDto('userId3', "Shelter3", 1, AssessmentStatus.COMPLETED, "헬로우 월드 123-121", "010-1234-1231", "www.shelter3.com", 'profileImage')
                 ),
                 PageRequest.of(0, 5),
                 3
@@ -199,6 +200,43 @@ class UserServiceSpec extends Specification {
     def "보호소 디테일 취득: 에러"() {
         when:
         userService.shelterDetail(userId)
+
+        then:
+        thrown(exception)
+
+        where:
+        testCase             | userId     | exception
+        'userId가 null인 경우'   | null       | UnsatisfiedRequirementException
+        '존재하지 않는 userId인 경우' | 'notExist' | UserNotFoundException
+    }
+
+    def "일반 유저 디테일 취득: 정상"() {
+        given:
+        usersRepository.findNormalUserDetailByUserId(_) >>
+                UserDetailResponseDto.builder()
+                        .userId(userId)
+                        .email(email)
+                        .build()
+
+        when:
+        UserDetailResponseDto userDetailResponseDto = userService.normalUserDetail(userId)
+
+        then:
+        userDetailResponseDto != null
+        userDetailResponseDto.getUserId() == userId
+        userDetailResponseDto.getEmail() == email
+
+        where:
+        userId   | email
+        'userId' | 'test@email.com'
+    }
+
+    // TODO 역시 보호소 디테일하고 내부 로직은 공유하고 서비스에서 따로 분리하는게 좋을까?
+    // DRY 관점으로 정말 동일로직으로 합쳐도 될지 생각 필요. 판단 후에 리팩토링
+    @Unroll("#testCase")
+    def "일반 유저 디테일 취득: 에러"() {
+        when:
+        userService.normalUserDetail(userId)
 
         then:
         thrown(exception)

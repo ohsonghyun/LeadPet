@@ -1,9 +1,10 @@
 # LeadPet_BE
 
-## Team 
+## Team
 
 * [Notion](https://www.notion.so/LeadPet-c263f4120fbe4b2cb5632b10df10573b)
 * [Trello](https://trello.com/b/58b4NySl/leadpet)
+* [Figma](https://www.figma.com/file/Ale4Q0zmTGyKy9HcNEEE2V/Project-LeadPet-(Copy)?node-id=867%3A6128)
 
 ## 빌드 하는 법
 

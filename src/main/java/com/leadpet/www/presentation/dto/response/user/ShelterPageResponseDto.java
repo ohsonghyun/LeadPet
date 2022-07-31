@@ -38,4 +38,8 @@ public class ShelterPageResponseDto {
      * 웹사이트 주소
      */
     private String shelterHomePage;
+    /**
+     * 프로필 이미지 경로
+     */
+    private String profileImage;
 }

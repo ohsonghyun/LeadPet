@@ -10,6 +10,7 @@ import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto
+import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
@@ -39,6 +40,7 @@ class UserRepositorySpec extends Specification {
     @Unroll(value = "#testName")
     def "보호소 리스트 취득"() {
         given:
+        // 보호소 추가
         IntStream.range(0, 20).forEach(idx -> {
             final String name = 'Hulk' + idx;
             final String city = idx % 2 == 0 ? '서울특별시' : '부산광역시'
@@ -54,6 +56,7 @@ class UserRepositorySpec extends Specification {
                             .shelterAssessmentStatus(AssessmentStatus.PENDING)
                             .shelterHomePage("www." + name + ".com")
                             .shelterPhoneNumber("010-" + idx + "12-1234")
+                            .profileImage(profileImage)
                             .build())
 
         })
@@ -96,14 +99,15 @@ class UserRepositorySpec extends Specification {
         result.getContent().get(0).getUserId() != null
         result.getContent().get(0).getAllFeedCount() == 9
         result.getContent().get(0).getAssessmentStatus() == AssessmentStatus.PENDING
+        result.getContent().get(0).getProfileImage() == profileImage
         result.getTotalPages() == totalPages
 
         where:
-        testName               | cityNameCond | shelterName | totalElement | totalPages | size
-        '검색조건이 없는 경우'          | null         | null        | 20           | 4          | 5
-        '지역명으로 검색하는 경우'        | '서울특별시'      | null        | 10           | 2          | 5
-        '보호소명으로 검색하는 경우'       | null         | 'Hulk10'    | 1            | 1          | 1
-        '지역명 + 보호소명으로 검색하는 경우' | '서울특별시'      | 'Hulk10'    | 1            | 1          | 1
+        testName               | cityNameCond | shelterName | profileImage   | totalElement | totalPages | size
+        '검색조건이 없는 경우'          | null         | null        | 'profileImage' | 20           | 4          | 5
+        '지역명으로 검색하는 경우'        | '서울특별시'      | null        | 'profileImage' | 10           | 2          | 5
+        '보호소명으로 검색하는 경우'       | null         | 'Hulk10'    | 'profileImage' | 1            | 1          | 1
+        '지역명 + 보호소명으로 검색하는 경우' | '서울특별시'      | 'Hulk10'    | 'profileImage' | 1            | 1          | 1
     }
 
     @Unroll(value = "#testName")
@@ -142,7 +146,7 @@ class UserRepositorySpec extends Specification {
         em.clear()
 
         when:
-        Users shelter = usersRepository.findShelterByUserId('userId')
+        Users shelter = usersRepository.findShelterByUserId(userId)
 
         then:
         shelter != null
@@ -158,5 +162,32 @@ class UserRepositorySpec extends Specification {
         where:
         userId   | loginMethod       | uid   | name   | userType         | shelterName | shelterAddress                 | shelterAssessmentStatus
         'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.SHELTER | '토르 보호소'    | '서울특별시 헬로우 월드 주소 어디서나 123-123' | AssessmentStatus.PENDING
+    }
+
+    def "유저 디테일 조회"() {
+        given:
+        usersRepository.save(
+                Users.builder()
+                        .userId(userId)
+                        .loginMethod(loginMethod)
+                        .uid(uid)
+                        .name(name)
+                        .userType(userType)
+                        .build())
+
+        em.flush()
+        em.clear()
+
+        when:
+        UserDetailResponseDto userDetailResponseDto = usersRepository.findNormalUserDetailByUserId(userId)
+
+        then:
+        userDetailResponseDto != null
+        userDetailResponseDto.getUserId() == userId
+        userDetailResponseDto.getEmail() == null // 이메일 로그인인 경우에는 null 아님. TODO 리팩토링 필요!
+
+        where:
+        userId   | loginMethod       | uid   | name   | userType
+        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.NORMAL
     }
 }

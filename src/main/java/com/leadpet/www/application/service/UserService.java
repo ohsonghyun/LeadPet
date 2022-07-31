@@ -9,6 +9,7 @@ import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
 import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException;
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto;
+import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +39,7 @@ public class UserService {
      */
     public Users saveNewUser(@NonNull final Users newUser) {
         if (!newUser.hasAllRequiredValues()) {
-            log.error("필수 데이터 누락\t{}", newUser.getUserId());
+            log.error("필수 데이터 누락\tuserId: {}", newUser.getUserId());
             throw new UnsatisfiedRequirementException("Error: 필수 입력 데이터 누락");
         }
 
@@ -134,5 +135,25 @@ public class UserService {
             throw new UserNotFoundException("Error: 존재하지 않는 보호소");
         }
         return shelter;
+    }
+
+    /**
+     * 일반 유저 디테일 취득
+     *
+     * @param userId {@code String}
+     * @return {@code UserDetailResponseDto}
+     */
+    public UserDetailResponseDto normalUserDetail(final String userId) {
+        // 여기에 들어올 가능성은 희박하지만..
+        if (StringUtils.isBlank(userId)) {
+            log.error("[UserService] userId가 null");
+            throw new UnsatisfiedRequirementException("Error: 필수 데이터 부족");
+        }
+        UserDetailResponseDto normalUser = usersRepository.findNormalUserDetailByUserId(userId);
+        if (Objects.isNull(normalUser)) {
+            log.error("[UserService] 존재하지 않는 유저: {}", userId);
+            throw new UserNotFoundException("Error: 존재하지 않는 유저");
+        }
+        return normalUser;
     }
 }

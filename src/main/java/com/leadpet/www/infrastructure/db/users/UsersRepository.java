@@ -4,6 +4,7 @@ import com.leadpet.www.infrastructure.domain.users.LoginMethod;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -42,4 +43,13 @@ public interface UsersRepository extends JpaRepository<Users, String>, UsersRepo
      * @return {@code List<Users>}
      */
     List<Users> findByUserType(UserType userType);
+
+    /**
+     * 유저ID로 유저 정보 취득
+     *
+     * @param userId {@code String}
+     * @return {@code Users}
+     */
+    @Nullable
+    Users findByUserId(final String userId);
 }

@@ -6,6 +6,7 @@ import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
+import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.presentation.dto.request.user.LogInRequestDto
 import com.leadpet.www.presentation.dto.request.user.SignUpUserRequestDto
 import org.hamcrest.Matchers
@@ -23,6 +24,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+/**
+ * UserControllerSpec
+ */
 @SpringBootTest
 class UserControllerSpec extends Specification {
     private final String USER_URL = "/v1/user"
@@ -58,7 +62,8 @@ class UserControllerSpec extends Specification {
                 .shelterName(shelterName)
                 .shelterPhoneNumber(shelterPhoneNumber)
                 .shelterAddress(shelterAddress)
-                .build();
+                .shelterIntro(shelterIntro)
+                .build()
 
         expect:
         mvc.perform(post(USER_URL + "/signup")
@@ -67,39 +72,39 @@ class UserControllerSpec extends Specification {
                 .andExpect(status().isBadRequest());
 
         where:
-        testCase                       | loginMethod        | uid         | email            | password   | profileImage | name     | userType         | shelterName | shelterAddress | shelterPhoneNumber
-        "KAKAO: loginMethod가 null"     | null               | "kakaoUid"  | null             | null       | null         | "kakao"  | UserType.NORMAL  | null        | null           | null
-        "KAKAO: uid가 null"             | LoginMethod.KAKAO  | null        | null             | null       | null         | "kakao"  | UserType.NORMAL  | null        | null           | null
-        "KAKAO: name이 null"            | LoginMethod.KAKAO  | "kakaoUid"  | null             | null       | null         | null     | UserType.NORMAL  | null        | null           | null
-        "KAKAO: userType이 null"        | LoginMethod.KAKAO  | "kakaoUid"  | null             | null       | null         | "kakao"  | null             | null        | null           | null
-        "KAKAO(보호소): 보호소 이름이 없는 경우"    | LoginMethod.KAKAO  | "kakaoUid"  | null             | null       | null         | "kakao"  | UserType.SHELTER | null        | "보호소 주소"       | "01012345678"
-        "KAKAO(보호소): 보호소 주소이 없는 경우"    | LoginMethod.KAKAO  | "kakaoUid"  | null             | null       | null         | "kakao"  | UserType.SHELTER | "보호소 이름"    | null           | "01012345678"
-        "KAKAO(보호소): 보호소 전화번호이 없는 경우"  | LoginMethod.KAKAO  | "kakaoUid"  | null             | null       | null         | "kakao"  | UserType.SHELTER | "보호소 이름"    | "보호소 주소"       | null
-        "GOOGLE: loginMethod가 null"    | null               | "googleUid" | null             | null       | null         | "google" | UserType.NORMAL  | null        | null           | null
-        "GOOGLE: uid가 null"            | LoginMethod.GOOGLE | null        | null             | null       | null         | "google" | UserType.NORMAL  | null        | null           | null
-        "GOOGLE: name이 null"           | LoginMethod.GOOGLE | "googleUid" | null             | null       | null         | null     | UserType.NORMAL  | null        | null           | null
-        "GOOGLE: userType이 null"       | LoginMethod.GOOGLE | "googleUid" | null             | null       | null         | "google" | null             | null        | null           | null
-        "GOOGLE(보호소): 보호소 이름이 없는 경우"   | LoginMethod.GOOGLE | "googleUid" | null             | null       | null         | "google" | UserType.SHELTER | null        | "보호소 주소"       | "01012345678"
-        "GOOGLE(보호소): 보호소 주소이 없는 경우"   | LoginMethod.GOOGLE | "googleUid" | null             | null       | null         | "google" | UserType.SHELTER | "보호소 이름"    | null           | "01012345678"
-        "GOOGLE(보호소): 보호소 전화번호이 없는 경우" | LoginMethod.GOOGLE | "googleUid" | null             | null       | null         | "google" | UserType.SHELTER | "보호소 이름"    | "보호소 주소"       | null
-        "APPLE: loginMethod가 null"     | null               | "appleUid"  | null             | null       | null         | "apple"  | UserType.NORMAL  | null        | null           | null
-        "APPLE: uid가 null"             | LoginMethod.APPLE  | null        | null             | null       | null         | "apple"  | UserType.NORMAL  | null        | null           | null
-        "APPLE: name이 null"            | LoginMethod.APPLE  | "appleUid"  | null             | null       | null         | null     | UserType.NORMAL  | null        | null           | null
-        "APPLE: userType이 null"        | LoginMethod.APPLE  | "appleUid"  | null             | null       | null         | "apple"  | null             | null        | null           | null
-        "APPLE: userType이 null"        | LoginMethod.APPLE  | "appleUid"  | null             | null       | null         | "apple"  | null             | null        | null           | null
-        "APPLE(보호소): 보호소 이름이 없는 경우"    | LoginMethod.APPLE  | "appleUid"  | null             | null       | null         | "apple"  | UserType.SHELTER | null        | "보호소 주소"       | "01012345678"
-        "APPLE(보호소): 보호소 주소이 없는 경우"    | LoginMethod.APPLE  | "appleUid"  | null             | null       | null         | "apple"  | UserType.SHELTER | "보호소 이름"    | null           | "01012345678"
-        "APPLE(보호소): 보호소 전화번호이 없는 경우"  | LoginMethod.APPLE  | "appleUid"  | null             | null       | null         | "apple"  | UserType.SHELTER | "보호소 이름"    | "보호소 주소"       | null
-        "EMAIL: loginMethod가 null"     | null               | "emailUid"  | "test@gmail.com" | "password" | null         | "email"  | UserType.NORMAL  | null        | null           | null
-        "EMAIL: uid가 null"             | LoginMethod.EMAIL  | null        | "test@gmail.com" | "password" | null         | "email"  | UserType.NORMAL  | null        | null           | null
-        "EMAIL: name이 null"            | LoginMethod.EMAIL  | "emailUid"  | "test@gmail.com" | "password" | null         | null     | UserType.NORMAL  | null        | null           | null
-        "EMAIL: email이 null"           | LoginMethod.EMAIL  | "emailUid"  | null             | "password" | null         | "email"  | UserType.NORMAL  | null        | null           | null
-        "EMAIL: password가 null"        | LoginMethod.EMAIL  | "emailUid"  | "test@gmail.com" | null       | null         | "email"  | UserType.NORMAL  | null        | null           | null
-        "EMAIL: userType이 null"        | LoginMethod.EMAIL  | "emailUid"  | "test@gmail.com" | "password" | null         | "email"  | null             | null        | null           | null
-        "EMAIL: userType이 null"        | LoginMethod.EMAIL  | "emailUid"  | "test@gmail.com" | "password" | null         | "email"  | null             | null        | null           | null
-        "EMAIL(보호소): 보호소 이름이 없는 경우"    | LoginMethod.EMAIL  | "emailUid"  | "test@gmail.com" | "password" | null         | "email"  | UserType.SHELTER | null        | "보호소 주소"       | "01012345678"
-        "EMAIL(보호소): 보호소 주소이 없는 경우"    | LoginMethod.EMAIL  | "emailUid"  | "test@gmail.com" | "password" | null         | "email"  | UserType.SHELTER | "보호소 이름"    | null           | "01012345678"
-        "EMAIL(보호소): 보호소 전화번호이 없는 경우"  | LoginMethod.EMAIL  | "emailUid"  | "test@gmail.com" | "password" | null         | "email"  | UserType.SHELTER | "보호소 이름"    | "보호소 주소"       | null
+        testCase                       | loginMethod        | uid         | email            | password   | profileImage | name     | userType         | shelterName | shelterAddress | shelterPhoneNumber | shelterIntro
+        "KAKAO: loginMethod가 null"     | null               | "kakaoUid"  | null             | null       | null         | "kakao"  | UserType.NORMAL  | null        | null           | null               | null
+        "KAKAO: uid가 null"             | LoginMethod.KAKAO  | null        | null             | null       | null         | "kakao"  | UserType.NORMAL  | null        | null           | null               | null
+        "KAKAO: name이 null"            | LoginMethod.KAKAO  | "kakaoUid"  | null             | null       | null         | null     | UserType.NORMAL  | null        | null           | null               | null
+        "KAKAO: userType이 null"        | LoginMethod.KAKAO  | "kakaoUid"  | null             | null       | null         | "kakao"  | null             | null        | null           | null               | null
+        "KAKAO(보호소): 보호소 이름이 없는 경우"    | LoginMethod.KAKAO  | "kakaoUid"  | null             | null       | null         | "kakao"  | UserType.SHELTER | null        | "보호소 주소"       | "01012345678"      | null
+        "KAKAO(보호소): 보호소 주소이 없는 경우"    | LoginMethod.KAKAO  | "kakaoUid"  | null             | null       | null         | "kakao"  | UserType.SHELTER | "보호소 이름"    | null           | "01012345678"      | null
+        "KAKAO(보호소): 보호소 전화번호이 없는 경우"  | LoginMethod.KAKAO  | "kakaoUid"  | null             | null       | null         | "kakao"  | UserType.SHELTER | "보호소 이름"    | "보호소 주소"       | null               | null
+        "GOOGLE: loginMethod가 null"    | null               | "googleUid" | null             | null       | null         | "google" | UserType.NORMAL  | null        | null           | null               | null
+        "GOOGLE: uid가 null"            | LoginMethod.GOOGLE | null        | null             | null       | null         | "google" | UserType.NORMAL  | null        | null           | null               | null
+        "GOOGLE: name이 null"           | LoginMethod.GOOGLE | "googleUid" | null             | null       | null         | null     | UserType.NORMAL  | null        | null           | null               | null
+        "GOOGLE: userType이 null"       | LoginMethod.GOOGLE | "googleUid" | null             | null       | null         | "google" | null             | null        | null           | null               | null
+        "GOOGLE(보호소): 보호소 이름이 없는 경우"   | LoginMethod.GOOGLE | "googleUid" | null             | null       | null         | "google" | UserType.SHELTER | null        | "보호소 주소"       | "01012345678"      | null
+        "GOOGLE(보호소): 보호소 주소이 없는 경우"   | LoginMethod.GOOGLE | "googleUid" | null             | null       | null         | "google" | UserType.SHELTER | "보호소 이름"    | null           | "01012345678"      | null
+        "GOOGLE(보호소): 보호소 전화번호이 없는 경우" | LoginMethod.GOOGLE | "googleUid" | null             | null       | null         | "google" | UserType.SHELTER | "보호소 이름"    | "보호소 주소"       | null               | null
+        "APPLE: loginMethod가 null"     | null               | "appleUid"  | null             | null       | null         | "apple"  | UserType.NORMAL  | null        | null           | null               | null
+        "APPLE: uid가 null"             | LoginMethod.APPLE  | null        | null             | null       | null         | "apple"  | UserType.NORMAL  | null        | null           | null               | null
+        "APPLE: name이 null"            | LoginMethod.APPLE  | "appleUid"  | null             | null       | null         | null     | UserType.NORMAL  | null        | null           | null               | null
+        "APPLE: userType이 null"        | LoginMethod.APPLE  | "appleUid"  | null             | null       | null         | "apple"  | null             | null        | null           | null               | null
+        "APPLE: userType이 null"        | LoginMethod.APPLE  | "appleUid"  | null             | null       | null         | "apple"  | null             | null        | null           | null               | null
+        "APPLE(보호소): 보호소 이름이 없는 경우"    | LoginMethod.APPLE  | "appleUid"  | null             | null       | null         | "apple"  | UserType.SHELTER | null        | "보호소 주소"       | "01012345678"      | null
+        "APPLE(보호소): 보호소 주소이 없는 경우"    | LoginMethod.APPLE  | "appleUid"  | null             | null       | null         | "apple"  | UserType.SHELTER | "보호소 이름"    | null           | "01012345678"      | null
+        "APPLE(보호소): 보호소 전화번호이 없는 경우"  | LoginMethod.APPLE  | "appleUid"  | null             | null       | null         | "apple"  | UserType.SHELTER | "보호소 이름"    | "보호소 주소"       | null               | null
+        "EMAIL: loginMethod가 null"     | null               | "emailUid"  | "test@gmail.com" | "password" | null         | "email"  | UserType.NORMAL  | null        | null           | null               | null
+        "EMAIL: uid가 null"             | LoginMethod.EMAIL  | null        | "test@gmail.com" | "password" | null         | "email"  | UserType.NORMAL  | null        | null           | null               | null
+        "EMAIL: name이 null"            | LoginMethod.EMAIL  | "emailUid"  | "test@gmail.com" | "password" | null         | null     | UserType.NORMAL  | null        | null           | null               | null
+        "EMAIL: email이 null"           | LoginMethod.EMAIL  | "emailUid"  | null             | "password" | null         | "email"  | UserType.NORMAL  | null        | null           | null               | null
+        "EMAIL: password가 null"        | LoginMethod.EMAIL  | "emailUid"  | "test@gmail.com" | null       | null         | "email"  | UserType.NORMAL  | null        | null           | null               | null
+        "EMAIL: userType이 null"        | LoginMethod.EMAIL  | "emailUid"  | "test@gmail.com" | "password" | null         | "email"  | null             | null        | null           | null               | null
+        "EMAIL: userType이 null"        | LoginMethod.EMAIL  | "emailUid"  | "test@gmail.com" | "password" | null         | "email"  | null             | null        | null           | null               | null
+        "EMAIL(보호소): 보호소 이름이 없는 경우"    | LoginMethod.EMAIL  | "emailUid"  | "test@gmail.com" | "password" | null         | "email"  | UserType.SHELTER | null        | "보호소 주소"       | "01012345678"      | null
+        "EMAIL(보호소): 보호소 주소이 없는 경우"    | LoginMethod.EMAIL  | "emailUid"  | "test@gmail.com" | "password" | null         | "email"  | UserType.SHELTER | "보호소 이름"    | null           | "01012345678"      | null
+        "EMAIL(보호소): 보호소 전화번호이 없는 경우"  | LoginMethod.EMAIL  | "emailUid"  | "test@gmail.com" | "password" | null         | "email"  | UserType.SHELTER | "보호소 이름"    | "보호소 주소"       | null               | null
     }
 
     @Unroll
@@ -184,5 +189,32 @@ class UserControllerSpec extends Specification {
         mvc.perform(get(USER_URL + '/list').param('ut', 'wrongParam'))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath('\$.error.detail').value('Error: 잘못 된 파라미터'))
+    }
+
+    @Unroll
+    def "[유저 디테일 취득]정상"() {
+        given:
+        userService.saveNewUser(Users.builder().loginMethod(LoginMethod.KAKAO).uid('uid1').email(email).name('name1').userType(UserType.NORMAL).build())
+
+        expect:
+        mvc.perform(get(USER_URL + '/' + userId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('\$.userId').value(userId))
+                .andExpect(jsonPath('\$.email').value(email))
+
+        where:
+        userId    | email            | shelterPhoneNumber
+        'uid1kko' | 'test@gmail.com' | ''
+    }
+
+    def "[유저 디테일 취득]에러: #testCase"() {
+        expect:
+        mvc.perform(get(USER_URL + '/' + userId))
+                .andExpect(responseStatus)
+
+        where:
+        testCase             | expectedException                              | userId     | responseStatus
+        '존재하지 않는 userId인 경우' | new UserNotFoundException("Error: 존재하지 않는 유저") | 'notExist' | status().isNotFound()
     }
 }
