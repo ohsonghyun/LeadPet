@@ -52,6 +52,10 @@ public class ErrorHandlerAdvice {
         return errorResponse(ex);
     }
 
+    @ExceptionHandler(ReplyNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handler(ReplyNotFoundException ex) {
+        return errorResponse(ex);
+    }
 
     /**
      * 에러 리스폰스 생성
