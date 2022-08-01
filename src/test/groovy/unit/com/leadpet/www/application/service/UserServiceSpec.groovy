@@ -161,6 +161,11 @@ class UserServiceSpec extends Specification {
         result.getContent().size() == 3
         result.getTotalPages() == 1
         result.getTotalElements() == 3
+        result.getContent().get(0).getUserId() == 'userId1'
+        result.getContent().get(0).getShelterName() == 'Shelter1'
+        result.getContent().get(0).getShelterAddress() == '헬로우 월드 123-123'
+        result.getContent().get(0).getShelterPhoneNumber() == '010-1234-1233'
+        result.getContent().get(0).getShelterHomePage() == 'www.shelter1.com'
     }
 
     def "보호소 디테일 취득: 정상"() {
