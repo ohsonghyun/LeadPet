@@ -41,6 +41,7 @@ public class Users extends BaseTime {
     private String shelterManager;
     private String shelterHomePage;
     private String shelterIntro;
+    private String shelterAccount;
 
     // TODO 이거 내부적으로 설정하도록 해야함.
     @Column(name = "shelter_assessment_status")

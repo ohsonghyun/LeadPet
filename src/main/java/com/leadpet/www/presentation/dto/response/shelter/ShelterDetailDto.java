@@ -19,8 +19,7 @@ public class ShelterDetailDto {
     private AssessmentStatus assessmentStatus;
     private String shelterAddress;
     private String shelterPhoneNumber;
-    // TODO 보호소 계좌번호도 가지고 있는지..
-//    private String shelterAccount;
+    private String shelterAccount;
     private String shelterHomepage;
     private String shelterManager;
     private String profileImage;
@@ -44,6 +43,7 @@ public class ShelterDetailDto {
                 .shelterManager(shelter.getShelterManager())
                 .profileImage(shelter.getProfileImage())
                 .shelterIntro(shelter.getShelterIntro())
+                .shelterAccount(shelter.getShelterAccount())
                 .build();
 
     }

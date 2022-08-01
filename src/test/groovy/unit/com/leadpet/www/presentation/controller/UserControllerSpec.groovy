@@ -48,6 +48,30 @@ class UserControllerSpec extends Specification {
         usersRepository.deleteAll()
     }
 
+    // TODO 일반 유저 가입 성공 테스트 케이스가 없다... 왜지...
+    @Unroll
+    def "회원가입 성공"() {
+        setup:
+        def signUpUserRequestDto = SignUpUserRequestDto.builder()
+                .loginMethod(LoginMethod.KAKAO)
+                .uid('uid')
+                .name('name')
+                .userType(UserType.SHELTER)
+                .shelterName('shelterName')
+                .shelterPhoneNumber('01012341234')
+                .shelterAddress('hello world address')
+                .shelterIntro('We are the best shelter')
+                .shelterAccount('Dev6 Bank 000-000-000')
+                .build()
+
+        expect:
+        mvc.perform(post(USER_URL + "/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(signUpUserRequestDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('\$.uid').isNotEmpty())
+    }
+
     @Unroll
     def "회원가입 validation: #testCase"() throws Exception {
         setup:
