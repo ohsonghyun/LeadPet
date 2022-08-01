@@ -36,7 +36,7 @@ class ShelterControllerSpec extends Specification {
         given:
         when(userService.searchShelters(isA(SearchShelterCondition.class), isA(Pageable.class)))
                 .thenReturn(new PageImpl<ShelterPageResponseDto>(
-                        List.of(new ShelterPageResponseDto(userId, shetlerName, 1, assessmentStatus, "헬로우 월드 주소 123-12", "010-1234-1234", "www.thor.com", profileImage))
+                        List.of(new ShelterPageResponseDto(userId, shetlerName, 1, assessmentStatus, shelterAddress, shelterPhoneNumber, shelterHomePage, profileImage))
                 ))
 
         expect:
@@ -46,11 +46,14 @@ class ShelterControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.content[0].userId').value(userId))
                 .andExpect(jsonPath('\$.content[0].shelterName').value(shetlerName))
                 .andExpect(jsonPath('\$.content[0].assessmentStatus').value(assessmentStatus.name()))
+                .andExpect(jsonPath('\$.content[0].shelterAddress').value(shelterAddress))
+                .andExpect(jsonPath('\$.content[0].shelterPhoneNumber').value(shelterPhoneNumber))
+                .andExpect(jsonPath('\$.content[0].shelterHomePage').value(shelterHomePage))
                 .andExpect(jsonPath('\$.content[0].profileImage').value(profileImage))
 
         where:
-        userId   | shetlerName   | assessmentStatus           | profileImage
-        'userId' | 'shelterName' | AssessmentStatus.COMPLETED | 'profileImage'
+        userId   | shetlerName   | assessmentStatus           | profileImage    | shelterAddress             | shelterPhoneNumber | shelterHomePage
+        'userId' | 'shelterName' | AssessmentStatus.COMPLETED | 'profileImage'  | '헬로우 월드 주소 123-12'    | '010-1234-1234'    | 'www.thor.com'
     }
 
     def "[보호소 디테일 취득] 정상"() {
