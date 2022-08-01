@@ -35,6 +35,9 @@ public class Users extends BaseTime {
     private UserType userType;
 
     // 보호소
+    // TODO 여유 생기면 테스트와 함께 작성
+//    @Embedded
+//    private ShelterInfo shelterInfo;
     private String shelterName;
     private String shelterAddress;
     private String shelterPhoneNumber;
@@ -70,5 +73,22 @@ public class Users extends BaseTime {
             return this.loginMethod.validateEssentialParam(this) && this.userType.validateEssentialParam(this);
         }
         return false;
+    }
+
+    /**
+     * 보호소 정보를 수정
+     *
+     * @param newShelterInfo {@code ShelterInfo}
+     * @return {@code Users} 수정된 보호소 정보
+     */
+    public Users updateShelter(final ShelterInfo newShelterInfo) {
+        shelterName = newShelterInfo.getShelterName();
+        shelterAddress = newShelterInfo.getShelterAddress();
+        shelterPhoneNumber = newShelterInfo.getShelterPhoneNumber();
+        shelterManager = newShelterInfo.getShelterManager();
+        shelterHomePage = newShelterInfo.getShelterHomePage();
+        shelterIntro = newShelterInfo.getShelterIntro();
+        shelterAccount = newShelterInfo.getShelterAccount();
+        return this;
     }
 }

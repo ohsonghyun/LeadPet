@@ -69,7 +69,7 @@ class UserServiceSpec extends Specification {
 
     def "이미 회원가입 상태라면 409-CONFLICT"() {
         setup:
-        def existingUser = createUser('kakaoUidkko', LoginMethod.KAKAO, "kakaoUid", null, null, null, "kakao", UserType.NORMAL, null, null, null, null, null)
+        def existingUser = createUser('kakaoUidkko', LoginMethod.KAKAO, "kakaoUid", null, null, null, "kakao", UserType.NORMAL, null, null, null, null, null, null, null)
         usersRepository.findByLoginMethodAndUid(_, _) >> existingUser
 
         when:
@@ -81,7 +81,7 @@ class UserServiceSpec extends Specification {
 
     def "유저 로그인: 성공 케이스: #testCase"() {
         setup:
-        def existingUser = createUser(userId, loginMethod, uid, email, password, null, name, userType, null, null, null, null, null)
+        def existingUser = createUser(userId, loginMethod, uid, email, password, null, name, userType, null, null, null, null, null, null, null)
         usersRepository.findByLoginMethodAndUid(_, _) >> existingUser
 
         when:
@@ -131,9 +131,9 @@ class UserServiceSpec extends Specification {
     def "일반 유저 리스트를 받는다"() {
         given:
         usersRepository.findByUserType(_) >> [
-                createUser('uid1kko', LoginMethod.KAKAO, 'uid1', null, null, null, "name1", UserType.NORMAL, null, null, null, null, null),
-                createUser('uid2ggl', LoginMethod.GOOGLE, 'uid2', null, null, null, "name2", UserType.NORMAL, null, null, null, null, null),
-                createUser('uid3eml', LoginMethod.EMAIL, 'uid3', "email@email.com", "password", null, "name3", UserType.NORMAL, null, null, null, null, null)
+                createUser('uid1kko', LoginMethod.KAKAO, 'uid1', null, null, null, "name1", UserType.NORMAL, null, null, null, null, null, null, null),
+                createUser('uid2ggl', LoginMethod.GOOGLE, 'uid2', null, null, null, "name2", UserType.NORMAL, null, null, null, null, null, null, null),
+                createUser('uid3eml', LoginMethod.EMAIL, 'uid3', "email@email.com", "password", null, "name3", UserType.NORMAL, null, null, null, null, null, null, null)
         ]
 
         when:
@@ -162,6 +162,7 @@ class UserServiceSpec extends Specification {
         result.getContent().size() == 3
         result.getTotalPages() == 1
         result.getTotalElements() == 3
+        result.getContent().get(0).profileImage == 'profileImage'
     }
 
     def "보호소 디테일 취득: 정상"() {
