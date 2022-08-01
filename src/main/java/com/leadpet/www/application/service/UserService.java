@@ -3,6 +3,7 @@ package com.leadpet.www.application.service;
 import com.leadpet.www.infrastructure.db.users.UsersRepository;
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
+import com.leadpet.www.infrastructure.domain.users.ShelterInfo;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
@@ -134,5 +135,20 @@ public class UserService {
             throw new UserNotFoundException("Error: 존재하지 않는 보호소");
         }
         return shelter;
+    }
+
+    /**
+     * 보호소 정보 수정
+     *
+     * @param newShelterInfo {@code ShelterInfo}
+     * @return {@code Users} 수정된 유저 데이터
+     */
+    public Users updateShetlerInfo(final String userId, final ShelterInfo newShelterInfo) {
+        Users targetShelter = usersRepository.findShelterByUserId(userId);
+        if (Objects.isNull(targetShelter)) {
+            log.error("[UserServier#updateShelterInfo] 존재하지 않는 유저ID: {}", userId);
+            throw new UserNotFoundException("Error: 존재하지 않는 유저Id");
+        }
+        return targetShelter.updateShelter(newShelterInfo);
     }
 }

@@ -4,6 +4,7 @@ import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition
 import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
+import com.leadpet.www.infrastructure.domain.users.ShelterInfo
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException
@@ -214,6 +215,63 @@ class UserServiceSpec extends Specification {
         testCase             | userId     | exception
         'userId가 null인 경우'   | null       | UnsatisfiedRequirementException
         '존재하지 않는 userId인 경우' | 'notExist' | UserNotFoundException
+    }
+
+    @Unroll
+    def "[보호소 정보 수정] 정상"() {
+        given:
+        usersRepository.findShelterByUserId(userId) >> Users.builder()
+                .loginMethod(LoginMethod.KAKAO)
+                .uid('uid')
+                .name('name')
+                .userId(userId)
+                .userType(UserType.SHELTER)
+                .shelterName('newShelterName')
+                .shelterAddress('shelterAddress')
+                .shelterManager('shelterManager')
+                .shelterHomePage('shelterHomePage')
+                .shelterPhoneNumber('01012341234')
+                .shelterIntro('shelterIntro')
+                .shelterAccount('shelterAccount')
+                .build()
+
+        def newShelterInfo = ShelterInfo.builder()
+                .shelterName(newShelterName)
+                .shelterAddress(newShelterAddress)
+                .shelterPhoneNumber(newShelterPhoneNumber)
+                .shelterIntro(newShelterIntro)
+                .shelterAccount(newShelterAccount)
+                .shelterManager(newShelterManager)
+                .shelterHomePage(newShelterHomePage)
+                .build()
+
+        when:
+        Users updatedShelter = userService.updateShetlerInfo(userId, newShelterInfo)
+
+        then:
+        updatedShelter.getShelterName() == newShelterName
+        updatedShelter.getShelterAddress() == newShelterAddress
+        updatedShelter.getShelterPhoneNumber() == newShelterPhoneNumber
+        updatedShelter.getShelterIntro() == newShelterIntro
+        updatedShelter.getShelterAccount() == newShelterAccount
+        updatedShelter.getShelterManager() == newShelterManager
+        updatedShelter.getShelterHomePage() == newShelterHomePage
+
+        where:
+        userId   | newShelterName   | newShelterAddress   | newShelterPhoneNumber | newShelterIntro   | newShelterAccount   | newShelterManager   | newShelterHomePage
+        'userId' | 'newShelterName' | 'newShelterAddress' | '01056785678'         | 'newShelterIntro' | 'newShelterAccount' | 'newShelterManager' | 'newShelterHomePage'
+    }
+
+    @Unroll
+    def "[보호소 정보 수정] 존재하지 않는 유저 에러"() {
+        given:
+        def newShelterInfo = ShelterInfo.builder().build()
+
+        when:
+        userService.updateShetlerInfo('userId', newShelterInfo)
+
+        then:
+        thrown(UserNotFoundException)
     }
 
     // -------------------------------------------------------------------------------------
