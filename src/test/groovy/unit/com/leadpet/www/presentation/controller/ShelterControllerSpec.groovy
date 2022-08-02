@@ -1,12 +1,15 @@
 package com.leadpet.www.presentation.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.leadpet.www.application.service.UserService
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition
 import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
+import com.leadpet.www.infrastructure.domain.users.ShelterInfo
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
+import com.leadpet.www.presentation.dto.request.shelter.UpdateShelterInfoRequestDto
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -20,6 +23,7 @@ import spock.lang.Specification
 import static org.mockito.ArgumentMatchers.isA
 import static org.mockito.Mockito.when
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -106,6 +110,75 @@ class ShelterControllerSpec extends Specification {
         testCase             | userId     | responseStatus
         'userId가 null인 경우'   | ''         | status().isNotFound()
         '존재하지 않는 userId인 경우' | 'notExist' | status().isNotFound()
+    }
+
+    def "[보호소 정보 수정] 정상"() {
+        given:
+        when(userService.updateShetlerInfo(isA(String.class), isA(ShelterInfo.class)))
+                .thenReturn(
+                        Users.builder()
+                                .loginMethod(LoginMethod.KAKAO)
+                                .uid('uid')
+                                .name('name')
+                                .userId(userId)
+                                .userType(UserType.SHELTER)
+                                .shelterName(shelterName)
+                                .shelterAddress(shelterAddress)
+                                .shelterManager(shelterManager)
+                                .shelterHomePage(shelterHomePage)
+                                .shelterPhoneNumber(shelterPhoneNumber)
+                                .shelterIntro(shelterIntro)
+                                .shelterAccount(shelterAccount)
+                                .shelterAssessmentStatus(AssessmentStatus.COMPLETED)
+                                .build()
+                )
+
+        expect:
+        mvc.perform(put(SHELTER_URL + '/' + userId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(
+                        UpdateShelterInfoRequestDto.builder()
+                                .shelterName(shelterName)
+                                .shelterAddress(shelterAddress)
+                                .shelterPhoneNumber(shelterPhoneNumber)
+                                .shelterManager(shelterManager)
+                                .shelterHomePage(shelterHomePage)
+                                .shelterIntro(shelterIntro)
+                                .shelterAccount(shelterAccount)
+                                .build()
+                )))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('\$.userId').value(userId))
+                .andExpect(jsonPath('\$.shelterName').value(shelterName))
+                .andExpect(jsonPath('\$.shelterAddress').value(shelterAddress))
+                .andExpect(jsonPath('\$.shelterPhoneNumber').value(shelterPhoneNumber))
+                .andExpect(jsonPath('\$.shelterAccount').value(shelterAccount))
+                .andExpect(jsonPath('\$.shelterHomepage').value(shelterHomePage))
+                .andExpect(jsonPath('\$.shelterManager').value(shelterManager))
+                .andExpect(jsonPath('\$.shelterIntro').value(shelterIntro))
+
+        where:
+        userId   | shelterName   | shelterAddress   | shelterPhoneNumber | shelterManager   | shelterHomePage   | shelterIntro   | shelterAccount
+        'userId' | 'shelterName' | 'shelterAddress' | '01012341234'      | 'shelterManager' | 'shelterHomePage' | 'shelterIntro' | 'shelterAccount'
+    }
+
+    def "[보호소 정보 수정] 존재하지 않는 유저 에러"() {
+        given:
+        when(userService.updateShetlerInfo(isA(String.class), isA(ShelterInfo.class)))
+                .thenThrow(new UserNotFoundException(errorMessage))
+
+        expect:
+        mvc.perform(put(SHELTER_URL + '/userId')
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(
+                        UpdateShelterInfoRequestDto.builder().build())))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath('\$.error.code').value(404))
+                .andExpect(jsonPath('\$.error.message').value('NOT_FOUND'))
+                .andExpect(jsonPath('\$.error.detail').value(errorMessage))
+
+        where:
+        errorMessage << ["Error: 존재하지 않는 유저Id"]
     }
 
 }
