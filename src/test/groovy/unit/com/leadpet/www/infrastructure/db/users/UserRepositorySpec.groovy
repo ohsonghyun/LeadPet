@@ -54,6 +54,8 @@ class UserRepositorySpec extends Specification {
                             .shelterName(name + " 보호소")
                             .shelterAddress(city + " 헬로우 월드 주소 어디서나 123-123")
                             .shelterAssessmentStatus(AssessmentStatus.PENDING)
+                            .shelterHomePage("www." + name + ".com")
+                            .shelterPhoneNumber("010-" + idx + "12-1234")
                             .profileImage(profileImage)
                             .build())
 
@@ -97,6 +99,10 @@ class UserRepositorySpec extends Specification {
         result.getContent().get(0).getUserId() != null
         result.getContent().get(0).getAllFeedCount() == 9
         result.getContent().get(0).getAssessmentStatus() == AssessmentStatus.PENDING
+        result.getContent().get(0).getShelterName().contains('보호소')
+        result.getContent().get(0).getShelterAddress().contains('헬로우 월드')
+        result.getContent().get(0).getShelterPhoneNumber().contains('12-1234')
+        result.getContent().get(0).getShelterHomePage().contains('.com')
         result.getContent().get(0).getProfileImage() == profileImage
         result.getTotalPages() == totalPages
 
