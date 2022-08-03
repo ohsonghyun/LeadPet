@@ -10,6 +10,7 @@ import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto
+import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
@@ -53,6 +54,8 @@ class UserRepositorySpec extends Specification {
                             .shelterName(name + " 보호소")
                             .shelterAddress(city + " 헬로우 월드 주소 어디서나 123-123")
                             .shelterAssessmentStatus(AssessmentStatus.PENDING)
+                            .shelterHomePage("www." + name + ".com")
+                            .shelterPhoneNumber("010-" + idx + "12-1234")
                             .profileImage(profileImage)
                             .build())
 
@@ -96,6 +99,10 @@ class UserRepositorySpec extends Specification {
         result.getContent().get(0).getUserId() != null
         result.getContent().get(0).getAllFeedCount() == 9
         result.getContent().get(0).getAssessmentStatus() == AssessmentStatus.PENDING
+        result.getContent().get(0).getShelterName().contains('보호소')
+        result.getContent().get(0).getShelterAddress().contains('헬로우 월드')
+        result.getContent().get(0).getShelterPhoneNumber().contains('12-1234')
+        result.getContent().get(0).getShelterHomePage().contains('.com')
         result.getContent().get(0).getProfileImage() == profileImage
         result.getTotalPages() == totalPages
 
@@ -145,7 +152,7 @@ class UserRepositorySpec extends Specification {
         em.clear()
 
         when:
-        Users shelter = usersRepository.findShelterByUserId('userId')
+        Users shelter = usersRepository.findShelterByUserId(userId)
 
         then:
         shelter != null
@@ -163,5 +170,32 @@ class UserRepositorySpec extends Specification {
         where:
         userId   | loginMethod       | uid   | name   | userType         | shelterName | shelterAddress                 | shelterIntro   | shelterAccount   | shelterAssessmentStatus
         'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.SHELTER | '토르 보호소'    | '서울특별시 헬로우 월드 주소 어디서나 123-123' | 'shelterIntro' | 'shelterAccount' | AssessmentStatus.PENDING
+    }
+
+    def "유저 디테일 조회"() {
+        given:
+        usersRepository.save(
+                Users.builder()
+                        .userId(userId)
+                        .loginMethod(loginMethod)
+                        .uid(uid)
+                        .name(name)
+                        .userType(userType)
+                        .build())
+
+        em.flush()
+        em.clear()
+
+        when:
+        UserDetailResponseDto userDetailResponseDto = usersRepository.findNormalUserDetailByUserId(userId)
+
+        then:
+        userDetailResponseDto != null
+        userDetailResponseDto.getUserId() == userId
+        userDetailResponseDto.getEmail() == null // 이메일 로그인인 경우에는 null 아님. TODO 리팩토링 필요!
+
+        where:
+        userId   | loginMethod       | uid   | name   | userType
+        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.NORMAL
     }
 }
