@@ -2,7 +2,9 @@ package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.application.service.UserService;
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
+import com.leadpet.www.presentation.dto.request.shelter.UpdateShelterInfoRequestDto;
 import com.leadpet.www.presentation.dto.response.shelter.ShelterDetailDto;
+import com.leadpet.www.presentation.dto.response.shelter.UpdateShelterInfoResponseDto;
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,10 +13,7 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "보호소 컨트롤러")
 @RestController
@@ -40,4 +39,18 @@ public class ShelterController {
         return ResponseEntity.ok(userService.searchShelters(condition, pageable));
     }
 
+    @ApiOperation(value = "보호소 정보 수정")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "보호소 정보 수정 성공"),
+            @ApiResponse(code = 404, message = "존재하지 않는 유저")
+    })
+    @PutMapping("/{userId}")
+    public ResponseEntity<UpdateShelterInfoResponseDto> updateShelterInfo(
+            @PathVariable final String userId,
+            @RequestBody final UpdateShelterInfoRequestDto request
+    ) {
+        return ResponseEntity.ok(
+                UpdateShelterInfoResponseDto.from(
+                        userService.updateShetlerInfo(userId, request.toShelterInfo())));
+    }
 }

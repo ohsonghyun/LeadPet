@@ -3,6 +3,7 @@ package com.leadpet.www.application.service;
 import com.leadpet.www.infrastructure.db.users.UsersRepository;
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
+import com.leadpet.www.infrastructure.domain.users.ShelterInfo;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +28,7 @@ import java.util.Objects;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @lombok.RequiredArgsConstructor
 public class UserService {
 
@@ -37,6 +40,7 @@ public class UserService {
      * @param newUser 새로운 유저 데이터
      * @return 가입 완성 후 유저 데이
      */
+    @Transactional
     public Users saveNewUser(@NonNull final Users newUser) {
         if (!newUser.hasAllRequiredValues()) {
             log.error("필수 데이터 누락\tuserId: {}", newUser.getUserId());
@@ -135,6 +139,25 @@ public class UserService {
             throw new UserNotFoundException("Error: 존재하지 않는 보호소");
         }
         return shelter;
+    }
+
+    /**
+     * 보호소 정보 수정
+     *
+     * @param newShelterInfo {@code ShelterInfo}
+     * @return {@code Users} 수정된 유저 데이터
+     */
+    @Transactional
+    public Users updateShetlerInfo(
+            @NonNull final String userId,
+            @NonNull final ShelterInfo newShelterInfo
+    ) {
+        Users targetShelter = usersRepository.findShelterByUserId(userId);
+        if (Objects.isNull(targetShelter)) {
+            log.error("[UserServier#updateShelterInfo] 존재하지 않는 유저ID: {}", userId);
+            throw new UserNotFoundException("Error: 존재하지 않는 유저Id");
+        }
+        return targetShelter.updateShelter(newShelterInfo);
     }
 
     /**
