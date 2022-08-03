@@ -30,6 +30,8 @@ public class AddAdoptionPostResponseDto {
     private String species;
     private Gender gender;
     private Neutering neutering;
+    private Integer age;
+    private String disease;
     private List<String> images;
     private String userId;
 
@@ -45,6 +47,8 @@ public class AddAdoptionPostResponseDto {
                 .species(adoptionPost.getSpecies())
                 .gender(adoptionPost.getGender())
                 .neutering(adoptionPost.getNeutering())
+                .age(adoptionPost.getAge())
+                .disease(adoptionPost.getDisease())
                 .images(adoptionPost.getImages())
                 .userId(adoptionPost.getUser().getUserId())
                 .build();

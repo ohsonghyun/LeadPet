@@ -30,6 +30,8 @@ public class AddAdoptionPostRequestDto {
     private String species;
     private Gender gender;
     private Neutering neutering;
+    private Integer age;
+    private String disease;
     private List<String> images;
     @NotNull
     private String userId;
@@ -51,6 +53,8 @@ public class AddAdoptionPostRequestDto {
                 .species(species)
                 .gender(gender)
                 .neutering(neutering)
+                .age(age)
+                .disease(disease)
                 .images(images)
                 .build();
     }

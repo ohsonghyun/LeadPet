@@ -55,6 +55,12 @@ public class AdoptionPosts extends BaseTime {
     @Enumerated(value = EnumType.STRING)
     private Neutering neutering;
 
+    @Column(name = "age")
+    private Integer age;
+
+    @Column(name = "disease")
+    private String disease;
+
     @Convert(converter = StringListConverter.class)
     private List<String> images;
 

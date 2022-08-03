@@ -48,6 +48,8 @@ public class AdoptionPostService {
                 .species(newAdoptionPost.getSpecies())
                 .gender(newAdoptionPost.getGender())
                 .neutering(newAdoptionPost.getNeutering())
+                .age(newAdoptionPost.getAge())
+                .disease(newAdoptionPost.getDisease())
                 .user(user)
                 .build();
 

@@ -139,6 +139,8 @@ class DonationPostControllerSpec extends Specification {
                                         .species('species')
                                         .gender(Gender.MALE)
                                         .neutering(Neutering.YES)
+                                        .age(1)
+                                        .disease('disease')
                                         .images(['img1', 'img2'])
                                         .build()
                         )

@@ -55,6 +55,8 @@ class AdoptionPostsSpec extends Specification {
                         .species(species)
                         .gender(gender)
                         .neutering(neutering)
+                        .age(age)
+                        .disease(disease)
                         .images(images)
                         .build()
         )
@@ -71,14 +73,16 @@ class AdoptionPostsSpec extends Specification {
         saved.getGender() == gender
         saved.getSpecies() == species
         saved.getNeutering() == neutering
+        saved.getAge() == age
+        saved.getDisease() == disease
         saved.getImages() == images
         saved.getStartDate() == startDate
         saved.getEndDate() == endDate
         saved.getEuthanasiaDate() == endDate
 
         where:
-        postId   | title   | contents   | animalType     | species   | gender      | neutering     | images           | startDate                       | endDate
-        'postId' | 'title' | 'contents' | AnimalType.DOG | 'species' | Gender.MALE | Neutering.YES | ['img1', 'img2'] | LocalDateTime.now().withNano(0) | LocalDateTime.now().plusDays(10).withNano(0)
+        postId   | title   | contents   | animalType     | species   | gender      | neutering     | age | disease     | images           | startDate                       | endDate
+        'postId' | 'title' | 'contents' | AnimalType.DOG | 'species' | Gender.MALE | Neutering.YES |  1  | 'disease'   | ['img1', 'img2'] | LocalDateTime.now().withNano(0) | LocalDateTime.now().plusDays(10).withNano(0)
     }
 
     @Unroll("#testcase")
@@ -114,6 +118,8 @@ class AdoptionPostsSpec extends Specification {
                             .species('species')
                             .gender(Gender.MALE)
                             .neutering(Neutering.YES)
+                            .age(1)
+                            .disease('disease')
                             .images(['img1', 'img2'])
                             .user(usersRepository.findShelterByUserId(i % 2 ? 'app0' : 'app1'))
                             .build()
