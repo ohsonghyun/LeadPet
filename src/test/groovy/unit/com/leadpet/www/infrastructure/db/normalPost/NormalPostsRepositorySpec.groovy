@@ -34,7 +34,6 @@ class NormalPostsRepositorySpec extends Specification {
 
     @Autowired
     UsersRepository usersRepository
-
     @Autowired
     NormalPostsRepository normalPostsRepository
 
@@ -86,6 +85,7 @@ class NormalPostsRepositorySpec extends Specification {
         result.getContent().get(0).getContents() != null
         result.getContent().get(0).getTitle() != null
         result.getContent().get(0).getUserId() != null
+        result.getContent().get(0).getLikedCount() == 0
         // TODO createdTime 도 테스트 하고 싶은데 DI 가 안 되는 듯.. 어떻게해야하지?
         result.getTotalElements() == expectedNumOfPosts
 

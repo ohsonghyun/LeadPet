@@ -14,7 +14,6 @@ import com.leadpet.www.presentation.dto.request.post.AddNormalPostRequestDto
 import com.leadpet.www.presentation.dto.request.post.UpdateNormalPostRequestDto
 import com.leadpet.www.presentation.dto.request.post.normal.DeleteNormalPostRequestDto
 import com.leadpet.www.presentation.dto.response.post.NormalPostResponse
-import org.hamcrest.Matchers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -26,10 +25,7 @@ import spock.lang.Specification
 
 import static org.mockito.ArgumentMatchers.isA
 import static org.mockito.Mockito.when
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -51,18 +47,12 @@ class NormalPostControllerSpec extends Specification {
                 .thenReturn(
                         new PageImpl<NormalPostResponse>(
                                 List.of(
-                                        NormalPosts.builder()
-                                                .normalPostId("dummyId")
-                                                .title("dummyTitle")
-                                                .contents("dummyContents")
-                                                .user(
-                                                        Users.builder()
-                                                                .userId("dummyUserId")
-                                                                .loginMethod(LoginMethod.APPLE)
-                                                                .uid("dummyUid")
-                                                                .name("dummyName")
-                                                                .userType(UserType.NORMAL)
-                                                                .build())
+                                        NormalPostResponse.builder()
+                                                .normalPostId(postId)
+                                                .title(title)
+                                                .contents(contents)
+                                                .userId(userId)
+                                                .likedCount(likedCount)
                                                 .build()
                                 )
                         ))
@@ -74,6 +64,15 @@ class NormalPostControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.content.size()').value(1))
                 .andExpect(jsonPath('\$.totalElements').value(1))
                 .andExpect(jsonPath('\$.totalPages').value(1))
+                .andExpect(jsonPath('\$.content[0].normalPostId').value(postId))
+                .andExpect(jsonPath('\$.content[0].title').value(title))
+                .andExpect(jsonPath('\$.content[0].contents').value(contents))
+                .andExpect(jsonPath('\$.content[0].userId').value(userId))
+                .andExpect(jsonPath('\$.content[0].likedCount').value(likedCount))
+
+        where:
+        postId   | title   | contents   | userId   | likedCount
+        'postId' | 'title' | 'contents' | 'userId' | 3L
     }
 
     def "[신규 일반 게시물 추가] Service로부터 받은 데이터를 DTO를 통해 반환한다"() {

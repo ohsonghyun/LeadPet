@@ -1,6 +1,7 @@
 package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.infrastructure.domain.breed.Breed;
+import com.leadpet.www.infrastructure.domain.liked.Liked;
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts;
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts;
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
@@ -34,6 +35,7 @@ public class InitData {
     private final InitPostService initPostService;
     private final InitBreedService initBreedService;
     private final InitNormalReplyService initNormalReplyService;
+    private final InitLikedService initLikedService;
 
     @PostConstruct
     public void init() {
@@ -42,6 +44,7 @@ public class InitData {
         initPostService.init();
         initBreedService.init();
         initNormalReplyService.init();
+        initLikedService.init();
     }
 
     @Component
@@ -220,6 +223,28 @@ public class InitData {
                 });
             }
         }
-
     }
+
+    @Component
+    static class InitLikedService {
+
+        @PersistenceContext
+        EntityManager em;
+
+        @Transactional
+        public void init() {
+            IntStream.range(101, 150).forEach(idx -> {
+                int likedCount = (int) (Math.random() * 4);
+                IntStream.range(0, likedCount).forEach(likedIdx -> {
+                    em.persist(
+                            Liked.builder()
+                                    .likedId("likedId" + idx + likedIdx)
+                                    .postId("NP_app0" + likedIdx)
+                                    .userId("uidkko" + idx)
+                                    .build());
+                });
+            });
+        }
+    }
+
 }

@@ -8,11 +8,13 @@ import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
+import com.leadpet.www.presentation.dto.response.post.NormalPostResponse
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-
 import spock.lang.Specification
+
+import static org.assertj.core.api.Assertions.assertThat
 
 /**
  * NormalPostServiceSpec
@@ -31,18 +33,11 @@ class NormalPostServiceSpec extends Specification {
 
     def "일반게시물 데이터를 페이징을 통해 취득한다"() {
         given:
-        Users user = Users.builder()
-                .loginMethod(LoginMethod.KAKAO)
-                .uid('dummyUid')
-                .name('dummyName')
-                .userType(UserType.NORMAL)
-                .build()
-
         normalPostsRepository.searchAll(_ as SearchNormalPostCondition, _ as Pageable) >> new PageImpl(
                 List.of(
-                        NormalPosts.builder().normalPostId("NP_a").title("title").contents("contents").user(user).build(),
-                        NormalPosts.builder().normalPostId("NP_b").title("title").contents("contents").user(user).build(),
-                        NormalPosts.builder().normalPostId("NP_c").title("title").contents("contents").user(user).build()
+                        NormalPostResponse.builder().normalPostId("NP_a").title("title").contents("contents").userId('user').likedCount(3).build(),
+                        NormalPostResponse.builder().normalPostId("NP_b").title("title").contents("contents").userId('user').likedCount(2).build(),
+                        NormalPostResponse.builder().normalPostId("NP_c").title("title").contents("contents").userId('user').likedCount(1).build()
                 ),
                 pageable,
                 total
@@ -54,9 +49,15 @@ class NormalPostServiceSpec extends Specification {
                 pageable)
 
         then:
-        result.getTotalElements() == 3
+        result.getTotalElements() == total
         result.getTotalPages() == 1
-        result.getContent().size() == 3
+
+        def it = assertThat(result.getContent())
+        it.hasSize(total)
+        it.extractingResultOf('getTitle').isNotNull()
+        it.extractingResultOf('getContents').isNotNull()
+        it.extractingResultOf('getNormalPostId').containsExactly('NP_a', 'NP_b', 'NP_c')
+        it.extractingResultOf('getLikedCount').containsExactly(3L, 2L, 1L)
 
         where:
         pageable             | total
