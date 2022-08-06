@@ -12,13 +12,14 @@ import java.util.List;
 @ApiModel("일반 게시물 Response")
 @lombok.Getter
 @lombok.RequiredArgsConstructor
-@lombok.Builder(access = AccessLevel.PRIVATE)
+@lombok.Builder
 public class NormalPostResponse {
     private final String normalPostId;
     private final String title;
     private final String contents;
     private final List<String> images;
     private final LocalDateTime createdDate;
+    private final Long likedCount;
 
     private final String userId;
 }
