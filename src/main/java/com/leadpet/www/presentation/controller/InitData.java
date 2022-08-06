@@ -106,6 +106,10 @@ public class InitData {
                                 .userType(UserType.SHELTER)
                                 .shelterName(name + " 보호소")
                                 .shelterAddress(city + " 헬로우 월드 주소 어디서나 123-123")
+                                .shelterPhoneNumber("01012341234")
+                                .shelterHomePage("https://helloworld.com")
+                                .shelterIntro("shelterIntro" + idx)
+                                .profileImage("profileImage" + idx)
                                 .shelterAssessmentStatus(AssessmentStatus.COMPLETED)
                                 .build());
             });
