@@ -2,6 +2,7 @@ package com.leadpet.www.infrastructure.db.breed
 
 import com.leadpet.www.TestConfig
 import com.leadpet.www.infrastructure.domain.breed.Breed
+import com.leadpet.www.infrastructure.domain.pet.AnimalType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
@@ -32,6 +33,7 @@ class BreedRepositorySpec extends Specification {
                 .breedId(breedId)
                 .category('가')
                 .breedName('골든 리드리버')
+                .animalType(AnimalType.DOG)
                 .build()
 
         when: '품종 정보 저장'
@@ -40,7 +42,7 @@ class BreedRepositorySpec extends Specification {
         em.clear()
 
         then:
-        breedRepository.findById(breedId)
+        breedRepository.findById(breedId).orElseThrow()
 
         where:
         breedId << ['breedId']
@@ -55,6 +57,7 @@ class BreedRepositorySpec extends Specification {
                             .breedId('breedId' + idx)
                             .category(isEven ? '가' : '나')
                             .breedName((isEven ? '골든 리드리버' : '나로 시작하는 견종') + idx)
+                            .animalType(AnimalType.DOG)
                             .build()
             )
         })
