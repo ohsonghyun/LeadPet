@@ -4,6 +4,7 @@ import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition
 import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
+import com.leadpet.www.infrastructure.domain.users.ShelterInfo
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException
@@ -70,7 +71,7 @@ class UserServiceSpec extends Specification {
 
     def "이미 회원가입 상태라면 409-CONFLICT"() {
         setup:
-        def existingUser = createUser('kakaoUidkko', LoginMethod.KAKAO, "kakaoUid", null, null, null, "kakao", UserType.NORMAL, null, null, null, null, null)
+        def existingUser = createUser('kakaoUidkko', LoginMethod.KAKAO, "kakaoUid", null, null, null, "kakao", UserType.NORMAL, null, null, null, null, null, null, null)
         usersRepository.findByLoginMethodAndUid(_, _) >> existingUser
 
         when:
@@ -82,7 +83,7 @@ class UserServiceSpec extends Specification {
 
     def "유저 로그인: 성공 케이스: #testCase"() {
         setup:
-        def existingUser = createUser(userId, loginMethod, uid, email, password, null, name, userType, null, null, null, null, null)
+        def existingUser = createUser(userId, loginMethod, uid, email, password, null, name, userType, null, null, null, null, null, null, null)
         usersRepository.findByLoginMethodAndUid(_, _) >> existingUser
 
         when:
@@ -132,9 +133,9 @@ class UserServiceSpec extends Specification {
     def "일반 유저 리스트를 받는다"() {
         given:
         usersRepository.findByUserType(_) >> [
-                createUser('uid1kko', LoginMethod.KAKAO, 'uid1', null, null, null, "name1", UserType.NORMAL, null, null, null, null, null),
-                createUser('uid2ggl', LoginMethod.GOOGLE, 'uid2', null, null, null, "name2", UserType.NORMAL, null, null, null, null, null),
-                createUser('uid3eml', LoginMethod.EMAIL, 'uid3', "email@email.com", "password", null, "name3", UserType.NORMAL, null, null, null, null, null)
+                createUser('uid1kko', LoginMethod.KAKAO, 'uid1', null, null, null, "name1", UserType.NORMAL, null, null, null, null, null, null, null),
+                createUser('uid2ggl', LoginMethod.GOOGLE, 'uid2', null, null, null, "name2", UserType.NORMAL, null, null, null, null, null, null, null),
+                createUser('uid3eml', LoginMethod.EMAIL, 'uid3', "email@email.com", "password", null, "name3", UserType.NORMAL, null, null, null, null, null, null, null)
         ]
 
         when:
@@ -163,6 +164,7 @@ class UserServiceSpec extends Specification {
         result.getContent().size() == 3
         result.getTotalPages() == 1
         result.getTotalElements() == 3
+        result.getContent().get(0).profileImage == 'profileImage'
         result.getContent().get(0).getUserId() == 'userId1'
         result.getContent().get(0).getShelterName() == 'Shelter1'
         result.getContent().get(0).getShelterAddress() == '헬로우 월드 123-123'
@@ -221,6 +223,80 @@ class UserServiceSpec extends Specification {
         '존재하지 않는 userId인 경우' | 'notExist' | UserNotFoundException
     }
 
+
+    // TODO 역시 보호소 디테일하고 내부 로직은 공유하고 서비스에서 따로 분리하는게 좋을까?
+    // DRY 관점으로 정말 동일로직으로 합쳐도 될지 생각 필요. 판단 후에 리팩토링
+    @Unroll("#testCase")
+    def "일반 유저 디테일 취득: 에러"() {
+        when:
+        userService.normalUserDetail(userId)
+
+        then:
+        thrown(exception)
+
+        where:
+        testCase             | userId     | exception
+        'userId가 null인 경우'   | null       | UnsatisfiedRequirementException
+        '존재하지 않는 userId인 경우' | 'notExist' | UserNotFoundException
+    }
+
+    @Unroll
+    def "[보호소 정보 수정] 정상"() {
+        given:
+        usersRepository.findShelterByUserId(userId) >> Users.builder()
+                .loginMethod(LoginMethod.KAKAO)
+                .uid('uid')
+                .name('name')
+                .userId(userId)
+                .userType(UserType.SHELTER)
+                .shelterName('newShelterName')
+                .shelterAddress('shelterAddress')
+                .shelterManager('shelterManager')
+                .shelterHomePage('shelterHomePage')
+                .shelterPhoneNumber('01012341234')
+                .shelterIntro('shelterIntro')
+                .shelterAccount('shelterAccount')
+                .build()
+
+        def newShelterInfo = ShelterInfo.builder()
+                .shelterName(newShelterName)
+                .shelterAddress(newShelterAddress)
+                .shelterPhoneNumber(newShelterPhoneNumber)
+                .shelterIntro(newShelterIntro)
+                .shelterAccount(newShelterAccount)
+                .shelterManager(newShelterManager)
+                .shelterHomePage(newShelterHomePage)
+                .build()
+
+        when:
+        Users updatedShelter = userService.updateShetlerInfo(userId, newShelterInfo)
+
+        then:
+        updatedShelter.getShelterName() == newShelterName
+        updatedShelter.getShelterAddress() == newShelterAddress
+        updatedShelter.getShelterPhoneNumber() == newShelterPhoneNumber
+        updatedShelter.getShelterIntro() == newShelterIntro
+        updatedShelter.getShelterAccount() == newShelterAccount
+        updatedShelter.getShelterManager() == newShelterManager
+        updatedShelter.getShelterHomePage() == newShelterHomePage
+
+        where:
+        userId   | newShelterName   | newShelterAddress   | newShelterPhoneNumber | newShelterIntro   | newShelterAccount   | newShelterManager   | newShelterHomePage
+        'userId' | 'newShelterName' | 'newShelterAddress' | '01056785678'         | 'newShelterIntro' | 'newShelterAccount' | 'newShelterManager' | 'newShelterHomePage'
+    }
+
+    @Unroll
+    def "[보호소 정보 수정] 존재하지 않는 유저 에러"() {
+        given:
+        def newShelterInfo = ShelterInfo.builder().build()
+
+        when:
+        userService.updateShetlerInfo('userId', newShelterInfo)
+
+        then:
+        thrown(UserNotFoundException)
+    }
+
     def "일반 유저 디테일 취득: 정상"() {
         given:
         usersRepository.findNormalUserDetailByUserId(_) >>
@@ -240,22 +316,6 @@ class UserServiceSpec extends Specification {
         where:
         userId   | email
         'userId' | 'test@email.com'
-    }
-
-    // TODO 역시 보호소 디테일하고 내부 로직은 공유하고 서비스에서 따로 분리하는게 좋을까?
-    // DRY 관점으로 정말 동일로직으로 합쳐도 될지 생각 필요. 판단 후에 리팩토링
-    @Unroll("#testCase")
-    def "일반 유저 디테일 취득: 에러"() {
-        when:
-        userService.normalUserDetail(userId)
-
-        then:
-        thrown(exception)
-
-        where:
-        testCase             | userId     | exception
-        'userId가 null인 경우'   | null       | UnsatisfiedRequirementException
-        '존재하지 않는 userId인 경우' | 'notExist' | UserNotFoundException
     }
 
     // -------------------------------------------------------------------------------------

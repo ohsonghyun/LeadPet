@@ -1,10 +1,9 @@
 package com.leadpet.www.infrastructure.domain.breed;
 
 import com.leadpet.www.infrastructure.domain.BaseTime;
+import com.leadpet.www.infrastructure.domain.pet.AnimalType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Breed: 품종 정보
@@ -24,4 +23,8 @@ public class Breed extends BaseTime {
 
     @Column(name = "breed_name")
     private String breedName;
+
+    @Column(name = "animal_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AnimalType animalType;
 }

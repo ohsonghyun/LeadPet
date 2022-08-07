@@ -1,6 +1,7 @@
 package com.leadpet.www.infrastructure.db.normalPost;
 
 import com.leadpet.www.infrastructure.db.normalPost.condition.SearchNormalPostCondition;
+import com.leadpet.www.infrastructure.domain.liked.QLiked;
 import com.leadpet.www.presentation.dto.response.post.NormalPostResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -13,6 +14,7 @@ import org.springframework.lang.NonNull;
 
 import java.util.List;
 
+import static com.leadpet.www.infrastructure.domain.liked.QLiked.liked;
 import static com.leadpet.www.infrastructure.domain.posts.QNormalPosts.normalPosts;
 
 /**
@@ -34,11 +36,14 @@ public class NormalPostsRepositoryImpl implements NormalPostsRepositoryCustom {
                                 normalPosts.contents,
                                 normalPosts.images,
                                 normalPosts.createdDate,
+                                liked.postId.count().as("likedCount"),
                                 normalPosts.user.userId.as("userId")
                         )
                 )
                 .from(normalPosts)
+                .leftJoin(liked).on(liked.postId.eq(normalPosts.normalPostId))
                 .where(eqUserIdWith(condition.getUserId()))
+                .groupBy(normalPosts.normalPostId)
                 .orderBy(normalPosts.createdDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

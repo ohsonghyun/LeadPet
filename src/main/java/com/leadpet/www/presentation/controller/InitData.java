@@ -1,6 +1,8 @@
 package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.infrastructure.domain.breed.Breed;
+import com.leadpet.www.infrastructure.domain.liked.Liked;
+import com.leadpet.www.infrastructure.domain.pet.AnimalType;
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts;
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts;
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
@@ -34,6 +36,7 @@ public class InitData {
     private final InitPostService initPostService;
     private final InitBreedService initBreedService;
     private final InitNormalReplyService initNormalReplyService;
+    private final InitLikedService initLikedService;
 
     @PostConstruct
     public void init() {
@@ -42,6 +45,7 @@ public class InitData {
         initPostService.init();
         initBreedService.init();
         initNormalReplyService.init();
+        initLikedService.init();
     }
 
     @Component
@@ -103,6 +107,10 @@ public class InitData {
                                 .userType(UserType.SHELTER)
                                 .shelterName(name + " 보호소")
                                 .shelterAddress(city + " 헬로우 월드 주소 어디서나 123-123")
+                                .shelterPhoneNumber("01012341234")
+                                .shelterHomePage("https://helloworld.com")
+                                .shelterIntro("shelterIntro" + idx)
+                                .profileImage("profileImage" + idx)
                                 .shelterAssessmentStatus(AssessmentStatus.COMPLETED)
                                 .build());
             });
@@ -161,40 +169,37 @@ public class InitData {
 
         @Transactional
         public void init() {
-            // 좀 더 좋은 코드로 바꾸자.. 지금은 졸리니까 기백으로 밀어 붙인다
-            // 가
-            em.persist(
-                    Breed.builder()
-                            .breedId("breedId0")
-                            .category("가")
-                            .breedName("골든 리트리버")
-                            .build());
-            em.persist(
-                    Breed.builder()
-                            .breedId("breedId1")
-                            .category("가")
-                            .breedName("고든셰터")
-                            .build());
-            // 사
-            em.persist(
-                    Breed.builder()
-                            .breedId("breedId2")
-                            .category("사")
-                            .breedName("시츄")
-                            .build());
-            em.persist(
-                    Breed.builder()
-                            .breedId("breedId3")
-                            .category("사")
-                            .breedName("스피츠")
-                            .build());
-            em.persist(
-                    Breed.builder()
-                            .breedId("breedId4")
-                            .category("사")
-                            .breedName("시바")
-                            .build());
+            DummyBreed[] dummyBreeds = new DummyBreed[]{
+                    new DummyBreed("가", "골든 리트리버", AnimalType.DOG),
+                    new DummyBreed("가", "고든셰터", AnimalType.DOG),
+                    new DummyBreed("사", "시츄", AnimalType.DOG),
+                    new DummyBreed("사", "시바", AnimalType.DOG),
+                    new DummyBreed("사", "스피츠", AnimalType.DOG),
+                    new DummyBreed("파", "퍼그", AnimalType.DOG)
+            };
 
+            IntStream.range(0, dummyBreeds.length).forEach(idx -> {
+                em.persist(dummyBreeds[idx].toBreed("breedId" + idx));
+            });
+        }
+
+        /**
+         * Dummy data 생성용 클래스
+         */
+        @lombok.AllArgsConstructor
+        private static class DummyBreed {
+            private String category;
+            private String breedName;
+            private AnimalType animalType;
+
+            Breed toBreed(final String breedId) {
+                return Breed.builder()
+                        .breedId(breedId)
+                        .category(category)
+                        .breedName(breedName)
+                        .animalType(animalType)
+                        .build();
+            }
         }
     }
 
@@ -221,6 +226,28 @@ public class InitData {
                 });
             }
         }
-
     }
+
+    @Component
+    static class InitLikedService {
+
+        @PersistenceContext
+        EntityManager em;
+
+        @Transactional
+        public void init() {
+            IntStream.range(101, 150).forEach(idx -> {
+                int likedCount = (int) (Math.random() * 4);
+                IntStream.range(0, likedCount).forEach(likedIdx -> {
+                    em.persist(
+                            Liked.builder()
+                                    .likedId("likedId" + idx + likedIdx)
+                                    .postId("NP_app0" + likedIdx)
+                                    .userId("uidkko" + idx)
+                                    .build());
+                });
+            });
+        }
+    }
+
 }
