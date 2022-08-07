@@ -52,7 +52,7 @@ class AdoptionPostsSpec extends Specification {
                         .title(title)
                         .contents(contents)
                         .animalType(animalType)
-                        .species(species)
+                        .breed(breed)
                         .gender(gender)
                         .neutering(neutering)
                         .age(age)
@@ -71,7 +71,7 @@ class AdoptionPostsSpec extends Specification {
         saved.getContents() == contents
         saved.getAnimalType() == animalType
         saved.getGender() == gender
-        saved.getSpecies() == species
+        saved.getBreed() == breed
         saved.getNeutering() == neutering
         saved.getAge() == age
         saved.getDisease() == disease
@@ -81,8 +81,8 @@ class AdoptionPostsSpec extends Specification {
         saved.getEuthanasiaDate() == endDate
 
         where:
-        postId   | title   | contents   | animalType     | species   | gender      | neutering     | age | disease     | images           | startDate                       | endDate
-        'postId' | 'title' | 'contents' | AnimalType.DOG | 'species' | Gender.MALE | Neutering.YES |  1  | 'disease'   | ['img1', 'img2'] | LocalDateTime.now().withNano(0) | LocalDateTime.now().plusDays(10).withNano(0)
+        postId   | title   | contents   | animalType     | breed   | gender      | neutering     | age | disease     | images           | startDate                       | endDate
+        'postId' | 'title' | 'contents' | AnimalType.DOG | 'breed' | Gender.MALE | Neutering.YES |  1  | 'disease'   | ['img1', 'img2'] | LocalDateTime.now().withNano(0) | LocalDateTime.now().plusDays(10).withNano(0)
     }
 
     @Unroll("#testcase")
@@ -115,7 +115,7 @@ class AdoptionPostsSpec extends Specification {
                             .title('title')
                             .contents('contents')
                             .animalType(AnimalType.DOG)
-                            .species('species')
+                            .breed('breed')
                             .gender(Gender.MALE)
                             .neutering(Neutering.YES)
                             .age(1)

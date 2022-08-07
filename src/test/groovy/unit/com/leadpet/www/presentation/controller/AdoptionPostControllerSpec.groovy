@@ -91,7 +91,7 @@ class AdoptionPostControllerSpec extends Specification {
                                 .title(title)
                                 .contents(contents)
                                 .animalType(animalType)
-                                .species(species)
+                                .breed(breed)
                                 .gender(gender)
                                 .neutering(neutering)
                                 .age(age)
@@ -114,7 +114,7 @@ class AdoptionPostControllerSpec extends Specification {
                                         .title(title)
                                         .contents(contents)
                                         .animalType(animalType)
-                                        .species(species)
+                                        .breed(breed)
                                         .gender(gender)
                                         .neutering(neutering)
                                         .age(age)
@@ -138,8 +138,8 @@ class AdoptionPostControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.userId').value(userId))
 
         where:
-        postId   | userId   | title   | contents   | animalType     | species   | gender      | neutering     | age | disease     | images
-        'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'species' | Gender.MALE | Neutering.YES |  1  | 'disease'   | ['img1', 'img2']
+        postId   | userId   | title   | contents   | animalType     | breed   | gender      | neutering     | age | disease     | images
+        'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'breed' | Gender.MALE | Neutering.YES |  1  | 'disease'   | ['img1', 'img2']
     }
 
     def "[입양 피드 목록 취득]: 정상"() {
@@ -155,7 +155,7 @@ class AdoptionPostControllerSpec extends Specification {
                                         .title('title')
                                         .contents('contents')
                                         .animalType(AnimalType.DOG)
-                                        .species('species')
+                                        .breed('breed')
                                         .gender(Gender.MALE)
                                         .neutering(Neutering.YES)
                                         .age(1)

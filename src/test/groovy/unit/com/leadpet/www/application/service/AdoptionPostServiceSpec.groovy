@@ -46,7 +46,7 @@ class AdoptionPostServiceSpec extends Specification {
                 .title(title)
                 .contents(contents)
                 .animalType(animalType)
-                .species(species)
+                .breed(breed)
                 .gender(gender)
                 .neutering(neutering)
                 .age(age)
@@ -68,7 +68,7 @@ class AdoptionPostServiceSpec extends Specification {
                         .title(title)
                         .contents(contents)
                         .animalType(animalType)
-                        .species(species)
+                        .breed(breed)
                         .gender(gender)
                         .neutering(neutering)
                         .age(age)
@@ -85,7 +85,7 @@ class AdoptionPostServiceSpec extends Specification {
         result.getContents() == contents
         result.getAnimalType() == animalType
         result.getGender() == gender
-        result.getSpecies() == species
+        result.getBreed() == breed
         result.getNeutering() == neutering
         result.getAge() == age
         result.getDisease() == disease
@@ -97,8 +97,8 @@ class AdoptionPostServiceSpec extends Specification {
         result.getUser().getUserId() == userId
 
         where:
-        postId   | userId   | title   | contents   | animalType     | species   | gender      | neutering     | age | disease     | images           | startDate           | endDate
-        'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'species' | Gender.MALE | Neutering.YES |  1  | 'disease'   | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
+        postId   | userId   | title   | contents   | animalType     | breed   | gender      | neutering     | age | disease     | images           | startDate           | endDate
+        'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'breed' | Gender.MALE | Neutering.YES |  1  | 'disease'   | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
     }
 
     def "userId가 존재하지 않으면 에러"() {
@@ -115,7 +115,7 @@ class AdoptionPostServiceSpec extends Specification {
                         .title(title)
                         .contents(contents)
                         .animalType(animalType)
-                        .species(species)
+                        .breed(breed)
                         .gender(gender)
                         .neutering(neutering)
                         .age(age)
@@ -129,8 +129,8 @@ class AdoptionPostServiceSpec extends Specification {
         thrown(UserNotFoundException)
 
         where:
-        postId   | userId   | title   | contents   | animalType     | species   | gender      | neutering     | age | disease     | images           | startDate           | endDate
-        'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'species' | Gender.MALE | Neutering.YES |  1  | 'disease'   | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
+        postId   | userId   | title   | contents   | animalType     | breed   | gender      | neutering     | age | disease     | images           | startDate           | endDate
+        'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'breed' | Gender.MALE | Neutering.YES |  1  | 'disease'   | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
     }
 
     def "입양 피드 검색(pagination)"() {
@@ -147,7 +147,7 @@ class AdoptionPostServiceSpec extends Specification {
                             .title('title')
                             .contents('contents')
                             .animalType(AnimalType.DOG)
-                            .species('species')
+                            .breed('breed')
                             .gender(Gender.MALE)
                             .neutering(Neutering.YES)
                             .age(1)

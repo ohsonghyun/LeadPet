@@ -27,7 +27,7 @@ public class AddAdoptionPostRequestDto {
     private String title;
     private String contents;
     private AnimalType animalType;
-    private String species;
+    private String breed;
     private Gender gender;
     private Neutering neutering;
     private Integer age;
@@ -50,7 +50,7 @@ public class AddAdoptionPostRequestDto {
                 .title(title)
                 .contents(contents)
                 .animalType(animalType)
-                .species(species)
+                .breed(breed)
                 .gender(gender)
                 .neutering(neutering)
                 .age(age)

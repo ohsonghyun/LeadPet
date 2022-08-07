@@ -44,8 +44,8 @@ public class AdoptionPosts extends BaseTime {
     @Enumerated(value = EnumType.STRING)
     private AnimalType animalType;
 
-    @Column(name = "species")
-    private String species;
+    @Column(name = "breed")
+    private String breed;
 
     @Column(name = "gender")
     @Enumerated(value = EnumType.STRING)

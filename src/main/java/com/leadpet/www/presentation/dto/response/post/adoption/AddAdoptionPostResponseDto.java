@@ -27,7 +27,7 @@ public class AddAdoptionPostResponseDto {
     private String title;
     private String contents;
     private AnimalType animalType;
-    private String species;
+    private String breed;
     private Gender gender;
     private Neutering neutering;
     private Integer age;
@@ -44,7 +44,7 @@ public class AddAdoptionPostResponseDto {
                 .title(adoptionPost.getTitle())
                 .contents(adoptionPost.getContents())
                 .animalType(adoptionPost.getAnimalType())
-                .species(adoptionPost.getSpecies())
+                .breed(adoptionPost.getBreed())
                 .gender(adoptionPost.getGender())
                 .neutering(adoptionPost.getNeutering())
                 .age(adoptionPost.getAge())

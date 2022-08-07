@@ -136,7 +136,7 @@ class DonationPostControllerSpec extends Specification {
                                         .title('title')
                                         .contents('contents')
                                         .animalType(AnimalType.DOG)
-                                        .species('species')
+                                        .breed('breed')
                                         .gender(Gender.MALE)
                                         .neutering(Neutering.YES)
                                         .age(1)
