@@ -27,9 +27,11 @@ public class AddAdoptionPostRequestDto {
     private String title;
     private String contents;
     private AnimalType animalType;
-    private String species;
+    private String breed;
     private Gender gender;
     private Neutering neutering;
+    private Integer age;
+    private String disease;
     private List<String> images;
     @NotNull
     private String userId;
@@ -48,9 +50,11 @@ public class AddAdoptionPostRequestDto {
                 .title(title)
                 .contents(contents)
                 .animalType(animalType)
-                .species(species)
+                .breed(breed)
                 .gender(gender)
                 .neutering(neutering)
+                .age(age)
+                .disease(disease)
                 .images(images)
                 .build();
     }

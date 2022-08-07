@@ -45,9 +45,11 @@ public class AdoptionPostService {
                 .contents(newAdoptionPost.getContents())
                 .images(newAdoptionPost.getImages())
                 .animalType(newAdoptionPost.getAnimalType())
-                .species(newAdoptionPost.getSpecies())
+                .breed(newAdoptionPost.getBreed())
                 .gender(newAdoptionPost.getGender())
                 .neutering(newAdoptionPost.getNeutering())
+                .age(newAdoptionPost.getAge())
+                .disease(newAdoptionPost.getDisease())
                 .user(user)
                 .build();
 

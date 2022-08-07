@@ -36,9 +36,11 @@ public class AdoptionPostsRepositoryImpl implements AdoptionPostRepositoryCustom
                                 adoptionPosts.title,
                                 adoptionPosts.contents,
                                 adoptionPosts.animalType,
-                                adoptionPosts.species,
+                                adoptionPosts.breed,
                                 adoptionPosts.gender,
                                 adoptionPosts.neutering,
+                                adoptionPosts.age,
+                                adoptionPosts.disease,
                                 adoptionPosts.images,
                                 adoptionPosts.user.userId.as("userId")
                         ))

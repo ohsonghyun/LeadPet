@@ -23,9 +23,11 @@ public class AdoptionPostPageResponseDto {
     private final String title;
     private final String contents;
     private final AnimalType animalType;
-    private final String species;
+    private final String breed;
     private final Gender gender;
     private final Neutering neutering;
+    private final Integer age;
+    private final String disease;
     private final List<String> images;
     private final String userId;
 }

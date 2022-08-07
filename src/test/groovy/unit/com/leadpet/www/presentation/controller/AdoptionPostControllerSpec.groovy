@@ -91,9 +91,11 @@ class AdoptionPostControllerSpec extends Specification {
                                 .title(title)
                                 .contents(contents)
                                 .animalType(animalType)
-                                .species(species)
+                                .breed(breed)
                                 .gender(gender)
                                 .neutering(neutering)
+                                .age(age)
+                                .disease(disease)
                                 .images(images)
                                 .user(Users.builder().userId(userId).build())
                                 .build()
@@ -112,9 +114,11 @@ class AdoptionPostControllerSpec extends Specification {
                                         .title(title)
                                         .contents(contents)
                                         .animalType(animalType)
-                                        .species(species)
+                                        .breed(breed)
                                         .gender(gender)
                                         .neutering(neutering)
+                                        .age(age)
+                                        .disease(disease)
                                         .images(images)
                                         .userId(userId)
                                         .build())))
@@ -128,12 +132,14 @@ class AdoptionPostControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.animalType').value(animalType.name()))
                 .andExpect(jsonPath('\$.gender').value(gender.name()))
                 .andExpect(jsonPath('\$.neutering').value(neutering.name()))
+                .andExpect(jsonPath('\$.age').value(age))
+                .andExpect(jsonPath('\$.disease').value(disease))
                 .andExpect(jsonPath('\$.images').value(images))
                 .andExpect(jsonPath('\$.userId').value(userId))
 
         where:
-        postId   | userId   | title   | contents   | animalType     | species   | gender      | neutering     | images
-        'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'species' | Gender.MALE | Neutering.YES | ['img1', 'img2']
+        postId   | userId   | title   | contents   | animalType     | breed   | gender      | neutering     | age | disease     | images
+        'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'breed' | Gender.MALE | Neutering.YES |  1  | 'disease'   | ['img1', 'img2']
     }
 
     def "[입양 피드 목록 취득]: 정상"() {
@@ -149,9 +155,11 @@ class AdoptionPostControllerSpec extends Specification {
                                         .title('title')
                                         .contents('contents')
                                         .animalType(AnimalType.DOG)
-                                        .species('species')
+                                        .breed('breed')
                                         .gender(Gender.MALE)
                                         .neutering(Neutering.YES)
+                                        .age(1)
+                                        .disease('disease')
                                         .images(['img1', 'img2'])
                                         .userId('userId')
                                         .build()

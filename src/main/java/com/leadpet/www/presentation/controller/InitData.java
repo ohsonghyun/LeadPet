@@ -153,6 +153,7 @@ public class InitData {
                                         .adoptionPostId("AP_" + user.getUserId() + i)
                                         .title("title" + user.getUserId() + i)
                                         .contents("contents" + user.getUserId() + i)
+                                        .age(i+1)
                                         .user(user)
                                         .build());
                     }
