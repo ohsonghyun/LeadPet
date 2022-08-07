@@ -1,6 +1,7 @@
 package com.leadpet.www.infrastructure.db.users;
 
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
+import com.leadpet.www.infrastructure.domain.reply.normal.QNormalReply;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto;
@@ -20,6 +21,7 @@ import java.util.List;
 import static com.leadpet.www.infrastructure.domain.posts.QAdoptionPosts.adoptionPosts;
 import static com.leadpet.www.infrastructure.domain.posts.QDonationPosts.donationPosts;
 import static com.leadpet.www.infrastructure.domain.posts.QNormalPosts.normalPosts;
+import static com.leadpet.www.infrastructure.domain.reply.normal.QNormalReply.normalReply;
 import static com.leadpet.www.infrastructure.domain.users.QUsers.users;
 
 /**
@@ -110,17 +112,19 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
     @Nullable
     @Override
     public UserDetailResponseDto findNormalUserDetailByUserId(String userId) {
-        // todo 총 댓글수 넣어야됨
         List<UserDetailResponseDto> userDetail = queryFactory
                 .select(
                         Projections.constructor(
                                 UserDetailResponseDto.class,
                                 users.userId,
-                                users.email
+                                users.email,
+                                normalReply.normalReplyId.count().as("allReplyCount")
                         ))
                 .from(users)
+                .leftJoin(normalReply).on(users.userId.eq(normalReply.user.userId))
                 .where(users.userId.eq(userId),
                         eqUserTypeNormal())
+                .groupBy(users.userId)
                 .fetch();
 
         return userDetail.isEmpty() ? null : userDetail.get(0);

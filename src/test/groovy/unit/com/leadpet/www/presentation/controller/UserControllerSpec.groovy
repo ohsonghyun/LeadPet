@@ -226,6 +226,7 @@ class UserControllerSpec extends Specification {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('\$.userId').value(userId))
                 .andExpect(jsonPath('\$.email').value(email))
+        // TODO allReplyCount 도 확인해야하는데.. 전체적으로 테스트 리팩토링할 때 같이 넣기..
 
         where:
         userId    | email            | shelterPhoneNumber

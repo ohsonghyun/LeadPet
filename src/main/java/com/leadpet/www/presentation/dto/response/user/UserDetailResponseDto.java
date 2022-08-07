@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 /**
  * UserDetailResponseDto
  */
-
 @ApiModel("유저 디테일 Response")
 @lombok.Getter
 @lombok.NoArgsConstructor
@@ -19,12 +18,5 @@ public class UserDetailResponseDto {
     /**
      * 총 댓글 수
      */
-    // TODO
-//    private long allReplyCount;
-    /**
-     * 총 기부 수
-     */
-    // TODO 기부는 어떻게? 어디서? 데이터가 없다.
-//    private long allDonationCount;
-
+    private Long allReplyCount;
 }

@@ -303,6 +303,7 @@ class UserServiceSpec extends Specification {
                 UserDetailResponseDto.builder()
                         .userId(userId)
                         .email(email)
+                        .allReplyCount(allReplyCount)
                         .build()
 
         when:
@@ -312,10 +313,11 @@ class UserServiceSpec extends Specification {
         userDetailResponseDto != null
         userDetailResponseDto.getUserId() == userId
         userDetailResponseDto.getEmail() == email
+        userDetailResponseDto.getAllReplyCount() == allReplyCount
 
         where:
-        userId   | email
-        'userId' | 'test@email.com'
+        userId   | email            | allReplyCount
+        'userId' | 'test@email.com' | 30
     }
 
     // -------------------------------------------------------------------------------------
