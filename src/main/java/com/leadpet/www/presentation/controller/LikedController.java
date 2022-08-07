@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * LikedController
  */
-@Api("좋아요 컨트롤러")
+@Api(tags = "좋아요 컨트롤러")
 @Slf4j
 @lombok.RequiredArgsConstructor
 @RequestMapping("/v1/liked")
