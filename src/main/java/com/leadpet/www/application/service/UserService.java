@@ -2,10 +2,7 @@ package com.leadpet.www.application.service;
 
 import com.leadpet.www.infrastructure.db.users.UsersRepository;
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
-import com.leadpet.www.infrastructure.domain.users.LoginMethod;
-import com.leadpet.www.infrastructure.domain.users.ShelterInfo;
-import com.leadpet.www.infrastructure.domain.users.UserType;
-import com.leadpet.www.infrastructure.domain.users.Users;
+import com.leadpet.www.infrastructure.domain.users.*;
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
 import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException;
@@ -118,6 +115,19 @@ public class UserService {
     public Page<ShelterPageResponseDto> searchShelters(SearchShelterCondition searchShelterCondition, Pageable pageable) {
         Page<ShelterPageResponseDto> sheltersPage = usersRepository.searchShelters(searchShelterCondition, pageable);
         return Objects.isNull(sheltersPage) ? new PageImpl<>(Collections.EMPTY_LIST) : sheltersPage;
+    }
+
+    /**
+     * 보호소 승인 상태별 리스트 취득
+     *
+     * @param assessmentStatus {@code AssessmentStatus} 보호소 리스트 취득 조건
+     * @param pageable {@code Pageable}
+     * @return {@code Page<ShelterPageResponseDto>}
+     */
+    @NonNull
+    public Page<ShelterPageResponseDto> shelterAssessmentStatus(AssessmentStatus assessmentStatus, Pageable pageable) {
+        Page<ShelterPageResponseDto> assessmentStatusPage = usersRepository.shelterAssessmentStatus(assessmentStatus, pageable);
+        return Objects.isNull(assessmentStatusPage) ? new PageImpl<>(Collections.EMPTY_LIST) : assessmentStatusPage;
     }
 
     /**
