@@ -117,6 +117,7 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
                         Projections.constructor(
                                 UserDetailResponseDto.class,
                                 users.userId,
+                                users.name.as("userName"),
                                 users.email,
                                 normalReply.normalReplyId.count().as("allReplyCount")
                         ))

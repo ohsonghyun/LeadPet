@@ -217,6 +217,7 @@ class UserRepositorySpec extends Specification {
         then:
         userDetailResponseDto != null
         userDetailResponseDto.getUserId() == userId
+        userDetailResponseDto.getUserName() == name
         userDetailResponseDto.getEmail() == null
         userDetailResponseDto.getAllReplyCount() == allReplyCount
 
