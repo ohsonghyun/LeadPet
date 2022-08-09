@@ -2,7 +2,6 @@ package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.application.service.UserService;
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
-import com.leadpet.www.infrastructure.domain.users.AssessmentStatus;
 import com.leadpet.www.presentation.dto.request.shelter.UpdateShelterInfoRequestDto;
 import com.leadpet.www.presentation.dto.response.shelter.ShelterDetailDto;
 import com.leadpet.www.presentation.dto.response.shelter.UpdateShelterInfoResponseDto;
@@ -38,12 +37,6 @@ public class ShelterController {
     @GetMapping("/list")
     public ResponseEntity<Page<ShelterPageResponseDto>> getListWithCondition(final SearchShelterCondition condition, final Pageable pageable) {
         return ResponseEntity.ok(userService.searchShelters(condition, pageable));
-    }
-
-    @ApiOperation(value = "보호소 승인 상태별 목록 취득")
-    @GetMapping("/assessmentStatusList")
-    public ResponseEntity<Page<ShelterPageResponseDto>> getListByAssessmentStatus(final AssessmentStatus assessmentStatus, final Pageable pageable) {
-        return ResponseEntity.ok(userService.shelterAssessmentStatus(assessmentStatus, pageable));
     }
 
     @ApiOperation(value = "보호소 정보 수정")

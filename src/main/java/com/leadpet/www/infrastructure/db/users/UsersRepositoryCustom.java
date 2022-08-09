@@ -1,7 +1,6 @@
 package com.leadpet.www.infrastructure.db.users;
 
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
-import com.leadpet.www.infrastructure.domain.users.AssessmentStatus;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto;
 import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto;
@@ -38,13 +37,4 @@ public interface UsersRepositoryCustom {
      */
 
     UserDetailResponseDto findNormalUserDetailByUserId(final String userId);
-
-    /**
-     * 보호소 승인 상태별 목록
-     *
-     * @param assessmentStatus {@code AssessmentStatus} 승인 상태
-     * @param pageable  {@code Pageable}
-     * @return {@code <Page<ShelterPageResponseDto>>}
-     */
-    Page<ShelterPageResponseDto> shelterAssessmentStatus(final AssessmentStatus assessmentStatus, final Pageable pageable);
 }

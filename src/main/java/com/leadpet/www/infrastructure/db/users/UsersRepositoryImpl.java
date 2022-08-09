@@ -1,7 +1,6 @@
 package com.leadpet.www.infrastructure.db.users;
 
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
-import com.leadpet.www.infrastructure.domain.users.AssessmentStatus;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto;
@@ -127,69 +126,6 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
         return userDetail.isEmpty() ? null : userDetail.get(0);
     }
 
-    @Override
-    public Page<ShelterPageResponseDto> shelterAssessmentStatus(AssessmentStatus assessmentStatus, Pageable pageable) {
-        // 보호소 이름
-        List<Users> shelters = queryFactory
-                .select(users)
-                .from(users)
-                .where(
-                        eqUserTypeShelter(),
-                        eqShelterAssessmentStatus(assessmentStatus)
-                )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        List<ShelterPageResponseDto> shelterPageResponseDto = new ArrayList<>();
-
-        // 총 게시글 수
-        for (Users shelter : shelters) {
-            Long normalPostCount = queryFactory
-                    .select(normalPosts.count())
-                    .from(normalPosts)
-                    .where(normalPosts.user.userId.eq(shelter.getUserId()))
-                    .fetchOne();
-
-            Long donationPostCount = queryFactory
-                    .select(donationPosts.count())
-                    .from(donationPosts)
-                    .where(donationPosts.user.userId.eq(shelter.getUserId()))
-                    .fetchOne();
-
-            Long adoptionPostCount = queryFactory
-                    .select(adoptionPosts.count())
-                    .from(adoptionPosts)
-                    .where(adoptionPosts.user.userId.eq(shelter.getUserId()))
-                    .fetchOne();
-
-            shelterPageResponseDto.add(
-                    ShelterPageResponseDto.builder()
-                            .userId(shelter.getUserId())
-                            .shelterName(shelter.getShelterName())
-                            .allFeedCount(normalPostCount + donationPostCount + adoptionPostCount)
-                            .assessmentStatus(shelter.getShelterAssessmentStatus())
-                            .shelterAddress(shelter.getShelterAddress())
-                            .shelterPhoneNumber(shelter.getShelterPhoneNumber())
-                            .shelterHomePage(shelter.getShelterHomePage())
-                            .profileImage(shelter.getProfileImage())
-                            .build()
-            );
-        }
-
-        // 총 카운트
-        final Long total = queryFactory
-                .select(users.userId.count())
-                .from(users)
-                .where(
-                        eqUserTypeShelter(),
-                        eqShelterAssessmentStatus(assessmentStatus)
-                )
-                .fetchOne();
-
-        return new PageImpl<>(shelterPageResponseDto, pageable, total);
-    }
-
     /**
      * 보호소 주소 조건 추가
      *
@@ -230,16 +166,6 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
     @Nullable
     private BooleanExpression eqUserTypeNormal() {
         return users.userType.eq(UserType.NORMAL);
-    }
-
-    /**
-     * 보호소 상태 조건
-     * @param assessmentStatus
-     * @return {@code BooleanExpression}
-     */
-    @Nullable
-    private BooleanExpression eqShelterAssessmentStatus(final AssessmentStatus assessmentStatus) {
-        return (assessmentStatus == null) ? null : users.shelterAssessmentStatus.eq(assessmentStatus);
     }
 
 }
