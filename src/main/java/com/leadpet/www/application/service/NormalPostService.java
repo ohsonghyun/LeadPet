@@ -1,22 +1,19 @@
 package com.leadpet.www.application.service;
 
-import com.leadpet.www.infrastructure.db.normalPost.NormalPostsRepository;
-import com.leadpet.www.infrastructure.db.normalPost.condition.SearchNormalPostCondition;
+import com.leadpet.www.infrastructure.db.posts.normalPost.NormalPostsRepository;
+import com.leadpet.www.infrastructure.db.posts.normalPost.condition.SearchNormalPostCondition;
 import com.leadpet.www.infrastructure.db.users.UsersRepository;
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.infrastructure.exception.PostNotFoundException;
 import com.leadpet.www.infrastructure.exception.UnauthorizedUserException;
-import com.leadpet.www.infrastructure.exception.WrongArgumentsException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
 import com.leadpet.www.presentation.dto.response.post.NormalPostResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

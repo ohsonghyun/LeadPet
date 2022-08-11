@@ -1,7 +1,7 @@
 package com.leadpet.www.application.service
 
-import com.leadpet.www.infrastructure.db.normalPost.NormalPostsRepository
-import com.leadpet.www.infrastructure.db.normalPost.condition.SearchNormalPostCondition
+import com.leadpet.www.infrastructure.db.posts.normalPost.NormalPostsRepository
+import com.leadpet.www.infrastructure.db.posts.normalPost.condition.SearchNormalPostCondition
 import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.users.LoginMethod

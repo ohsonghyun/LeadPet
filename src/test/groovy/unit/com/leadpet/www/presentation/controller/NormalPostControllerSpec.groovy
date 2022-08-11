@@ -2,7 +2,7 @@ package com.leadpet.www.presentation.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.leadpet.www.application.service.NormalPostService
-import com.leadpet.www.infrastructure.db.normalPost.condition.SearchNormalPostCondition
+import com.leadpet.www.infrastructure.db.posts.normalPost.condition.SearchNormalPostCondition
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType

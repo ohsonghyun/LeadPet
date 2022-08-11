@@ -1,6 +1,5 @@
 package com.leadpet.www.infrastructure.db.reply.normal;
 
-import com.leadpet.www.infrastructure.domain.reply.normal.QNormalReply;
 import com.leadpet.www.presentation.dto.response.reply.normal.NormalReplyPageResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;

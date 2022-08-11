@@ -1,30 +1,16 @@
 package com.leadpet.www.infrastructure.domain.posts
 
 import com.leadpet.www.TestConfig
-import com.leadpet.www.infrastructure.db.adoptionPost.condition.SearchAdoptionPostCondition
-import com.leadpet.www.infrastructure.db.normalPost.NormalPostsRepository
-import com.leadpet.www.infrastructure.db.normalPost.condition.SearchNormalPostCondition
+import com.leadpet.www.infrastructure.db.posts.normalPost.NormalPostsRepository
 import com.leadpet.www.infrastructure.db.users.UsersRepository
-import com.leadpet.www.infrastructure.domain.pet.AnimalType
-import com.leadpet.www.infrastructure.domain.pet.Gender
-import com.leadpet.www.infrastructure.domain.pet.Neutering
-import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
-import com.leadpet.www.infrastructure.domain.users.LoginMethod
-import com.leadpet.www.infrastructure.domain.users.UserType
-import com.leadpet.www.infrastructure.domain.users.Users
-import com.leadpet.www.presentation.dto.response.post.NormalPostResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
-import org.springframework.data.domain.PageRequest
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
-import spock.lang.Unroll
 
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
-import java.time.LocalDateTime
-import java.util.stream.IntStream
 
 /**
  * NormalPostsSpec

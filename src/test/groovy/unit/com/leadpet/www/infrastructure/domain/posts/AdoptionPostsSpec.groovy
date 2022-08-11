@@ -1,8 +1,8 @@
 package com.leadpet.www.infrastructure.domain.posts
 
 import com.leadpet.www.TestConfig
-import com.leadpet.www.infrastructure.db.adoptionPost.AdoptionPostsRepository
-import com.leadpet.www.infrastructure.db.adoptionPost.condition.SearchAdoptionPostCondition
+import com.leadpet.www.infrastructure.db.posts.adoptionPost.AdoptionPostsRepository
+import com.leadpet.www.infrastructure.db.posts.adoptionPost.condition.SearchAdoptionPostCondition
 import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.pet.AnimalType
 import com.leadpet.www.infrastructure.domain.pet.Gender
@@ -81,8 +81,8 @@ class AdoptionPostsSpec extends Specification {
         saved.getEuthanasiaDate() == endDate
 
         where:
-        postId   | title   | contents   | animalType     | breed   | gender      | neutering     | age | disease     | images           | startDate                       | endDate
-        'postId' | 'title' | 'contents' | AnimalType.DOG | 'breed' | Gender.MALE | Neutering.YES |  1  | 'disease'   | ['img1', 'img2'] | LocalDateTime.now().withNano(0) | LocalDateTime.now().plusDays(10).withNano(0)
+        postId   | title   | contents   | animalType     | breed   | gender      | neutering     | age | disease   | images           | startDate                       | endDate
+        'postId' | 'title' | 'contents' | AnimalType.DOG | 'breed' | Gender.MALE | Neutering.YES | 1   | 'disease' | ['img1', 'img2'] | LocalDateTime.now().withNano(0) | LocalDateTime.now().plusDays(10).withNano(0)
     }
 
     @Unroll("#testcase")

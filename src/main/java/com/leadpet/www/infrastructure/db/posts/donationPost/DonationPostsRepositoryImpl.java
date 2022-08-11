@@ -1,6 +1,6 @@
-package com.leadpet.www.infrastructure.db.donationPost;
+package com.leadpet.www.infrastructure.db.posts.donationPost;
 
-import com.leadpet.www.infrastructure.db.donationPost.condition.SearchDonationPostCondition;
+import com.leadpet.www.infrastructure.db.posts.donationPost.condition.SearchDonationPostCondition;
 import com.leadpet.www.presentation.dto.response.post.donation.DonationPostPageResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;

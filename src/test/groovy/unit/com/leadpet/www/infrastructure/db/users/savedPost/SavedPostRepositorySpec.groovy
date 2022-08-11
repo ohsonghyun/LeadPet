@@ -4,10 +4,9 @@ import com.leadpet.www.TestConfig
 import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.PostType
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
-import com.leadpet.www.infrastructure.domain.users.SavedPost
+import com.leadpet.www.infrastructure.domain.users.savedPost.SavedPost
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
-import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import

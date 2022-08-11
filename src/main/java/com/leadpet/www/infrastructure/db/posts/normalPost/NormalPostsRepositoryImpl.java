@@ -1,7 +1,6 @@
-package com.leadpet.www.infrastructure.db.normalPost;
+package com.leadpet.www.infrastructure.db.posts.normalPost;
 
-import com.leadpet.www.infrastructure.db.normalPost.condition.SearchNormalPostCondition;
-import com.leadpet.www.infrastructure.domain.liked.QLiked;
+import com.leadpet.www.infrastructure.db.posts.normalPost.condition.SearchNormalPostCondition;
 import com.leadpet.www.presentation.dto.response.post.NormalPostResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;

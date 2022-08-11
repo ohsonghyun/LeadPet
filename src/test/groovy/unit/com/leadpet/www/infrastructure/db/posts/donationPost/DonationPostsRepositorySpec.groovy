@@ -1,7 +1,8 @@
-package com.leadpet.www.infrastructure.db.donationPost
+package com.leadpet.www.infrastructure.db.posts.donationPost
 
 import com.leadpet.www.TestConfig
-import com.leadpet.www.infrastructure.db.donationPost.condition.SearchDonationPostCondition
+import com.leadpet.www.infrastructure.db.posts.donationPost.DonationPostsRepository
+import com.leadpet.www.infrastructure.db.posts.donationPost.condition.SearchDonationPostCondition
 import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts
 import com.leadpet.www.infrastructure.domain.users.AssessmentStatus

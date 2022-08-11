@@ -1,6 +1,6 @@
 package com.leadpet.www.application.service.reply.normal;
 
-import com.leadpet.www.infrastructure.db.normalPost.NormalPostsRepository;
+import com.leadpet.www.infrastructure.db.posts.normalPost.NormalPostsRepository;
 import com.leadpet.www.infrastructure.db.reply.normal.NormalReplyRepository;
 import com.leadpet.www.infrastructure.db.users.UsersRepository;
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
@@ -16,7 +16,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

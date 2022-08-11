@@ -1,7 +1,7 @@
 package com.leadpet.www.infrastructure.db.users
 
 import com.leadpet.www.TestConfig
-import com.leadpet.www.infrastructure.db.normalPost.NormalPostsRepository
+import com.leadpet.www.infrastructure.db.posts.normalPost.NormalPostsRepository
 import com.leadpet.www.infrastructure.db.reply.normal.NormalReplyRepository
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts

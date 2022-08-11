@@ -3,8 +3,7 @@ package com.leadpet.www.presentation.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.leadpet.www.application.service.AdoptionPostService
-import com.leadpet.www.infrastructure.db.adoptionPost.condition.SearchAdoptionPostCondition
-import com.leadpet.www.infrastructure.domain.donation.DonationMethod
+import com.leadpet.www.infrastructure.db.posts.adoptionPost.condition.SearchAdoptionPostCondition
 import com.leadpet.www.infrastructure.domain.pet.AnimalType
 import com.leadpet.www.infrastructure.domain.pet.Gender
 import com.leadpet.www.infrastructure.domain.pet.Neutering
@@ -12,7 +11,6 @@ import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.presentation.dto.request.post.adoption.AddAdoptionPostRequestDto
-import com.leadpet.www.presentation.dto.request.post.donation.AddDonationPostRequestDto
 import com.leadpet.www.presentation.dto.response.post.adoption.AdoptionPostPageResponseDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -138,8 +136,8 @@ class AdoptionPostControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.userId').value(userId))
 
         where:
-        postId   | userId   | title   | contents   | animalType     | breed   | gender      | neutering     | age | disease     | images
-        'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'breed' | Gender.MALE | Neutering.YES |  1  | 'disease'   | ['img1', 'img2']
+        postId   | userId   | title   | contents   | animalType     | breed   | gender      | neutering     | age | disease   | images
+        'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'breed' | Gender.MALE | Neutering.YES | 1   | 'disease' | ['img1', 'img2']
     }
 
     def "[입양 피드 목록 취득]: 정상"() {

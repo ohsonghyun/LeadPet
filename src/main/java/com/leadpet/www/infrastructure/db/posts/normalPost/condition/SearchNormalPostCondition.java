@@ -1,4 +1,4 @@
-package com.leadpet.www.infrastructure.db.normalPost.condition;
+package com.leadpet.www.infrastructure.db.posts.normalPost.condition;
 
 import lombok.AccessLevel;
 

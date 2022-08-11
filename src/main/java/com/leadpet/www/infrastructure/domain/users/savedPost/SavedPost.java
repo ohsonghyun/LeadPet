@@ -1,7 +1,8 @@
-package com.leadpet.www.infrastructure.domain.users;
+package com.leadpet.www.infrastructure.domain.users.savedPost;
 
 import com.leadpet.www.infrastructure.domain.BaseTime;
 import com.leadpet.www.infrastructure.domain.posts.PostType;
+import com.leadpet.www.infrastructure.domain.users.Users;
 import lombok.AccessLevel;
 
 import javax.persistence.*;

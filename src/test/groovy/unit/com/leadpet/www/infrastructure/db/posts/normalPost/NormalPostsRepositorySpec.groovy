@@ -1,7 +1,8 @@
-package com.leadpet.www.infrastructure.db.normalPost
+package com.leadpet.www.infrastructure.db.posts.normalPost
 
 import com.leadpet.www.TestConfig
-import com.leadpet.www.infrastructure.db.normalPost.condition.SearchNormalPostCondition
+import com.leadpet.www.infrastructure.db.posts.normalPost.NormalPostsRepository
+import com.leadpet.www.infrastructure.db.posts.normalPost.condition.SearchNormalPostCondition
 import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.users.AssessmentStatus

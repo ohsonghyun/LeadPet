@@ -1,6 +1,6 @@
-package com.leadpet.www.infrastructure.db.adoptionPost;
+package com.leadpet.www.infrastructure.db.posts.adoptionPost;
 
-import com.leadpet.www.infrastructure.db.adoptionPost.condition.SearchAdoptionPostCondition;
+import com.leadpet.www.infrastructure.db.posts.adoptionPost.condition.SearchAdoptionPostCondition;
 import com.leadpet.www.presentation.dto.response.post.adoption.AdoptionPostPageResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
