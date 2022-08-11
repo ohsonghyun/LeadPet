@@ -1,6 +1,7 @@
 package com.leadpet.www.infrastructure.db.users;
 
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
+import com.leadpet.www.infrastructure.domain.users.AssessmentStatus;
 import com.leadpet.www.infrastructure.domain.reply.normal.QNormalReply;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
@@ -40,6 +41,7 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
                 .from(users)
                 .where(
                         eqUserTypeShelter(),
+                        eqAssessmentStatus(condition.getAssessmentStatus()),
                         containsCityName(condition.getCityName()),
                         containsShelterName(condition.getShelterName())
                 )
@@ -89,6 +91,7 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
                 .from(users)
                 .where(
                         eqUserTypeShelter(),
+                        eqAssessmentStatus(condition.getAssessmentStatus()),
                         containsCityName(condition.getCityName()),
                         containsShelterName(condition.getShelterName())
                 )
@@ -172,4 +175,14 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
         return users.userType.eq(UserType.NORMAL);
     }
 
+    /**
+     * 보호소 승인 상태 조건
+     *
+     * @param assessmentStatus
+     * @return
+     */
+    @Nullable
+    private BooleanExpression eqAssessmentStatus(final AssessmentStatus assessmentStatus) {
+        return assessmentStatus == null ? null : users.shelterAssessmentStatus.eq(assessmentStatus);
+    }
 }

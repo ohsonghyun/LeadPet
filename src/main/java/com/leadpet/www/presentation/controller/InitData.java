@@ -111,7 +111,7 @@ public class InitData {
                                 .shelterHomePage("https://helloworld.com")
                                 .shelterIntro("shelterIntro" + idx)
                                 .profileImage("profileImage" + idx)
-                                .shelterAssessmentStatus(AssessmentStatus.COMPLETED)
+                                .shelterAssessmentStatus(idx % 2 == 0 ? AssessmentStatus.COMPLETED : idx % 3 == 0 ? AssessmentStatus.DECLINED : AssessmentStatus.PENDING)
                                 .build());
             });
         }
