@@ -20,6 +20,7 @@ public class NormalPostResponse {
     private final List<String> images;
     private final LocalDateTime createdDate;
     private final Long likedCount;
+    private final Long commentCount;
 
     private final String userId;
 }

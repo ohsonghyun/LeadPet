@@ -35,9 +35,9 @@ class NormalPostServiceSpec extends Specification {
         given:
         normalPostsRepository.searchAll(_ as SearchNormalPostCondition, _ as Pageable) >> new PageImpl(
                 List.of(
-                        NormalPostResponse.builder().normalPostId("NP_a").title("title").contents("contents").userId('user').likedCount(3).build(),
-                        NormalPostResponse.builder().normalPostId("NP_b").title("title").contents("contents").userId('user').likedCount(2).build(),
-                        NormalPostResponse.builder().normalPostId("NP_c").title("title").contents("contents").userId('user').likedCount(1).build()
+                        NormalPostResponse.builder().normalPostId("NP_a").title("title").contents("contents").userId('user').likedCount(3).commentCount(3).build(),
+                        NormalPostResponse.builder().normalPostId("NP_b").title("title").contents("contents").userId('user').likedCount(2).commentCount(2).build(),
+                        NormalPostResponse.builder().normalPostId("NP_c").title("title").contents("contents").userId('user').likedCount(1).commentCount(1).build()
                 ),
                 pageable,
                 total
@@ -58,6 +58,7 @@ class NormalPostServiceSpec extends Specification {
         it.extractingResultOf('getContents').isNotNull()
         it.extractingResultOf('getNormalPostId').containsExactly('NP_a', 'NP_b', 'NP_c')
         it.extractingResultOf('getLikedCount').containsExactly(3L, 2L, 1L)
+        it.extractingResultOf('getCommentCount').containsExactly(3L, 2L, 1L)
 
         where:
         pageable             | total
