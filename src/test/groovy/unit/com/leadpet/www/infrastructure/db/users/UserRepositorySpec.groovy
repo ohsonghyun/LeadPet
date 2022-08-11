@@ -1,10 +1,13 @@
 package com.leadpet.www.infrastructure.db.users
 
 import com.leadpet.www.TestConfig
+import com.leadpet.www.infrastructure.db.normalPost.NormalPostsRepository
+import com.leadpet.www.infrastructure.db.reply.normal.NormalReplyRepository
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
+import com.leadpet.www.infrastructure.domain.reply.normal.NormalReply
 import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
@@ -36,6 +39,10 @@ class UserRepositorySpec extends Specification {
 
     @Autowired
     UsersRepository usersRepository
+    @Autowired
+    NormalPostsRepository normalPostsRepository
+    @Autowired
+    NormalReplyRepository normalReplyRepository
 
     @Unroll(value = "#testName")
     def "보호소 리스트 취득"() {
@@ -174,7 +181,7 @@ class UserRepositorySpec extends Specification {
 
     def "유저 디테일 조회"() {
         given:
-        usersRepository.save(
+        def user = usersRepository.save(
                 Users.builder()
                         .userId(userId)
                         .loginMethod(loginMethod)
@@ -182,6 +189,24 @@ class UserRepositorySpec extends Specification {
                         .name(name)
                         .userType(userType)
                         .build())
+
+        def normalPost = normalPostsRepository.save(
+                NormalPosts.builder()
+                        .normalPostId('normalPostId')
+                        .title('title')
+                        .contents('content')
+                        .user(user)
+                        .build())
+
+        IntStream.range(0, allReplyCount).forEach(idx -> {
+            normalReplyRepository.save(
+                    NormalReply.builder()
+                            .normalReplyId('replyId' + idx)
+                            .normalPost(normalPost)
+                            .user(user)
+                            .content('content')
+                            .build())
+        })
 
         em.flush()
         em.clear()
@@ -192,10 +217,11 @@ class UserRepositorySpec extends Specification {
         then:
         userDetailResponseDto != null
         userDetailResponseDto.getUserId() == userId
-        userDetailResponseDto.getEmail() == null // 이메일 로그인인 경우에는 null 아님. TODO 리팩토링 필요!
+        userDetailResponseDto.getEmail() == null
+        userDetailResponseDto.getAllReplyCount() == allReplyCount
 
         where:
-        userId   | loginMethod       | uid   | name   | userType
-        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.NORMAL
+        userId   | loginMethod       | uid   | name   | userType        | allReplyCount
+        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.NORMAL | 3
     }
 }
