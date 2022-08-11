@@ -57,6 +57,11 @@ public class ErrorHandlerAdvice {
         return errorResponse(ex);
     }
 
+    @ExceptionHandler(SavedPostNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handler(SavedPostNotFoundException ex) {
+        return errorResponse(ex);
+    }
+
     /**
      * 에러 리스폰스 생성
      *

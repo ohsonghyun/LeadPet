@@ -40,6 +40,8 @@ class SavedPostRepositorySpec extends Specification {
                         .userType(UserType.NORMAL)
                         .build()
         )
+
+        when:
         savedPostRepository.save(
                 SavedPost.builder()
                         .savedPostId('savedPostId')
@@ -47,18 +49,50 @@ class SavedPostRepositorySpec extends Specification {
                         .postType(PostType.NORMAL_POST)
                         .user(user)
                         .build())
-
         em.flush()
         em.clear()
 
-        when:
-        def savedPost = savedPostRepository.findById('savedPostId').orElseThrow()
-
         then:
+        def savedPost = savedPostRepository.findById('savedPostId').orElseThrow()
         savedPost != null
         savedPost.getSavedPostId() == savedPostId
         savedPost.getPostId() == postId
         savedPost.getUser().getUserId() == userId
+
+        where:
+        savedPostId   | postId   | userId
+        'savedPostId' | 'postId' | 'userId'
+    }
+
+    def "저장피드를 삭제"() {
+        given:
+        def user = usersRepository.save(
+                Users.builder()
+                        .userId(userId)
+                        .uid('uid')
+                        .loginMethod(LoginMethod.KAKAO)
+                        .name('name')
+                        .userType(UserType.NORMAL)
+                        .build()
+        )
+
+        savedPostRepository.save(
+                SavedPost.builder()
+                        .savedPostId('savedPostId')
+                        .postId('postId')
+                        .postType(PostType.NORMAL_POST)
+                        .user(user)
+                        .build())
+        em.flush()
+        em.clear()
+
+        when:
+        savedPostRepository.deleteById(savedPostId)
+        em.flush()
+        em.clear()
+
+        then:
+        savedPostRepository.findById(savedPostId).isEmpty()
 
         where:
         savedPostId   | postId   | userId

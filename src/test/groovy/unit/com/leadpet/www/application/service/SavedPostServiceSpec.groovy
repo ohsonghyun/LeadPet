@@ -13,6 +13,8 @@ import com.leadpet.www.infrastructure.domain.users.savedPost.SavedPost
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.PostNotFoundException
+import com.leadpet.www.infrastructure.exception.SavedPostNotFoundException
+import com.leadpet.www.infrastructure.exception.UnauthorizedUserException
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import spock.lang.Specification
 
@@ -42,7 +44,7 @@ class SavedPostServiceSpec extends Specification {
         savedPostService = new SavedPostService(usersRepository, savedPostRepository, postUtil)
     }
 
-    def "[저장 피드] 추가"() {
+    def "[저장피드 추가] 정상"() {
         given:
         def user = Users.builder()
                 .userId(userId)
@@ -78,7 +80,7 @@ class SavedPostServiceSpec extends Specification {
         'savedPostId' | 'postId' | 'userId' | PostType.NORMAL_POST
     }
 
-    def "[저장피드] 존재하지 않는 유저"() {
+    def "[저장피드 추가] 존재하지 않는 유저"() {
         when:
         savedPostService.save('postId', PostType.NORMAL_POST, 'userId')
 
@@ -86,7 +88,7 @@ class SavedPostServiceSpec extends Specification {
         thrown(UserNotFoundException)
     }
 
-    def "[저장피드] 존재하지 않는 피드"() {
+    def "[저장피드 추가] 존재하지 않는 피드"() {
         given:
         usersRepository.findByUserId(_ as String) >> Users.builder().build()
         postUtil.getRepositoryBy(_ as PostType) >> normalPostsRepository
@@ -97,6 +99,71 @@ class SavedPostServiceSpec extends Specification {
 
         then:
         thrown(PostNotFoundException)
+    }
+
+    def "[저장피드 삭제] 정상"() {
+        given:
+        def user = Users.builder().userId(userId).build()
+        usersRepository.findByUserId(_ as String) >> user
+        savedPostRepository.findById(_ as String) >> Optional.of(SavedPost.builder().user(user).build())
+
+        when:
+        def result = savedPostService.deleteById(userId, savedPostId)
+
+        then:
+        result == savedPostId
+
+        where:
+        savedPostId   | userId
+        'savedPostId' | 'userId'
+    }
+
+    def "[저장피드 삭제] 존재 하지 않는 유저"() {
+        when:
+        savedPostService.deleteById('userId', 'savedPostId')
+
+        then:
+        thrown(UserNotFoundException)
+    }
+
+    def "[저장피드 삭제] 존재 하지 않는 피드"() {
+        given:
+        usersRepository.findByUserId(_ as String) >> Users.builder().userId(userId).build()
+        savedPostRepository.findById(_ as String) >> Optional.empty()
+
+        when:
+        savedPostService.deleteById(userId, savedPostId)
+
+        then:
+        thrown(SavedPostNotFoundException)
+
+        where:
+        savedPostId   | userId
+        'savedPostId' | 'userId'
+    }
+
+    def "[저장피드 삭제] 권한 없는 유저"() {
+        given:
+        usersRepository.findByUserId(_ as String) >> Users.builder().userId(userId).build()
+        savedPostRepository.findById(_ as String) >> Optional.of(
+                SavedPost.builder()
+                        .user(
+                                Users.builder()
+                                        .userId('otherUserId')
+                                        .build()
+                        )
+                        .build()
+        )
+
+        when:
+        savedPostService.deleteById(userId, savedPostId)
+
+        then:
+        thrown(UnauthorizedUserException)
+
+        where:
+        savedPostId   | userId
+        'savedPostId' | 'userId'
     }
 
 }

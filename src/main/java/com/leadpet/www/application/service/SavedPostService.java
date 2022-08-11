@@ -7,6 +7,8 @@ import com.leadpet.www.infrastructure.domain.posts.PostType;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.infrastructure.domain.users.savedPost.SavedPost;
 import com.leadpet.www.infrastructure.exception.PostNotFoundException;
+import com.leadpet.www.infrastructure.exception.SavedPostNotFoundException;
+import com.leadpet.www.infrastructure.exception.UnauthorizedUserException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -64,5 +66,32 @@ public class SavedPostService {
                         .user(user)
                         .build()
         );
+    }
+
+    /**
+     * 저장피드 삭제
+     *
+     * @param savedPostId {@code String} 삭제 대상 저장피드ID
+     * @return {@code String} 삭제 성공한 저장피드ID
+     */
+    @Transactional
+    public String deleteById(final String userId, final String savedPostId) {
+        Users user = usersRepository.findByUserId(userId);
+        if (Objects.isNull(user)) {
+            log.warn("[SavedPostService#deleteById] 존재하지 않는 유저ID: {}", userId);
+            throw new UserNotFoundException("[저장피드] 존재하지 않는 유저ID");
+        }
+
+        SavedPost savedPost = savedPostRepository.findById(savedPostId).orElseThrow(() -> {
+            log.warn("[SavedPostService#deleteById] 존재하지 않는 저장피드ID: {}", savedPostId);
+            return new SavedPostNotFoundException("[저장피드] 존재하지 않는 저장피드ID");
+        });
+
+        if (!savedPost.getUser().isSameUser(userId)) {
+            log.error("[SavedPostService#deleteById] 권한 없는 유저: {}", userId);
+            throw new UnauthorizedUserException("[저장피드] 권한 없는 유저");
+        }
+        savedPostRepository.deleteById(savedPostId);
+        return savedPostId;
     }
 }
