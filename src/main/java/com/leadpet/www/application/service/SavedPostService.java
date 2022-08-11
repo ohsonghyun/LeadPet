@@ -10,8 +10,14 @@ import com.leadpet.www.infrastructure.exception.PostNotFoundException;
 import com.leadpet.www.infrastructure.exception.SavedPostNotFoundException;
 import com.leadpet.www.infrastructure.exception.UnauthorizedUserException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
+import com.leadpet.www.presentation.dto.response.post.adoption.SimpleAdoptionPostResponse;
+import com.leadpet.www.presentation.dto.response.post.donation.SimpleDonationPostResponse;
+import com.leadpet.www.presentation.dto.response.post.normal.SimpleNormalPostResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,5 +99,35 @@ public class SavedPostService {
         }
         savedPostRepository.deleteById(savedPostId);
         return savedPostId;
+    }
+
+    /**
+     * 저장한 일상피드 취득
+     *
+     * @param userId   {@code String}
+     * @param pageable {@code Pageable}
+     */
+    public Page<SimpleNormalPostResponse> findNormalPostByUserId(final String userId, final Pageable pageable) {
+        return savedPostRepository.findSavedNormalPostsByUserId(userId, pageable);
+    }
+
+    /**
+     * 저장한 기부피드 취득
+     *
+     * @param userId   {@code String}
+     * @param pageable {@code Pageable}
+     */
+    public Page<SimpleDonationPostResponse> findDonationPostByUserId(final String userId, final Pageable pageable) {
+        return savedPostRepository.findSavedDonationPostsByUserId(userId, pageable);
+    }
+
+    /**
+     * 저장한 입양피드 취득
+     *
+     * @param userId   {@code String}
+     * @param pageable {@code Pageable}
+     */
+    public Page<SimpleAdoptionPostResponse> findAdoptionPostByUserId(final String userId, final Pageable pageable) {
+        return savedPostRepository.findSavedAdoptionPostsByUserId(userId, pageable);
     }
 }

@@ -9,13 +9,19 @@ import com.leadpet.www.infrastructure.db.users.savedPost.SavedPostRepository
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.posts.PostType
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
-import com.leadpet.www.infrastructure.domain.users.savedPost.SavedPost
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
+import com.leadpet.www.infrastructure.domain.users.savedPost.SavedPost
 import com.leadpet.www.infrastructure.exception.PostNotFoundException
 import com.leadpet.www.infrastructure.exception.SavedPostNotFoundException
 import com.leadpet.www.infrastructure.exception.UnauthorizedUserException
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
+import com.leadpet.www.presentation.dto.response.post.adoption.SimpleAdoptionPostResponse
+import com.leadpet.www.presentation.dto.response.post.donation.SimpleDonationPostResponse
+import com.leadpet.www.presentation.dto.response.post.normal.SimpleNormalPostResponse
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import spock.lang.Specification
 
 /**
@@ -164,6 +170,90 @@ class SavedPostServiceSpec extends Specification {
         where:
         savedPostId   | userId
         'savedPostId' | 'userId'
+    }
+
+    def "[저장피드 취득] 일상피드 취득"() {
+        given:
+        savedPostRepository.findSavedNormalPostsByUserId(_ as String, _ as Pageable) >> new PageImpl<SimpleNormalPostResponse>(
+                List.of(
+                        SimpleNormalPostResponse.builder()
+                                .normalPostId(normalPostId)
+                                .title(title)
+                                .images(images)
+                                .userId(userId)
+                                .build()
+                )
+        )
+
+        when:
+        def result = savedPostService.findNormalPostByUserId(userId, PageRequest.of(0, 5))
+
+        then:
+        result.getTotalElements() == 1
+        result.getContent().get(0).getNormalPostId() == normalPostId
+        result.getContent().get(0).getTitle() == title
+        result.getContent().get(0).getImages() == images
+        result.getContent().get(0).getUserId() == userId
+
+        where:
+        userId   | title   | images           | normalPostId
+        'userId' | 'title' | ['img1', 'img2'] | 'normalPostId'
+    }
+
+    def "[저장피드 취득] 기부피드 취득"() {
+        given:
+        savedPostRepository.findSavedDonationPostsByUserId(_ as String, _ as Pageable) >> new PageImpl<SimpleDonationPostResponse>(
+                List.of(
+                        SimpleDonationPostResponse.builder()
+                                .donationPostId(donationPostId)
+                                .title(title)
+                                .images(images)
+                                .userId(userId)
+                                .build()
+                )
+        )
+
+        when:
+        def result = savedPostService.findDonationPostByUserId(userId, PageRequest.of(0, 5))
+
+        then:
+        result.getTotalElements() == 1
+        result.getContent().get(0).getDonationPostId() == donationPostId
+        result.getContent().get(0).getTitle() == title
+        result.getContent().get(0).getImages() == images
+        result.getContent().get(0).getUserId() == userId
+
+        where:
+        userId   | title   | images           | donationPostId
+        'userId' | 'title' | ['img1', 'img2'] | 'normalPostId'
+    }
+
+    def "[저장피드 취득] 입양피드 취득"() {
+        given:
+        savedPostRepository.findSavedAdoptionPostsByUserId(_ as String, _ as Pageable) >> new PageImpl<SimpleAdoptionPostResponse>(
+                List.of(
+                        SimpleAdoptionPostResponse.builder()
+                                .adoptionPostId(adoptionPostId)
+                                .title(title)
+                                .images(images)
+                                .userId(userId)
+                                .build()
+                )
+        )
+
+        when:
+        def result = savedPostService.findAdoptionPostByUserId(userId, PageRequest.of(0, 5))
+
+        then:
+        result.getTotalElements() == 1
+        result.getContent().get(0).getAdoptionPostId() == adoptionPostId
+        result.getContent().get(0).getTitle() == title
+        result.getContent().get(0).getImages() == images
+        result.getContent().get(0).getUserId() == userId
+
+        where:
+        userId   | title   | images           | adoptionPostId
+        'userId' | 'title' | ['img1', 'img2'] | 'normalPostId'
     }
 
 }

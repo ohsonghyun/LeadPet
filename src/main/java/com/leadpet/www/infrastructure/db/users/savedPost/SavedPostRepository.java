@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * SavedPostRepository
  */
 @Repository
-public interface SavedPostRepository extends JpaRepository<SavedPost, String> {
+public interface SavedPostRepository extends JpaRepository<SavedPost, String>, SavedPostRepositoryCustom {
 }
