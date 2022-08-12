@@ -1,7 +1,7 @@
 package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.application.service.AdoptionPostService;
-import com.leadpet.www.infrastructure.db.adoptionPost.condition.SearchAdoptionPostCondition;
+import com.leadpet.www.infrastructure.db.posts.adoptionPost.condition.SearchAdoptionPostCondition;
 import com.leadpet.www.presentation.dto.request.post.adoption.AddAdoptionPostRequestDto;
 import com.leadpet.www.presentation.dto.response.post.adoption.AddAdoptionPostResponseDto;
 import com.leadpet.www.presentation.dto.response.post.adoption.AdoptionPostPageResponseDto;

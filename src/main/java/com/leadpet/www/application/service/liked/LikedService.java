@@ -34,7 +34,7 @@ public class LikedService {
         if (Objects.isNull(likedInDB)) {
             likedRepository.save(
                     Liked.builder()
-                            .likedId(String.format("%s-%s", userId, RandomStringUtils.random(10, true, true)))
+                            .likedId(String.format("%s_%s", userId, RandomStringUtils.random(10, true, true)))
                             .userId(userId)
                             .postId(postId)
                             .build());

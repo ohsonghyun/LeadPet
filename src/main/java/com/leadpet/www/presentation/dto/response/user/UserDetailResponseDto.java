@@ -14,7 +14,9 @@ import lombok.AccessLevel;
 public class UserDetailResponseDto {
 
     private String userId;
+    private String userName;
     private String email;
+
     /**
      * 총 댓글 수
      */

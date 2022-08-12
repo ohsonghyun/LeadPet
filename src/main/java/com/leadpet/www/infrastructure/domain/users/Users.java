@@ -2,6 +2,7 @@ package com.leadpet.www.infrastructure.domain.users;
 
 import com.leadpet.www.infrastructure.domain.BaseTime;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
@@ -73,6 +74,19 @@ public class Users extends BaseTime {
             return this.loginMethod.validateEssentialParam(this) && this.userType.validateEssentialParam(this);
         }
         return false;
+    }
+
+    /**
+     * 동일한 유저인지 판별
+     *
+     * @param userId {@code String} 확인하고자 하는 유저ID
+     * @return {@code boolean}
+     */
+    public boolean isSameUser(final String userId) {
+        if (StringUtils.isBlank(userId)) {
+            throw new IllegalAccessError("userId가 null");
+        }
+        return this.userId.equals(userId);
     }
 
     /**

@@ -218,19 +218,20 @@ class UserControllerSpec extends Specification {
     @Unroll
     def "[유저 디테일 취득]정상"() {
         given:
-        userService.saveNewUser(Users.builder().loginMethod(LoginMethod.KAKAO).uid('uid1').email(email).name('name1').userType(UserType.NORMAL).build())
+        userService.saveNewUser(Users.builder().loginMethod(LoginMethod.KAKAO).uid('uid1').email(email).name(userName).userType(UserType.NORMAL).build())
 
         expect:
         mvc.perform(get(USER_URL + '/' + userId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('\$.userId').value(userId))
+                .andExpect(jsonPath('\$.userName').value(userName))
                 .andExpect(jsonPath('\$.email').value(email))
         // TODO allReplyCount 도 확인해야하는데.. 전체적으로 테스트 리팩토링할 때 같이 넣기..
 
         where:
-        userId    | email            | shelterPhoneNumber
-        'uid1kko' | 'test@gmail.com' | ''
+        userId    | userName   | email            | shelterPhoneNumber
+        'uid1kko' | 'userName' | 'test@gmail.com' | ''
     }
 
     def "[유저 디테일 취득]에러: #testCase"() {
