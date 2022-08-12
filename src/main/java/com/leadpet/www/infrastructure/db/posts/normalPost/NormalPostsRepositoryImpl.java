@@ -4,12 +4,14 @@ import com.leadpet.www.infrastructure.db.posts.normalPost.condition.SearchNormal
 import com.leadpet.www.presentation.dto.response.post.NormalPostResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -36,6 +38,7 @@ public class NormalPostsRepositoryImpl implements NormalPostsRepositoryCustom {
                                 normalPosts.contents,
                                 normalPosts.images,
                                 normalPosts.createdDate,
+                                eqLikedUserIdWith(condition.getLikedUserId()).as("liked"),
                                 liked.postId.count().as("likedCount"),
                                 normalReply.normalPost.normalPostId.count().as("commentCount"),
                                 normalPosts.user.userId.as("userId")
@@ -64,7 +67,18 @@ public class NormalPostsRepositoryImpl implements NormalPostsRepositoryCustom {
      * @param userId {@code String}
      * @return {@code BooleanExpression}
      */
-    private BooleanExpression eqUserIdWith(final String userId) {
+    private BooleanExpression eqUserIdWith(@Nullable final String userId) {
         return StringUtils.isBlank(userId) ? null : normalPosts.user.userId.eq(userId);
+    }
+
+    /**
+     * 피드에 대해 좋아요를 클릭한 userId 조건
+     * <p>20220813 프로젝션에 사용</p>
+     *
+     * @param likedUserId {@code String} 좋아요 클릭한 userId
+     * @return {@code BooleanExpression} likedUserId가 null 이면 false, 아니면 조건 반환
+     */
+    private BooleanExpression eqLikedUserIdWith(@Nullable final String likedUserId) {
+        return StringUtils.isBlank(likedUserId) ? Expressions.asBoolean(false) : liked.userId.eq(likedUserId);
     }
 }
