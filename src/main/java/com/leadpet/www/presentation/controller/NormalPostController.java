@@ -1,7 +1,7 @@
 package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.application.service.NormalPostService;
-import com.leadpet.www.infrastructure.db.normalPost.condition.SearchNormalPostCondition;
+import com.leadpet.www.infrastructure.db.posts.normalPost.condition.SearchNormalPostCondition;
 import com.leadpet.www.presentation.dto.request.post.AddNormalPostRequestDto;
 import com.leadpet.www.presentation.dto.request.post.UpdateNormalPostRequestDto;
 import com.leadpet.www.presentation.dto.request.post.normal.DeleteNormalPostRequestDto;

@@ -1,6 +1,6 @@
 package com.leadpet.www.application.service.reply.normal
 
-import com.leadpet.www.infrastructure.db.normalPost.NormalPostsRepository
+import com.leadpet.www.infrastructure.db.posts.normalPost.NormalPostsRepository
 import com.leadpet.www.infrastructure.db.reply.normal.NormalReplyRepository
 import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts

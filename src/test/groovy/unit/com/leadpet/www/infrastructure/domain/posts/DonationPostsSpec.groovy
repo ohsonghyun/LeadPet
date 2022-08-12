@@ -1,25 +1,17 @@
 package com.leadpet.www.infrastructure.domain.posts
 
 import com.leadpet.www.TestConfig
-import com.leadpet.www.infrastructure.db.donationPost.DonationPostsRepository
-import com.leadpet.www.infrastructure.db.donationPost.condition.SearchDonationPostCondition
+import com.leadpet.www.infrastructure.db.posts.donationPost.DonationPostsRepository
 import com.leadpet.www.infrastructure.db.users.UsersRepository
-import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
-import com.leadpet.www.infrastructure.domain.users.LoginMethod
-import com.leadpet.www.infrastructure.domain.users.UserType
-import com.leadpet.www.infrastructure.domain.users.Users
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
-import org.springframework.data.domain.PageRequest
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
-import spock.lang.Unroll
 
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import java.time.LocalDateTime
-import java.util.stream.IntStream
 
 /**
  * DonationPostsSpec

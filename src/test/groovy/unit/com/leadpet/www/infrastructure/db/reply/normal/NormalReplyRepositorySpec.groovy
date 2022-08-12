@@ -1,7 +1,7 @@
 package com.leadpet.www.infrastructure.db.reply.normal
 
 import com.leadpet.www.TestConfig
-import com.leadpet.www.infrastructure.db.normalPost.NormalPostsRepository
+import com.leadpet.www.infrastructure.db.posts.normalPost.NormalPostsRepository
 import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.reply.normal.NormalReply
@@ -12,7 +12,6 @@ import com.leadpet.www.presentation.dto.response.reply.normal.NormalReplyPageRes
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification

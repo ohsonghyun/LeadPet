@@ -303,6 +303,7 @@ class UserServiceSpec extends Specification {
         usersRepository.findNormalUserDetailByUserId(_) >>
                 UserDetailResponseDto.builder()
                         .userId(userId)
+                        .userName(userName)
                         .email(email)
                         .allReplyCount(allReplyCount)
                         .build()
@@ -313,12 +314,13 @@ class UserServiceSpec extends Specification {
         then:
         userDetailResponseDto != null
         userDetailResponseDto.getUserId() == userId
+        userDetailResponseDto.getUserName() == userName
         userDetailResponseDto.getEmail() == email
         userDetailResponseDto.getAllReplyCount() == allReplyCount
 
         where:
-        userId   | email            | allReplyCount
-        'userId' | 'test@email.com' | 30
+        userId   | email            | userName   | allReplyCount
+        'userId' | 'test@email.com' | 'userName' | 30
     }
 
     // -------------------------------------------------------------------------------------

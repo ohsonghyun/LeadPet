@@ -1,7 +1,7 @@
 package com.leadpet.www.application.service;
 
-import com.leadpet.www.infrastructure.db.adoptionPost.AdoptionPostsRepository;
-import com.leadpet.www.infrastructure.db.adoptionPost.condition.SearchAdoptionPostCondition;
+import com.leadpet.www.infrastructure.db.posts.adoptionPost.AdoptionPostsRepository;
+import com.leadpet.www.infrastructure.db.posts.adoptionPost.condition.SearchAdoptionPostCondition;
 import com.leadpet.www.infrastructure.db.users.UsersRepository;
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts;
 import com.leadpet.www.infrastructure.domain.users.Users;

@@ -1,7 +1,7 @@
 package com.leadpet.www.application.service
 
-import com.leadpet.www.infrastructure.db.adoptionPost.AdoptionPostsRepository
-import com.leadpet.www.infrastructure.db.adoptionPost.condition.SearchAdoptionPostCondition
+import com.leadpet.www.infrastructure.db.posts.adoptionPost.AdoptionPostsRepository
+import com.leadpet.www.infrastructure.db.posts.adoptionPost.condition.SearchAdoptionPostCondition
 import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.pet.AnimalType
 import com.leadpet.www.infrastructure.domain.pet.Gender
@@ -97,8 +97,8 @@ class AdoptionPostServiceSpec extends Specification {
         result.getUser().getUserId() == userId
 
         where:
-        postId   | userId   | title   | contents   | animalType     | breed   | gender      | neutering     | age | disease     | images           | startDate           | endDate
-        'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'breed' | Gender.MALE | Neutering.YES |  1  | 'disease'   | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
+        postId   | userId   | title   | contents   | animalType     | breed   | gender      | neutering     | age | disease   | images           | startDate           | endDate
+        'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'breed' | Gender.MALE | Neutering.YES | 1   | 'disease' | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
     }
 
     def "userId가 존재하지 않으면 에러"() {
@@ -129,8 +129,8 @@ class AdoptionPostServiceSpec extends Specification {
         thrown(UserNotFoundException)
 
         where:
-        postId   | userId   | title   | contents   | animalType     | breed   | gender      | neutering     | age | disease     | images           | startDate           | endDate
-        'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'breed' | Gender.MALE | Neutering.YES |  1  | 'disease'   | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
+        postId   | userId   | title   | contents   | animalType     | breed   | gender      | neutering     | age | disease   | images           | startDate           | endDate
+        'postId' | 'userId' | 'title' | 'contents' | AnimalType.DOG | 'breed' | Gender.MALE | Neutering.YES | 1   | 'disease' | ['img1', 'img2'] | LocalDateTime.now() | LocalDateTime.now().plusDays(10)
     }
 
     def "입양 피드 검색(pagination)"() {

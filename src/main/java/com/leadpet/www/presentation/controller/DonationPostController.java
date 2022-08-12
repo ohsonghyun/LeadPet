@@ -1,7 +1,7 @@
 package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.application.service.DonationPostService;
-import com.leadpet.www.infrastructure.db.donationPost.condition.SearchDonationPostCondition;
+import com.leadpet.www.infrastructure.db.posts.donationPost.condition.SearchDonationPostCondition;
 import com.leadpet.www.presentation.dto.request.post.donation.AddDonationPostRequestDto;
 import com.leadpet.www.presentation.dto.response.post.donation.AddDonationPostResponseDto;
 import com.leadpet.www.presentation.dto.response.post.donation.DonationPostPageResponseDto;
