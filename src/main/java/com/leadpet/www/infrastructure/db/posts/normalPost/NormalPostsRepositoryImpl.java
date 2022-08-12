@@ -15,6 +15,7 @@ import java.util.List;
 
 import static com.leadpet.www.infrastructure.domain.liked.QLiked.liked;
 import static com.leadpet.www.infrastructure.domain.posts.QNormalPosts.normalPosts;
+import static com.leadpet.www.infrastructure.domain.reply.normal.QNormalReply.normalReply;
 
 /**
  * NormalPostsRepositoryImpl
@@ -36,11 +37,13 @@ public class NormalPostsRepositoryImpl implements NormalPostsRepositoryCustom {
                                 normalPosts.images,
                                 normalPosts.createdDate,
                                 liked.postId.count().as("likedCount"),
+                                normalReply.normalPost.normalPostId.count().as("commentCount"),
                                 normalPosts.user.userId.as("userId")
                         )
                 )
                 .from(normalPosts)
                 .leftJoin(liked).on(liked.postId.eq(normalPosts.normalPostId))
+                .leftJoin(normalReply).on(normalReply.normalPost.normalPostId.eq(normalPosts.normalPostId))
                 .where(eqUserIdWith(condition.getUserId()))
                 .groupBy(normalPosts.normalPostId)
                 .orderBy(normalPosts.createdDate.desc())

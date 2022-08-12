@@ -53,6 +53,7 @@ class NormalPostControllerSpec extends Specification {
                                                 .contents(contents)
                                                 .userId(userId)
                                                 .likedCount(likedCount)
+                                                .commentCount(commentCount)
                                                 .build()
                                 )
                         ))
@@ -69,10 +70,11 @@ class NormalPostControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.content[0].contents').value(contents))
                 .andExpect(jsonPath('\$.content[0].userId').value(userId))
                 .andExpect(jsonPath('\$.content[0].likedCount').value(likedCount))
+                .andExpect(jsonPath('\$.content[0].commentCount').value(commentCount))
 
         where:
-        postId   | title   | contents   | userId   | likedCount
-        'postId' | 'title' | 'contents' | 'userId' | 3L
+        postId   | title   | contents   | userId   | likedCount | commentCount
+        'postId' | 'title' | 'contents' | 'userId' | 3L         | 3L
     }
 
     def "[신규 일반 게시물 추가] Service로부터 받은 데이터를 DTO를 통해 반환한다"() {
