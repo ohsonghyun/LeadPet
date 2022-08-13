@@ -7,11 +7,13 @@ import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.infrastructure.exception.PostNotFoundException;
 import com.leadpet.www.infrastructure.exception.UnauthorizedUserException;
+import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
 import com.leadpet.www.presentation.dto.response.post.NormalPostResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
@@ -110,4 +112,16 @@ public class NormalPostService {
         return normalPostId;
     }
 
+    public NormalPosts selectNormalPost(final String normalPostId) {
+        if (StringUtils.isBlank(normalPostId)) {
+            log.error("[NormalPostService] normalPostId가 null");
+            throw new UnsatisfiedRequirementException("Error: 필수 데이터 부족");
+        }
+        NormalPosts normalposts = normalPostsRepository.selectNormalPost(normalPostId);
+        if (Objects.isNull(normalposts)) {
+            log.error("[NormalPostService] 존재하지 않는 일반 게시글: {}", normalPostId);
+            throw new UserNotFoundException("Error: 존재하지 않는 일반 게시글");
+        }
+        return normalposts;
+    }
 }

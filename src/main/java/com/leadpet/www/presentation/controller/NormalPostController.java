@@ -2,9 +2,11 @@ package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.application.service.NormalPostService;
 import com.leadpet.www.infrastructure.db.posts.normalPost.condition.SearchNormalPostCondition;
+import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import com.leadpet.www.presentation.dto.request.post.AddNormalPostRequestDto;
 import com.leadpet.www.presentation.dto.request.post.UpdateNormalPostRequestDto;
 import com.leadpet.www.presentation.dto.request.post.normal.DeleteNormalPostRequestDto;
+import com.leadpet.www.presentation.dto.request.post.normal.SelectNormalPostRequestDto;
 import com.leadpet.www.presentation.dto.response.post.AddNormalPostResponseDto;
 import com.leadpet.www.presentation.dto.response.post.DeleteNormalPostResponseDto;
 import com.leadpet.www.presentation.dto.response.post.NormalPostResponse;
@@ -75,6 +77,17 @@ public class NormalPostController {
             final Pageable pageable
     ) {
         return ResponseEntity.ok(normalPostService.getNormalPostsWith(condition, pageable));
+    }
+
+    @ApiOperation(value = "일반 게시물 상세조회")
+    @ApiResponses({
+            @ApiResponse(code = 404, message = "존재하지 않는 게시글")
+    })
+    @GetMapping("/{postId}")
+    public ResponseEntity<SelectNormalPostRequestDto> selectPost(@PathVariable final String postId) {
+        return ResponseEntity.ok(
+                SelectNormalPostRequestDto.from(normalPostService.selectNormalPost(postId))
+        );
     }
 
 }

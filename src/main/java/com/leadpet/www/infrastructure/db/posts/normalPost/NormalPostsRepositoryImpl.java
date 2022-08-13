@@ -1,6 +1,7 @@
 package com.leadpet.www.infrastructure.db.posts.normalPost;
 
 import com.leadpet.www.infrastructure.db.posts.normalPost.condition.SearchNormalPostCondition;
+import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import com.leadpet.www.presentation.dto.response.post.NormalPostResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -58,6 +60,17 @@ public class NormalPostsRepositoryImpl implements NormalPostsRepositoryCustom {
         return new PageImpl<>(content, pageable, total);
     }
 
+    @Nullable
+    @Override
+    public NormalPosts selectNormalPost(final String postId) {
+        return queryFactory
+                .selectFrom(normalPosts)
+                .where(
+                        eqPostIdWith(postId)
+                )
+                .fetchOne();
+    }
+
     /**
      * 특정 UserId 조건
      *
@@ -66,5 +79,15 @@ public class NormalPostsRepositoryImpl implements NormalPostsRepositoryCustom {
      */
     private BooleanExpression eqUserIdWith(final String userId) {
         return StringUtils.isBlank(userId) ? null : normalPosts.user.userId.eq(userId);
+    }
+
+    /**
+     * 특정 PostId 조건
+     *
+     * @param postId
+     * @return
+     */
+    private BooleanExpression eqPostIdWith(final String postId) {
+        return StringUtils.isBlank(postId) ? null : normalPosts.normalPostId.eq(postId);
     }
 }
