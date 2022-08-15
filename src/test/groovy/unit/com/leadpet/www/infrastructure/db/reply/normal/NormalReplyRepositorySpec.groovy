@@ -57,6 +57,7 @@ class NormalReplyRepositorySpec extends Specification {
                         .name('userName')
                         .uid('uid')
                         .userType(UserType.NORMAL)
+                        .profileImage(profileImage)
                         .build())
 
         // 댓글 생성
@@ -77,11 +78,12 @@ class NormalReplyRepositorySpec extends Specification {
         result.getNormalReplyId() == replyId
         result.getNormalPost().getNormalPostId() == postId
         result.getUser().getUserId() == userId
+        result.getUser().getProfileImage() == profileImage
         result.getContent() == replyContent
 
         where:
-        replyId   | postId   | postTitle | postContent     | userId   | replyContent
-        'replyId' | 'postId' | 'title'   | 'post contents' | 'userId' | 'reply content'
+        replyId   | postId   | postTitle | postContent     | userId   | replyContent    | profileImage
+        'replyId' | 'postId' | 'title'   | 'post contents' | 'userId' | 'reply content' | 'profileImage'
     }
 
     def "일상 피드 댓글 삭제"() {
@@ -145,6 +147,7 @@ class NormalReplyRepositorySpec extends Specification {
                         .name(userName)
                         .uid('uid')
                         .userType(UserType.NORMAL)
+                        .profileImage(profileImage)
                         .build())
 
         IntStream.range(0, size).forEach(idx -> {
@@ -172,12 +175,13 @@ class NormalReplyRepositorySpec extends Specification {
             replies.getContent().get(0).getUserId() == userId
             replies.getContent().get(0).getUserName() == userName
             replies.getContent().get(0).getContent() == replyContent
+            replies.getContent().get(0).getUserProfileImage() == profileImage
         }
 
         where:
-        testCase     | replyId   | postId   | postTitle | postContent     | userId   | userName   | replyContent    | size | totalPage
-        '데이터가 있는 경우' | 'replyId' | 'postId' | 'title'   | 'post contents' | 'userId' | 'userName' | 'reply content' | 5    | 1
-        '데이터가 없는 경우' | 'replyId' | 'postId' | 'title'   | 'post contents' | 'userId' | 'userName' | 'reply content' | 0    | 0
+        testCase     | replyId   | postId   | postTitle | postContent     | userId   | userName   | profileImage   | replyContent    | size | totalPage
+        '데이터가 있는 경우' | 'replyId' | 'postId' | 'title'   | 'post contents' | 'userId' | 'userName' | 'profileImage' | 'reply content' | 5    | 1
+        '데이터가 없는 경우' | 'replyId' | 'postId' | 'title'   | 'post contents' | 'userId' | 'userName' | 'profileImage' | 'reply content' | 0    | 0
     }
 
 }
