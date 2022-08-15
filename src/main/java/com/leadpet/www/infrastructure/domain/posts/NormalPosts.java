@@ -25,6 +25,7 @@ public class NormalPosts extends BaseTime {
 
     @Column(nullable = false)
     private String title;
+    @Lob
     @Column(nullable = false)
     private String contents;
     @Convert(converter = StringListConverter.class)
