@@ -6,6 +6,7 @@ import com.leadpet.www.infrastructure.db.posts.donationPost.DonationPostsReposit
 import com.leadpet.www.infrastructure.db.posts.normalPost.NormalPostsRepository
 import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts
+import com.leadpet.www.infrastructure.domain.posts.DonationPosts
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.posts.PostType
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
@@ -208,9 +209,9 @@ class SavedPostRepositorySpec extends Specification {
                         .userType(UserType.NORMAL)
                         .build())
 
-        adoptionPostsRepository.save(
-                AdoptionPosts.builder()
-                        .adoptionPostId('adoptionPostId')
+        donationPostsRepository.save(
+                DonationPosts.builder()
+                        .donationPostId(donationPostId)
                         .title(title)
                         .contents('contents')
                         .images(image)
