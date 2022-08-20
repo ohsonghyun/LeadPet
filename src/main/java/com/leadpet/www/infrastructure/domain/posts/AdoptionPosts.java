@@ -37,6 +37,7 @@ public class AdoptionPosts extends BaseTime {
     @Column(name = "title")
     private String title;
 
+    @Lob
     @Column(name = "contents")
     private String contents;
 
