@@ -1,9 +1,11 @@
 package com.leadpet.www.infrastructure.db.posts.normalPost;
 
 import com.leadpet.www.infrastructure.db.posts.normalPost.condition.SearchNormalPostCondition;
+import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import com.leadpet.www.presentation.dto.response.post.NormalPostResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 
 /**
  * NormalPostsRepositoryCustom
@@ -19,4 +21,12 @@ public interface NormalPostsRepositoryCustom {
      */
     Page<NormalPostResponse> searchAll(final SearchNormalPostCondition condition, final Pageable pageable);
 
+    /**
+     * 게시글 상세조회 (postId)
+     *
+     * @param postId {@code postId}
+     * @return {@code NormalPosts}
+     */
+    @Nullable
+    NormalPosts selectNormalPost(String postId);
 }
