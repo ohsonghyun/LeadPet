@@ -4,9 +4,12 @@ import com.leadpet.www.infrastructure.db.posts.normalPost.NormalPostsRepository
 import com.leadpet.www.infrastructure.db.posts.normalPost.condition.SearchNormalPostCondition
 import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
+import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
+import com.leadpet.www.infrastructure.exception.PostNotFoundException
+import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.presentation.dto.response.post.NormalPostResponse
 import org.springframework.data.domain.PageImpl
@@ -124,6 +127,47 @@ class NormalPostServiceSpec extends Specification {
 
         then:
         thrown(UserNotFoundException)
+    }
+
+    def "일반 게시글 상세조회: 정상"() {
+        given:
+        Users user = usersRepository.findById('app0')
+        normalPostsRepository.selectNormalPost(_) >>
+                NormalPosts.builder()
+                        .normalPostId(normalPostId)
+                        .title(title)
+                        .contents(contents)
+                        .images(images)
+                        .user(user)
+                        .build()
+
+        when:
+        NormalPosts normalPosts = normalPostService.selectNormalPost(normalPostId)
+
+        then:
+        normalPosts != null
+        normalPosts.getNormalPostId() == normalPostId
+        normalPosts.getTitle() == title
+        normalPosts.getContents() == contents
+        normalPosts.getImages() == images
+
+
+        where:
+        normalPostId   | title   | contents   | images
+        'normalPostId' | 'title' | 'contents' | ['image1','image2']
+    }
+
+    def "일반 게시글 상세조회: 에러: 404 - 존재하지 않는 게시글"() {
+        when:
+        normalPostService.selectNormalPost(postId)
+
+        then:
+        thrown(exception)
+
+        where:
+        testCase             | postId     | exception
+        'postId가 null인 경우'   | null       | UnsatisfiedRequirementException
+        '존재하지 않는 postId인 경우' | 'notExist' | PostNotFoundException
     }
 
 }

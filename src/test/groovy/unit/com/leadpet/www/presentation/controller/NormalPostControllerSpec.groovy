@@ -13,6 +13,7 @@ import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.presentation.dto.request.post.AddNormalPostRequestDto
 import com.leadpet.www.presentation.dto.request.post.UpdateNormalPostRequestDto
 import com.leadpet.www.presentation.dto.request.post.normal.DeleteNormalPostRequestDto
+import com.leadpet.www.presentation.dto.request.post.normal.SelectNormalPostRequestDto
 import com.leadpet.www.presentation.dto.response.post.NormalPostResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -288,4 +289,38 @@ class NormalPostControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.error.detail').value('Error: 권한 없는 조작'))
     }
 
+    def "일반 게시물 상세조회: 정상"() {
+        given:
+        // dummy user
+        Users user = Users.builder()
+                .loginMethod(LoginMethod.KAKAO)
+                .uid('dummyUid')
+                .name('dummyName')
+                .userId( 'uidkko')
+                .userType(UserType.NORMAL)
+                .build()
+
+        when(normalPostService.selectNormalPost(isA(String.class)))
+            .thenReturn(NormalPosts.builder()
+                            .normalPostId(normalPostId)
+                            .title(title)
+                            .contents(contents)
+                            .images(images)
+                            .user(user)
+                            .build()
+            )
+
+        expect:
+        mvc.perform(get(NORMAL_POST_URL + '/' + normalPostId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('\$.normalPostId').value(normalPostId))
+                .andExpect(jsonPath('\$.title').value(title))
+                .andExpect(jsonPath('\$.contents').value(contents))
+                .andExpect(jsonPath('\$.images').value(images))
+
+        where:
+        normalPostId   | title   | contents   | images
+        'NP_app00'     | 'title' | 'contents' | ['image1','image2']
+    }
 }

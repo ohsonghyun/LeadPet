@@ -112,6 +112,12 @@ public class NormalPostService {
         return normalPostId;
     }
 
+    /**
+     * 일반 게시글 상세조회
+     *
+     * @param normalPostId {@code String}
+     * @return {@code NormalPosts}
+     */
     public NormalPosts selectNormalPost(final String normalPostId) {
         if (StringUtils.isBlank(normalPostId)) {
             log.error("[NormalPostService] normalPostId가 null");
@@ -120,7 +126,7 @@ public class NormalPostService {
         NormalPosts normalposts = normalPostsRepository.selectNormalPost(normalPostId);
         if (Objects.isNull(normalposts)) {
             log.error("[NormalPostService] 존재하지 않는 일반 게시글: {}", normalPostId);
-            throw new UserNotFoundException("Error: 존재하지 않는 일반 게시글");
+            throw new PostNotFoundException("Error: 존재하지 않는 일반 게시글");
         }
         return normalposts;
     }
