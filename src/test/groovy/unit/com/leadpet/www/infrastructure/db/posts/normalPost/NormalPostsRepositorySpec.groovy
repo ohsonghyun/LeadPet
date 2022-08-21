@@ -10,6 +10,7 @@ import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
+import com.leadpet.www.presentation.dto.request.post.normal.SelectNormalPostRequestDto
 import com.leadpet.www.presentation.dto.response.post.NormalPostResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -173,5 +174,52 @@ class NormalPostsRepositorySpec extends Specification {
         result.getContent().size() == 0
         result.getTotalPages() == 0
         result.getTotalElements() == 0
+    }
+
+    def "일반 게시물 상세조회: 데이터가 있는 경우"() {
+        given:
+        def user = usersRepository.save(
+                Users.builder()
+                        .userId('userId')
+                        .loginMethod(LoginMethod.APPLE)
+                        .uid("uid")
+                        .name('name')
+                        .userType(UserType.NORMAL)
+                        .build()
+        )
+
+        normalPostsRepository.save(
+                NormalPosts.builder()
+                        .normalPostId(normalPostId)
+                        .title(title)
+                        .contents(contents)
+                        .images(images)
+                        .user(user)
+                        .build()
+        )
+        em.flush()
+        em.clear()
+
+        when:
+        NormalPosts normalPosts = normalPostsRepository.selectNormalPost(normalPostId)
+
+        then:
+        normalPosts != null
+        normalPosts.getNormalPostId() == normalPostId
+        normalPosts.getTitle() == title
+        normalPosts.getContents() == contents
+        normalPosts.getImages() == images
+
+        where:
+        normalPostId   | title   | contents   | images
+        'normalPostId' | 'title' | 'contents' | ['image1','image2']
+    }
+
+    def "일반 게시물 상세조회: 데이터가 없는 경우"() {
+        when:
+        def result = normalPostsRepository.selectNormalPost('normalPostId')
+
+        then:
+        result == null
     }
 }

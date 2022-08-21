@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import javax.validation.constraints.Null;
 import java.util.List;
 
 import static com.leadpet.www.infrastructure.domain.liked.QLiked.liked;
@@ -62,6 +63,7 @@ public class NormalPostsRepositoryImpl implements NormalPostsRepositoryCustom {
         return new PageImpl<>(content, pageable, total);
     }
 
+    @Nullable
     @Override
     public NormalPosts selectNormalPost(final String postId) {
         return queryFactory
