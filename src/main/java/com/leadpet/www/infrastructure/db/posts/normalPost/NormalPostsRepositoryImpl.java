@@ -62,7 +62,6 @@ public class NormalPostsRepositoryImpl implements NormalPostsRepositoryCustom {
         return new PageImpl<>(content, pageable, total);
     }
 
-    @Nullable
     @Override
     public NormalPosts selectNormalPost(final String postId) {
         return queryFactory

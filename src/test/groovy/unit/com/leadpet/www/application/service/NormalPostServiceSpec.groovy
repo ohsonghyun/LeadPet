@@ -132,7 +132,15 @@ class NormalPostServiceSpec extends Specification {
 
     def "일반 게시글 상세조회: 정상"() {
         given:
-        Users user = usersRepository.findById('app0')
+
+        Users user = Users.builder()
+                .loginMethod(LoginMethod.KAKAO)
+                .uid('dummyUid')
+                .name('dummyName')
+                .userId('uidkko')
+                .userType(UserType.NORMAL)
+                .build()
+
         normalPostsRepository.selectNormalPost(_) >>
                 NormalPosts.builder()
                         .normalPostId(normalPostId)
