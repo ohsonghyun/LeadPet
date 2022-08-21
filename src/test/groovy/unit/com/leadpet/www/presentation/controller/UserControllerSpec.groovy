@@ -2,97 +2,110 @@ package com.leadpet.www.presentation.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.leadpet.www.application.service.UserService
-import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
+import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.presentation.dto.request.user.LogInRequestDto
 import com.leadpet.www.presentation.dto.request.user.SignUpUserRequestDto
+import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto
 import org.hamcrest.Matchers
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import static org.mockito.ArgumentMatchers.eq
+import static org.mockito.ArgumentMatchers.isA
+import static org.mockito.Mockito.when
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-/**
- * UserControllerSpec
- */
-@SpringBootTest
+@WebMvcTest(UserController.class)
 class UserControllerSpec extends Specification {
-    private final String USER_URL = "/v1/user"
+    private final String USER_URL = '/v1/user'
 
     @Autowired
-    WebApplicationContext webApplicationContext
-    @Autowired
-    UserService userService
-    @Autowired
-    UsersRepository usersRepository
-    MockMvc mvc
+    private MockMvc mvc
 
-    def setup() {
-        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .build();
-    }
-
-    def cleanup() {
-        usersRepository.deleteAll()
-    }
+    @MockBean
+    private UserService userService
 
     // TODO 일반 유저 가입 성공 테스트 케이스가 없다... 왜지...
     @Unroll
-    def "회원가입 성공"() {
-        setup:
-        def signUpUserRequestDto = SignUpUserRequestDto.builder()
-                .loginMethod(LoginMethod.KAKAO)
-                .uid('uid')
-                .name('name')
-                .userType(UserType.SHELTER)
-                .shelterName('shelterName')
-                .shelterPhoneNumber('01012341234')
-                .shelterAddress('hello world address')
-                .shelterIntro('We are the best shelter')
-                .shelterAccount('Dev6 Bank 000-000-000')
-                .build()
+    def "[ #testCase ] 회원가입 성공"() {
+        given:
+        when(userService.saveNewUser(isA(Users.class)))
+                .thenReturn(
+                        Users.builder()
+                                .uid(uid)
+                                .name(userName)
+                                .loginMethod(loginMethod)
+                                .userType(userType)
+                                .shelterName(shelterName)
+                                .shelterPhoneNumber(shelterPhoneNumber)
+                                .shelterAddress(shelterAddress)
+                                .shelterIntro(shelterIntro)
+                                .shelterAccount(shelterAccount)
+                                .build()
+                )
 
         expect:
         mvc.perform(post(USER_URL + "/signup")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(signUpUserRequestDto)))
+                .content(new ObjectMapper().writeValueAsString(
+                        SignUpUserRequestDto.builder()
+                                .loginMethod(loginMethod)
+                                .uid(uid)
+                                .name(userName)
+                                .userType(userType)
+                                .shelterName(shelterName)
+                                .shelterPhoneNumber(shelterPhoneNumber)
+                                .shelterAddress(shelterAddress)
+                                .shelterIntro(shelterIntro)
+                                .shelterAccount(shelterAccount)
+                                .build()
+                )))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath('\$.uid').isNotEmpty())
+                .andExpect(jsonPath('\$.uid').value(uid))
+
+        where:
+        testCase | uid   | userName   | loginMethod       | userType         | shelterName   | shelterPhoneNumber | shelterAddress   | shelterIntro   | shelterAccount
+        '보호소'    | 'uid' | 'userName' | LoginMethod.KAKAO | UserType.SHELTER | 'shelterName' | '01012341234'      | 'shelterAddress' | 'shelterIntro' | 'shelterAccount'
+        '일반유저'   | 'uid' | 'userName' | LoginMethod.KAKAO | UserType.NORMAL  | null          | null               | null             | null           | null
+
     }
 
     @Unroll
     def "회원가입 validation: #testCase"() throws Exception {
         setup:
-        def signUpUserRequestDto = SignUpUserRequestDto.builder()
-                .loginMethod(loginMethod)
-                .uid(uid)
-                .email(email)
-                .password(password)
-                .profileImage(profileImage)
-                .name(name)
-                .userType(userType)
-                .shelterName(shelterName)
-                .shelterPhoneNumber(shelterPhoneNumber)
-                .shelterAddress(shelterAddress)
-                .shelterIntro(shelterIntro)
-                .build()
+        when(userService.saveNewUser(isA(Users.class)))
+                .thenThrow(new UnsatisfiedRequirementException("Error: 필수 입력 데이터 누락"))
 
         expect:
         mvc.perform(post(USER_URL + "/signup")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(signUpUserRequestDto)))
+                .content(new ObjectMapper().writeValueAsString(
+                        SignUpUserRequestDto.builder()
+                                .loginMethod(loginMethod)
+                                .uid(uid)
+                                .email(email)
+                                .password(password)
+                                .profileImage(profileImage)
+                                .name(name)
+                                .userType(userType)
+                                .shelterName(shelterName)
+                                .shelterPhoneNumber(shelterPhoneNumber)
+                                .shelterAddress(shelterAddress)
+                                .shelterIntro(shelterIntro)
+                                .build()
+                )))
                 .andExpect(status().isBadRequest());
 
         where:
@@ -133,30 +146,32 @@ class UserControllerSpec extends Specification {
 
     @Unroll
     def "로그인 성공: #testCase"() {
-        setup:
-        // 유저 추가
-        userService.saveNewUser(
-                Users.builder()
-                        .loginMethod(loginMethod)
-                        .uid(uid)
-                        .email(email)
-                        .password(password)
-                        .profileImage(profileImage)
-                        .name(name)
-                        .userType(userType)
-                        .build())
-
-        def logInRequestDto = LogInRequestDto.builder()
-                .loginMethod(loginMethod)
-                .uid(uid)
-                .email(email)
-                .password(password)
-                .build()
+        given:
+        when(userService.logIn(isA(Users.class)))
+                .thenReturn(
+                        Users.builder()
+                                .loginMethod(loginMethod)
+                                .uid(uid)
+                                .userId(userId)
+                                .email(email)
+                                .password(password)
+                                .profileImage(profileImage)
+                                .name(name)
+                                .userType(userType)
+                                .build()
+                )
 
         expect:
         mvc.perform(post(USER_URL + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(logInRequestDto)))
+                .content(new ObjectMapper().writeValueAsString(
+                        LogInRequestDto.builder()
+                                .loginMethod(loginMethod)
+                                .uid(uid)
+                                .email(email)
+                                .password(password)
+                                .build()
+                )))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('$.userId').value(userId))
 
@@ -168,44 +183,52 @@ class UserControllerSpec extends Specification {
 
     @Unroll
     def "로그인 실패: #testCase"() {
-        setup:
-        def logInRequestDto = LogInRequestDto.builder()
-                .loginMethod(loginMethod)
-                .uid(uid)
-                .email(email)
-                .password(password)
-                .build()
+        given:
+        when(userService.logIn(isA(Users.class))).thenThrow(exception)
 
         expect:
         mvc.perform(post(USER_URL + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(logInRequestDto)))
+                .content(new ObjectMapper().writeValueAsString(
+                        LogInRequestDto.builder()
+                                .loginMethod(loginMethod)
+                                .uid(uid)
+                                .email(email)
+                                .password(password)
+                                .build()
+                )))
                 .andExpect(expectedStatus)
 
         where:
-        testCase                | loginMethod       | uid        | email | password | expectedStatus
-        "회원정보가 없는 경우"           | LoginMethod.KAKAO | "kakaoUid" | null  | null     | status().isNotFound()
-        "SNS: 필수 데이터가 누락된 경우"   | null              | "kakaoUid" | null  | null     | status().isBadRequest()
-        "EMAIL: 필수 데이터가 누락된 경우" | LoginMethod.EMAIL | "emailUid" | null  | null     | status().isBadRequest()
+        testCase                | loginMethod       | uid        | email | password | exception                               | expectedStatus
+        "회원정보가 없는 경우"           | LoginMethod.KAKAO | "kakaoUid" | null  | null     | new UserNotFoundException()             | status().isNotFound()
+        "SNS: 필수 데이터가 누락된 경우"   | null              | "kakaoUid" | null  | null     | new UnsatisfiedRequirementException("") | status().isBadRequest()
+        "EMAIL: 필수 데이터가 누락된 경우" | LoginMethod.EMAIL | "emailUid" | null  | null     | new UnsatisfiedRequirementException("") | status().isBadRequest()
     }
 
     @Unroll('#testCase')
     def "유저 타입별 리스트 획득"() {
         given:
-        userService.saveNewUser(Users.builder().loginMethod(LoginMethod.KAKAO).uid('uid1').name('name1').userType(UserType.NORMAL).build())
-        userService.saveNewUser(Users.builder().loginMethod(LoginMethod.GOOGLE).uid('uid2').name('name2').userType(UserType.NORMAL).build())
-        userService.saveNewUser(Users.builder().loginMethod(LoginMethod.GOOGLE).uid('uid3').name('name3').userType(UserType.SHELTER).shelterName("shelter").shelterAddress("address").shelterPhoneNumber('01012341234').build())
-        userService.saveNewUser(Users.builder().loginMethod(LoginMethod.EMAIL).uid('uid4').email("email@email.com").password("password").name('name4').userType(UserType.NORMAL).build())
+        when(userService.getUserListBy(eq(UserType.NORMAL)))
+                .thenReturn(List.of(
+                        Users.builder().loginMethod(LoginMethod.KAKAO).uid('uid1').name('name1').userType(UserType.NORMAL).build(),
+                        Users.builder().loginMethod(LoginMethod.GOOGLE).uid('uid2').name('name2').userType(UserType.NORMAL).build(),
+                        Users.builder().loginMethod(LoginMethod.EMAIL).uid('uid4').email("email@email.com").password("password").name('name4').userType(UserType.NORMAL).build()
+                ))
+
+        when(userService.getUserListBy(eq(UserType.SHELTER)))
+                .thenReturn(List.of(
+                        Users.builder().loginMethod(LoginMethod.GOOGLE).uid('uid3').name('name3').userType(UserType.SHELTER).shelterName("shelter").shelterAddress("address").shelterPhoneNumber('01012341234').build()
+                ))
 
         expect:
-        mvc.perform(get(USER_URL + '/list').param('ut', paramValue))
-                .andExpect(status().isOk())
+        mvc.perform(get(USER_URL + '/list').param('ut', paramValue)).andExpect(status().isOk())
                 .andExpect(jsonPath("\$", Matchers.hasSize(expectedSize)))
 
         where:
-        testCase | paramValue | userType         | expectedSize
-        '일반유저'   | 'normal'   | UserType.NORMAL  | 3
-        '보호소'    | 'shelter'  | UserType.SHELTER | 1
+        testCase | paramValue | expectedSize
+        '일반유저'   | 'normal'   | 3
+        '보호소'    | 'shelter'  | 1
     }
 
     def "유저 타입별 리스트 획득: 에러 케이스: WrongArgumentsException"() {
@@ -218,7 +241,14 @@ class UserControllerSpec extends Specification {
     @Unroll
     def "[유저 디테일 취득]정상"() {
         given:
-        userService.saveNewUser(Users.builder().loginMethod(LoginMethod.KAKAO).uid('uid1').email(email).name(userName).userType(UserType.NORMAL).build())
+        when(userService.normalUserDetail(isA(String.class)))
+                .thenReturn(
+                        UserDetailResponseDto.builder()
+                                .userId(userId)
+                                .userName(userName)
+                                .email(email)
+                                .allReplyCount(allReplyCount)
+                                .build())
 
         expect:
         mvc.perform(get(USER_URL + '/' + userId)
@@ -227,14 +257,18 @@ class UserControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.userId').value(userId))
                 .andExpect(jsonPath('\$.userName').value(userName))
                 .andExpect(jsonPath('\$.email').value(email))
-        // TODO allReplyCount 도 확인해야하는데.. 전체적으로 테스트 리팩토링할 때 같이 넣기..
+                .andExpect(jsonPath('\$.allReplyCount').value(allReplyCount))
 
         where:
-        userId    | userName   | email            | shelterPhoneNumber
-        'uid1kko' | 'userName' | 'test@gmail.com' | ''
+        userId    | userName   | email            | shelterPhoneNumber | allReplyCount
+        'uid1kko' | 'userName' | 'test@gmail.com' | ''                 | 2
     }
 
     def "[유저 디테일 취득]에러: #testCase"() {
+        given:
+        when(userService.normalUserDetail(isA(String.class)))
+                .thenThrow(expectedException)
+
         expect:
         mvc.perform(get(USER_URL + '/' + userId))
                 .andExpect(responseStatus)
@@ -243,4 +277,5 @@ class UserControllerSpec extends Specification {
         testCase             | expectedException                              | userId     | responseStatus
         '존재하지 않는 userId인 경우' | new UserNotFoundException("Error: 존재하지 않는 유저") | 'notExist' | status().isNotFound()
     }
+
 }
