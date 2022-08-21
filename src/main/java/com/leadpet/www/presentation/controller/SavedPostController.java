@@ -67,10 +67,10 @@ public class SavedPostController {
     })
     @GetMapping("/normalPost/{userId}")
     public ResponseEntity<Page<SimpleNormalPostResponse>> getSavedNormalPostsByUserId(
-            @PathVariable final String userid,
+            @PathVariable final String userId,
             final Pageable pageable
     ) {
-        return ResponseEntity.ok(savedPostService.findNormalPostByUserId(userid, pageable));
+        return ResponseEntity.ok(savedPostService.findNormalPostByUserId(userId, pageable));
     }
 
     @ApiOperation(value = "저장피드 취득(입양피드)")

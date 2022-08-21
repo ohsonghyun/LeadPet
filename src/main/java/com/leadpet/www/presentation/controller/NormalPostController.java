@@ -11,10 +11,7 @@ import com.leadpet.www.presentation.dto.response.post.AddNormalPostResponseDto;
 import com.leadpet.www.presentation.dto.response.post.DeleteNormalPostResponseDto;
 import com.leadpet.www.presentation.dto.response.post.NormalPostResponse;
 import com.leadpet.www.presentation.dto.response.post.UpdateNormalPostResponseDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -71,6 +68,10 @@ public class NormalPostController {
     }
 
     @ApiOperation(value = "모든 일반 게시물 취득")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "유저ID"),
+            @ApiImplicitParam(name = "likedUserId", value = "'좋아요' 정보가 필요한 유저ID")
+    })
     @GetMapping
     public ResponseEntity<Page<NormalPostResponse>> getAllNormalPosts(
             final SearchNormalPostCondition condition,

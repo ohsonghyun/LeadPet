@@ -29,6 +29,7 @@ public class NormalReply extends BaseTime {
     @JoinColumn(name = "user_id")
     private Users user;
 
+    @Lob
     @Column(name = "content")
     private String content;
 

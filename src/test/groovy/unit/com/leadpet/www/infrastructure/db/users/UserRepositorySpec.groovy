@@ -60,7 +60,7 @@ class UserRepositorySpec extends Specification {
                             .userType(UserType.SHELTER)
                             .shelterName(name + " 보호소")
                             .shelterAddress(city + " 헬로우 월드 주소 어디서나 123-123")
-                            .shelterAssessmentStatus(AssessmentStatus.PENDING)
+                            .shelterAssessmentStatus(assessmentStatus)
                             .shelterHomePage("www." + name + ".com")
                             .shelterPhoneNumber("010-" + idx + "12-1234")
                             .profileImage(profileImage)
@@ -97,7 +97,7 @@ class UserRepositorySpec extends Specification {
         }
 
         when:
-        def result = usersRepository.searchShelters(new SearchShelterCondition(cityNameCond, shelterName), PageRequest.of(0, 5))
+        def result = usersRepository.searchShelters(new SearchShelterCondition(cityNameCond, shelterName, assessmentStatus), PageRequest.of(0, 5))
 
         then:
         result.getTotalElements() == totalElement
@@ -105,7 +105,7 @@ class UserRepositorySpec extends Specification {
         result.getContent().get(0) instanceof ShelterPageResponseDto
         result.getContent().get(0).getUserId() != null
         result.getContent().get(0).getAllFeedCount() == 9
-        result.getContent().get(0).getAssessmentStatus() == AssessmentStatus.PENDING
+        result.getContent().get(0).getAssessmentStatus() == assessmentStatus
         result.getContent().get(0).getShelterName().contains('보호소')
         result.getContent().get(0).getShelterAddress().contains('헬로우 월드')
         result.getContent().get(0).getShelterPhoneNumber().contains('12-1234')
@@ -114,17 +114,17 @@ class UserRepositorySpec extends Specification {
         result.getTotalPages() == totalPages
 
         where:
-        testName               | cityNameCond | shelterName | profileImage   | totalElement | totalPages | size
-        '검색조건이 없는 경우'          | null         | null        | 'profileImage' | 20           | 4          | 5
-        '지역명으로 검색하는 경우'        | '서울특별시'      | null        | 'profileImage' | 10           | 2          | 5
-        '보호소명으로 검색하는 경우'       | null         | 'Hulk10'    | 'profileImage' | 1            | 1          | 1
-        '지역명 + 보호소명으로 검색하는 경우' | '서울특별시'      | 'Hulk10'    | 'profileImage' | 1            | 1          | 1
+        testName               | cityNameCond | shelterName | profileImage   | assessmentStatus           | totalElement | totalPages | size
+        '검색조건이 없는 경우'          | null         | null        | 'profileImage' | AssessmentStatus.PENDING   | 20           | 4          | 5
+        '지역명으로 검색하는 경우'        | '서울특별시'      | null        | 'profileImage' | AssessmentStatus.PENDING   | 10           | 2          | 5
+        '보호소명으로 검색하는 경우'       | null         | 'Hulk10'    | 'profileImage' | AssessmentStatus.COMPLETED | 1            | 1          | 1
+        '지역명 + 보호소명으로 검색하는 경우' | '서울특별시'      | 'Hulk10'    | 'profileImage' | AssessmentStatus.COMPLETED | 1            | 1          | 1
     }
 
     @Unroll(value = "#testName")
     def "보호소 리스트 취득 (데이터가 없는 경우)"() {
         when:
-        def result = usersRepository.searchShelters(new SearchShelterCondition(cityNameCond, shelterName), PageRequest.of(0, 5))
+        def result = usersRepository.searchShelters(new SearchShelterCondition(cityNameCond, shelterName, null), PageRequest.of(0, 5))
 
         then:
         result.getTotalPages() == 0

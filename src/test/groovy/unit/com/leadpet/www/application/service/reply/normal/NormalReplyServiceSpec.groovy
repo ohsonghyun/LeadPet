@@ -221,6 +221,7 @@ class NormalReplyServiceSpec extends Specification {
                                 .normalReplyId(replyId)
                                 .userId(userId)
                                 .userName(userName)
+                                .userProfileImage(userProfileImage)
                                 .build()),
                 PageRequest.of(0, 5),
                 1
@@ -237,10 +238,11 @@ class NormalReplyServiceSpec extends Specification {
         replyPagination.getContent().get(0).getNormalReplyId() == replyId
         replyPagination.getContent().get(0).getUserId() == userId
         replyPagination.getContent().get(0).getUserName() == userName
+        replyPagination.getContent().get(0).getUserProfileImage() == userProfileImage
 
         where:
-        replyId   | userId   | userName
-        'replyId' | 'userId' | 'userName'
+        replyId   | userId   | userName   | userProfileImage
+        'replyId' | 'userId' | 'userName' | 'userProfileImage'
     }
 
     @Unroll

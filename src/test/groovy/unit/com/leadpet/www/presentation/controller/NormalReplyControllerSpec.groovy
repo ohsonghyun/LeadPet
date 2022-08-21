@@ -258,6 +258,7 @@ class NormalReplyControllerSpec extends Specification {
                                         .normalReplyId(replyId)
                                         .userId(userId)
                                         .userName(userName)
+                                        .userProfileImage(userProfileImage)
                                         .build()),
                         PageRequest.of(0, 5),
                         1
@@ -270,10 +271,13 @@ class NormalReplyControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.content.size()').value(1))
                 .andExpect(jsonPath('\$.totalElements').value(1))
                 .andExpect(jsonPath('\$.totalPages').value(1))
+                .andExpect(jsonPath('\$.content[0].userId').value(userId))
+                .andExpect(jsonPath('\$.content[0].userName').value(userName))
+                .andExpect(jsonPath('\$.content[0].userProfileImage').value(userProfileImage))
 
         where:
-        replyId   | userId   | userName
-        'replyId' | 'userId' | 'userName'
+        replyId   | userId   | userName   | userProfileImage
+        'replyId' | 'userId' | 'userName' | 'userProfileImage'
     }
 
 }

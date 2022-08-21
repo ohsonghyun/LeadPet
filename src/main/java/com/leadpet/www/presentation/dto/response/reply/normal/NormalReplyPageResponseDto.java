@@ -15,6 +15,7 @@ public class NormalReplyPageResponseDto {
     private final String normalReplyId;
     private final String userId;
     private final String userName;
+    private final String userProfileImage;
     private final String content;
     private final LocalDateTime createdDate;
 }

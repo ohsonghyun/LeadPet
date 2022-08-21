@@ -1,9 +1,10 @@
 package com.leadpet.www.infrastructure.db.posts.normalPost
 
 import com.leadpet.www.TestConfig
-import com.leadpet.www.infrastructure.db.posts.normalPost.NormalPostsRepository
+import com.leadpet.www.infrastructure.db.liked.LikedRepository
 import com.leadpet.www.infrastructure.db.posts.normalPost.condition.SearchNormalPostCondition
 import com.leadpet.www.infrastructure.db.users.UsersRepository
+import com.leadpet.www.infrastructure.domain.liked.Liked
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
@@ -37,6 +38,8 @@ class NormalPostsRepositorySpec extends Specification {
     UsersRepository usersRepository
     @Autowired
     NormalPostsRepository normalPostsRepository
+    @Autowired
+    LikedRepository likedRepository
 
     @Unroll("#testcase")
     def "일반 피드 페이지네이션: 데이터가 있는 경우"() {
@@ -97,6 +100,69 @@ class NormalPostsRepositorySpec extends Specification {
         '검색 userId가 null' | 20              | null         | 20
         '검색 userId가 app0' | 20              | 'app0'       | 10
         '검색 userId가 app1' | 20              | 'app1'       | 10
+    }
+
+    def "일반 피드 페이지네이션: 좋아요 누른 유저데이터 반환"() {
+        given:
+        def user = usersRepository.save(
+                Users.builder()
+                        .userId(userId)
+                        .loginMethod(LoginMethod.APPLE)
+                        .uid("uid")
+                        .name('name')
+                        .userType(UserType.NORMAL)
+                        .build()
+        )
+
+        // 좋아요가 눌리지 않은 피드
+        normalPostsRepository.save(
+                NormalPosts.builder()
+                        .normalPostId(postId1)
+                        .title('title')
+                        .contents('contents')
+                        .user(user)
+                        .build()
+        )
+        // 좋아요가 눌린 피드
+        normalPostsRepository.save(
+                NormalPosts.builder()
+                        .normalPostId(postId2)
+                        .title('title')
+                        .contents('contents')
+                        .user(user)
+                        .build()
+        )
+
+        likedRepository.save(
+                Liked.builder()
+                        .likedId('likedId')
+                        .userId(userId)
+                        .postId(postId2)
+                        .build()
+        )
+
+        em.flush()
+        em.clear()
+
+        when:
+        def result = normalPostsRepository.searchAll(
+                SearchNormalPostCondition.builder().likedUserId(userId).build(),
+                PageRequest.of(0, 5))
+
+        then:
+        result.getTotalElements() == 2
+        result.getTotalPages() == 1
+        result.getContent().size() == 2
+        result.getContent().get(0).getUserId() == userId
+        result.getContent().get(0).getNormalPostId() == postId2
+        result.getContent().get(0).getLiked() == true
+        result.getContent().get(1).getUserId() == userId
+        result.getContent().get(1).getNormalPostId() == postId1
+        result.getContent().get(1).getLiked() == null
+
+        where:
+        userId   | postId1   | postId2
+        'userId' | 'postId1' | 'postId2'
     }
 
     def "일반 피드 페이지네이션: 데이터가 없는 경우"() {
