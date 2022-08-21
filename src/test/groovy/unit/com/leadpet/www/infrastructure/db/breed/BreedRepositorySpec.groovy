@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
@@ -68,5 +69,27 @@ class BreedRepositorySpec extends Specification {
         then:
         allBreed != null
         allBreed.size() == 10
+    }
+
+    @Unroll
+    def "품종 전체 카운트 취득"() {
+        given:
+        IntStream.range(0, count).forEach(idx -> {
+            boolean isEven = idx % 2 == 0
+            breedRepository.save(
+                    Breed.builder()
+                            .breedId('breedId' + idx)
+                            .category(isEven ? '가' : '나')
+                            .breedName((isEven ? '골든 리드리버' : '나로 시작하는 견종') + idx)
+                            .animalType(AnimalType.DOG)
+                            .build()
+            )
+        })
+
+        expect:
+        breedRepository.count() == count
+
+        where:
+        count << [0, 10]
     }
 }

@@ -94,4 +94,16 @@ class BreedControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.가[1].animalType').value(AnimalType.DOG.name()))
                 .andExpect(jsonPath('\$.사.size()').value(3))
     }
+
+    def "품종 전체 카운트 반환"() {
+        given:
+        when(breedService.count()).thenReturn(count)
+
+        expect:
+        mvc.perform(get(BASE_URL + '/count'))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("\$.count").value(count))
+        where:
+        count << [0L, 10L, 100L]
+    }
 }

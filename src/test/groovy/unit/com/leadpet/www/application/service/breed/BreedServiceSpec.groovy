@@ -6,12 +6,12 @@ import com.leadpet.www.infrastructure.domain.pet.AnimalType
 import com.leadpet.www.presentation.dto.response.breed.SearchBreedResponse
 import org.assertj.core.api.Assertions
 import spock.lang.Specification
+import spock.lang.Unroll
 
 /**
  * BreedServiceSpec
  */
 class BreedServiceSpec extends Specification {
-
     private BreedRepository breedRepository
     private BreedService breedService
 
@@ -71,5 +71,17 @@ class BreedServiceSpec extends Specification {
             it.extractingResultOf('getBreedName').containsExactly('스피츠', '시츄', '시바')
             it.extractingResultOf('getAnimalType').containsExactly(AnimalType.DOG, AnimalType.DOG, AnimalType.DOG)
         }
+    }
+
+    @Unroll
+    def "전체 카운트 취득"() {
+        given:
+        breedRepository.count() >> count
+
+        expect:
+        breedService.count() == count
+
+        where:
+        count << [0L, 10L, 100L]
     }
 }

@@ -54,4 +54,11 @@ public class BreedService {
         }
         return breedMap;
     }
+
+    /**
+     * 전체 품종 카운트를 반환
+     */
+    public long count() {
+        return breedRepository.count();
+    }
 }
