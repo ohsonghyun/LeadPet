@@ -50,10 +50,7 @@ public class LogInRequestDto {
     }
 
     public boolean checkAdmin() {
-        if(this.userType == UserType.ADMIN) {
-            return true;
-        }
-        return false;
+        return this.userType == UserType.ADMIN ? (this.loginMethod == LoginMethod.EMAIL ? true : false) :false;
     }
 
     /**

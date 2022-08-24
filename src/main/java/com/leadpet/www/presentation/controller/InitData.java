@@ -130,9 +130,11 @@ public class InitData {
             em.persist(
                     Users.builder()
                             .userId("admin")
-                            .loginMethod(LoginMethod.APPLE)
+                            .loginMethod(LoginMethod.EMAIL)
+                            .email("admin@email.com")
                             .name(name)
                             .uid("uid")
+                            .password("adminpass")
                             .userType(UserType.ADMIN)
                             .build());
         }

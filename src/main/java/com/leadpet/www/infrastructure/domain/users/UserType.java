@@ -29,6 +29,9 @@ public enum UserType {
     ADMIN() {
         @Override
         public boolean validateEssentialParam(final Users user) {
+            if (user.getLoginMethod() != LoginMethod.EMAIL) {
+                return false;
+            }
             return true;
         }
     },

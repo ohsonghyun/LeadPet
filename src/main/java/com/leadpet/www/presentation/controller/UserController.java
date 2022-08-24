@@ -62,7 +62,7 @@ public class UserController {
         return ResponseEntity.ok(LogInResponseDto.from(userService.logIn(logInRequestDto.toUsers())));
     }
 
-    @ApiOperation(value = "관리자 로그인", notes = "로그인 유형이 Email인 경우 email, password 필수")
+    @ApiOperation(value = "관리자 로그인", notes = "관리자 로그인은 EMAIL 로그인만 가능 / email, password 필수")
     @ApiResponses({
             @ApiResponse(code = 200, message = "로그인 성공"),
             @ApiResponse(code = 400, message = "필수 데이터 누락 에러"),
@@ -70,13 +70,13 @@ public class UserController {
     })
     @PostMapping("/adminLogin")
     public ResponseEntity<LogInResponseDto> logInAdmin(@Valid @RequestBody final LogInRequestDto logInRequestDto) {
-        if (!logInRequestDto.hasAllRequiredValue()) {
-            log.info("로그인 필수 데이터 입력 누락");
-            throw new UnsatisfiedRequirementException("Error: 필수 데이터 입력 누락");
-        }
         if (!logInRequestDto.checkAdmin()) {
             log.info("관리자 정보 없음");
             throw new UnauthorizedUserException("Error: 권한 없는 접근");
+        }
+        if (!logInRequestDto.hasAllRequiredValue()) {
+            log.info("로그인 필수 데이터 입력 누락");
+            throw new UnsatisfiedRequirementException("Error: 필수 데이터 입력 누락");
         }
         return ResponseEntity.ok(LogInResponseDto.from(userService.logIn(logInRequestDto.toUsers())));
     }

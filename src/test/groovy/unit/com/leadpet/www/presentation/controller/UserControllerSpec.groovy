@@ -241,7 +241,6 @@ class UserControllerSpec extends Specification {
 
         where:
         testCase     | loginMethod       | uid   | email            | password   | profileImage | name    | userType        | userId
-        "SNS 로그인"   | LoginMethod.KAKAO | "uid" | null             | null       | null         | "kakao" | UserType.ADMIN | 'uidkko'
         "EMAIL 로그인" | LoginMethod.EMAIL | "uid" | "test@gmail.com" | "password" | null         | "email" | UserType.ADMIN | 'uideml'
     }
 
@@ -265,11 +264,11 @@ class UserControllerSpec extends Specification {
                 .andExpect(expectedStatus)
 
         where:
-        testCase                       | loginMethod       | uid        | email | password    | userType        | exception                               | expectedStatus
-        "회원정보가 없는 경우"            | LoginMethod.KAKAO | "kakaoUid" | null  | null        | UserType.ADMIN  | new UserNotFoundException()             | status().isNotFound()
-        "SNS: 필수 데이터가 누락된 경우"   | null              | "kakaoUid" | null  | null        | UserType.ADMIN  | new UnsatisfiedRequirementException("") | status().isBadRequest()
-        "EMAIL: 필수 데이터가 누락된 경우" | LoginMethod.EMAIL | "emailUid" | null  | null        | UserType.ADMIN  | new UnsatisfiedRequirementException("") | status().isBadRequest()
-        "관리자가 아닌 경우"                 | LoginMethod.KAKAO | "kakaoUid" | null  | null     | UserType.NORMAL | new UnauthorizedUserException("")       | status().isForbidden()
+        testCase                         | loginMethod       | uid        | email            | password    | userType        | exception                               | expectedStatus
+        "회원정보가 없는 경우"               | LoginMethod.EMAIL | "emailUid" | "test@gmail.com" | "password"  | UserType.ADMIN  | new UserNotFoundException()             | status().isNotFound()
+        "LoginMthod가 SNS인 경우"          | null              | "kakaoUid" | null             | null        | UserType.ADMIN  | new UnsatisfiedRequirementException("") | status().isBadRequest()
+        "EMAIL: 필수 데이터가 누락된 경우"    | LoginMethod.EMAIL | "emailUid" | null             | null        | UserType.ADMIN  | new UnsatisfiedRequirementException("") | status().isBadRequest()
+        "관리자가 아닌 경우"                 | LoginMethod.KAKAO | "kakaoUid" | null             | null        | UserType.NORMAL | new UnauthorizedUserException("")       | status().isForbidden()
     }
 
     @Unroll('#testCase')
