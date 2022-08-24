@@ -3,6 +3,7 @@ package com.leadpet.www.presentation.controller;
 import com.leadpet.www.application.service.UserService;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
+import com.leadpet.www.infrastructure.exception.UnauthorizedUserException;
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
 import com.leadpet.www.presentation.controller.annotation.UserTypes;
 import com.leadpet.www.presentation.dto.request.user.LogInRequestDto;
@@ -57,6 +58,25 @@ public class UserController {
         if (!logInRequestDto.hasAllRequiredValue()) {
             log.info("로그인 필수 데이터 입력 누락");
             throw new UnsatisfiedRequirementException("Error: 필수 데이터 입력 누락");
+        }
+        return ResponseEntity.ok(LogInResponseDto.from(userService.logIn(logInRequestDto.toUsers())));
+    }
+
+    @ApiOperation(value = "관리자 로그인", notes = "로그인 유형이 Email인 경우 email, password 필수")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "로그인 성공"),
+            @ApiResponse(code = 400, message = "필수 데이터 누락 에러"),
+            @ApiResponse(code = 404, message = "존재하지 않는 유저 에러")
+    })
+    @PostMapping("/adminLogin")
+    public ResponseEntity<LogInResponseDto> logInAdmin(@Valid @RequestBody final LogInRequestDto logInRequestDto) {
+        if (!logInRequestDto.hasAllRequiredValue()) {
+            log.info("로그인 필수 데이터 입력 누락");
+            throw new UnsatisfiedRequirementException("Error: 필수 데이터 입력 누락");
+        }
+        if (!logInRequestDto.checkAdmin()) {
+            log.info("관리자 정보 없음");
+            throw new UnauthorizedUserException("Error: 권한 없는 접근");
         }
         return ResponseEntity.ok(LogInResponseDto.from(userService.logIn(logInRequestDto.toUsers())));
     }

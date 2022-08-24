@@ -151,6 +151,7 @@ class UserControllerSpec extends Specification {
                 .uid(uid)
                 .email(email)
                 .password(password)
+                .userType(userType)
                 .build()
 
         expect:
@@ -174,6 +175,7 @@ class UserControllerSpec extends Specification {
                 .uid(uid)
                 .email(email)
                 .password(password)
+                .userType(userType)
                 .build()
 
         expect:
@@ -183,10 +185,70 @@ class UserControllerSpec extends Specification {
                 .andExpect(expectedStatus)
 
         where:
-        testCase                | loginMethod       | uid        | email | password | expectedStatus
-        "회원정보가 없는 경우"           | LoginMethod.KAKAO | "kakaoUid" | null  | null     | status().isNotFound()
-        "SNS: 필수 데이터가 누락된 경우"   | null              | "kakaoUid" | null  | null     | status().isBadRequest()
-        "EMAIL: 필수 데이터가 누락된 경우" | LoginMethod.EMAIL | "emailUid" | null  | null     | status().isBadRequest()
+        testCase                          | loginMethod       | uid        | email | password | userType        | expectedStatus
+        "회원정보가 없는 경우"               | LoginMethod.KAKAO | "kakaoUid" | null  | null     | UserType.NORMAL | status().isNotFound()
+        "SNS: 필수 데이터가 누락된 경우"      | null              | "kakaoUid" | null  | null     | UserType.NORMAL | status().isBadRequest()
+        "EMAIL: 필수 데이터가 누락된 경우"    | LoginMethod.EMAIL | "emailUid" | null  | null     | UserType.NORMAL | status().isBadRequest()
+    }
+    @Unroll
+    def "관리자 로그인 성공: #testCase"() {
+        setup:
+        // 유저 추가
+        userService.saveNewUser(
+                Users.builder()
+                        .loginMethod(loginMethod)
+                        .uid(uid)
+                        .email(email)
+                        .password(password)
+                        .profileImage(profileImage)
+                        .name(name)
+                        .userType(userType)
+                        .build())
+
+        def logInRequestDto = LogInRequestDto.builder()
+                .loginMethod(loginMethod)
+                .uid(uid)
+                .email(email)
+                .password(password)
+                .userType(userType)
+                .build()
+
+        expect:
+        mvc.perform(post(USER_URL + "/adminLogin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(logInRequestDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('$.userId').value(userId))
+
+        where:
+        testCase    | loginMethod       | uid   | email            | password   | profileImage | name    | userType        | userId
+        "SNS 로그인"   | LoginMethod.KAKAO | "uid" | null             | null       | null         | "kakao" | UserType.ADMIN | 'uidkko'
+        "EMAIL 로그인" | LoginMethod.EMAIL | "uid" | "test@gmail.com" | "password" | null         | "email" | UserType.ADMIN | 'uideml'
+    }
+
+    @Unroll
+    def "관리자 로그인 실패: #testCase"() {
+        setup:
+        def logInRequestDto = LogInRequestDto.builder()
+                .loginMethod(loginMethod)
+                .uid(uid)
+                .email(email)
+                .password(password)
+                .userType(userType)
+                .build()
+
+        expect:
+        mvc.perform(post(USER_URL + "/adminLogin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(logInRequestDto)))
+                .andExpect(expectedStatus)
+
+        where:
+        testCase                          | loginMethod       | uid        | email | password | userType        | expectedStatus
+        "회원정보가 없는 경우"               | LoginMethod.KAKAO | "kakaoUid" | null  | null     | UserType.ADMIN | status().isNotFound()
+        "SNS: 필수 데이터가 누락된 경우"      | null              | "kakaoUid" | null  | null     | UserType.ADMIN | status().isBadRequest()
+        "EMAIL: 필수 데이터가 누락된 경우"    | LoginMethod.EMAIL | "emailUid" | null  | null     | UserType.ADMIN | status().isBadRequest()
+        "관리자가 아닌 경우"                 | LoginMethod.KAKAO | "kakaoUid" | null  | null     | UserType.NORMAL | status().isForbidden()
     }
 
     @Unroll('#testCase')

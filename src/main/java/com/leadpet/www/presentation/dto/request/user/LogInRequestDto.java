@@ -2,6 +2,7 @@ package com.leadpet.www.presentation.dto.request.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
+import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -27,6 +28,9 @@ public class LogInRequestDto {
     @NotNull
     @JsonProperty("uid")
     private String uid;
+    @NotNull
+    @JsonProperty("userType")
+    private UserType userType;
 
     // email 로그인: loginMethod + uid + email + password
     @JsonProperty("email")
@@ -45,6 +49,13 @@ public class LogInRequestDto {
         return true;
     }
 
+    public boolean checkAdmin() {
+        if(this.userType == UserType.ADMIN) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Users 객체로 변환
      *
@@ -56,6 +67,7 @@ public class LogInRequestDto {
                 .uid(this.uid)
                 .email(this.email)
                 .password(this.password)
+                .userType(this.userType)
                 .build();
     }
 }

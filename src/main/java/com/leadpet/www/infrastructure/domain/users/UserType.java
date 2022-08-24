@@ -26,7 +26,15 @@ public enum UserType {
             );
         }
     },
+    ADMIN() {
+        @Override
+        public boolean validateEssentialParam(final Users user) {
+            return true;
+        }
+    },
     ;
+
+
 
     @JsonCreator
     public static UserType from(final String userType) {
