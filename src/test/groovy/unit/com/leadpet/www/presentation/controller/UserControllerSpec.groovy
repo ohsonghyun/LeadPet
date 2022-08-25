@@ -206,6 +206,7 @@ class UserControllerSpec extends Specification {
         "회원정보가 없는 경우"            | LoginMethod.KAKAO | "kakaoUid" | null  | null     | UserType.NORMAL| new UserNotFoundException()             | status().isNotFound()
         "SNS: 필수 데이터가 누락된 경우"   | null              | "kakaoUid" | null  | null     | UserType.NORMAL| new UnsatisfiedRequirementException("") | status().isBadRequest()
         "EMAIL: 필수 데이터가 누락된 경우" | LoginMethod.EMAIL | "emailUid" | null  | null     | UserType.NORMAL| new UnsatisfiedRequirementException("") | status().isBadRequest()
+        "관리자가 로그인한 경우"           | LoginMethod.EMAIL | "emailUid" | null  | null     | UserType.ADMIN | new UnauthorizedUserException("")       | status().isForbidden()
     }
 
     @Unroll
@@ -266,9 +267,8 @@ class UserControllerSpec extends Specification {
         where:
         testCase                         | loginMethod       | uid        | email            | password    | userType        | exception                               | expectedStatus
         "회원정보가 없는 경우"               | LoginMethod.EMAIL | "emailUid" | "test@gmail.com" | "password"  | UserType.ADMIN  | new UserNotFoundException()             | status().isNotFound()
-        "LoginMthod가 SNS인 경우"          | null              | "kakaoUid" | null             | null        | UserType.ADMIN  | new UnsatisfiedRequirementException("") | status().isBadRequest()
         "EMAIL: 필수 데이터가 누락된 경우"    | LoginMethod.EMAIL | "emailUid" | null             | null        | UserType.ADMIN  | new UnsatisfiedRequirementException("") | status().isBadRequest()
-        "관리자가 아닌 경우"                 | LoginMethod.KAKAO | "kakaoUid" | null             | null        | UserType.NORMAL | new UnauthorizedUserException("")       | status().isForbidden()
+        "관리자가 아닌 경우"                 | LoginMethod.EMAIL | "emailUid" | null             | null        | UserType.NORMAL | new UnauthorizedUserException("")       | status().isForbidden()
     }
 
     @Unroll('#testCase')

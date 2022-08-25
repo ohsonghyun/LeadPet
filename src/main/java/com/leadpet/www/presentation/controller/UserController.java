@@ -55,6 +55,10 @@ public class UserController {
     })
     @PostMapping("/login")
     public ResponseEntity<LogInResponseDto> logIn(@Valid @RequestBody final LogInRequestDto logInRequestDto) {
+        if(logInRequestDto.checkAdmin()) {
+            log.info("관리자는 일반 로그인 불가");
+            throw new UnauthorizedUserException("Error: 권한 없는 접근");
+        }
         if (!logInRequestDto.hasAllRequiredValue()) {
             log.info("로그인 필수 데이터 입력 누락");
             throw new UnsatisfiedRequirementException("Error: 필수 데이터 입력 누락");
