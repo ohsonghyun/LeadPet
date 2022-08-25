@@ -33,6 +33,7 @@ import java.util.stream.IntStream;
 public class InitData {
     private final InitNormalUserService initNormalUserService;
     private final InitShelterService initShelterService;
+    private final InitAdminService initAdminService;
     private final InitPostService initPostService;
     private final InitBreedService initBreedService;
     private final InitNormalReplyService initNormalReplyService;
@@ -42,6 +43,7 @@ public class InitData {
     public void init() {
         initShelterService.init();
         initNormalUserService.init();
+        initAdminService.init();
         initPostService.init();
         initBreedService.init();
         initNormalReplyService.init();
@@ -114,6 +116,27 @@ public class InitData {
                                 .shelterAssessmentStatus(idx % 2 == 0 ? AssessmentStatus.COMPLETED : idx % 3 == 0 ? AssessmentStatus.DECLINED : AssessmentStatus.PENDING)
                                 .build());
             });
+        }
+    }
+
+    @Component
+    static class InitAdminService {
+        @PersistenceContext
+        EntityManager em;
+
+        @Transactional
+        public void init() {
+            String name = "김관리자";
+            em.persist(
+                    Users.builder()
+                            .userId("admin")
+                            .loginMethod(LoginMethod.EMAIL)
+                            .email("admin@email.com")
+                            .name(name)
+                            .uid("uid")
+                            .password("adminpass")
+                            .userType(UserType.ADMIN)
+                            .build());
         }
     }
 

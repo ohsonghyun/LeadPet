@@ -1,6 +1,7 @@
 package com.leadpet.www.infrastructure.domain.users;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.leadpet.www.infrastructure.exception.UnauthorizedUserException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -26,7 +27,15 @@ public enum UserType {
             );
         }
     },
+    ADMIN() {
+        @Override
+        public boolean validateEssentialParam(final Users user) {
+            return user.getLoginMethod() == LoginMethod.EMAIL;
+        }
+    },
     ;
+
+
 
     @JsonCreator
     public static UserType from(final String userType) {

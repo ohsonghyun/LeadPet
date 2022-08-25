@@ -5,6 +5,7 @@ import com.leadpet.www.application.service.UserService
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
+import com.leadpet.www.infrastructure.exception.UnauthorizedUserException
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.presentation.dto.request.user.LogInRequestDto
@@ -160,7 +161,6 @@ class UserControllerSpec extends Specification {
                                 .userType(userType)
                                 .build()
                 )
-
         expect:
         mvc.perform(post(USER_URL + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -170,6 +170,7 @@ class UserControllerSpec extends Specification {
                                 .uid(uid)
                                 .email(email)
                                 .password(password)
+                                .userType(userType)
                                 .build()
                 )))
                 .andExpect(status().isOk())
@@ -195,15 +196,79 @@ class UserControllerSpec extends Specification {
                                 .uid(uid)
                                 .email(email)
                                 .password(password)
+                                .userType(userType)
                                 .build()
                 )))
                 .andExpect(expectedStatus)
 
         where:
-        testCase                | loginMethod       | uid        | email | password | exception                               | expectedStatus
-        "회원정보가 없는 경우"           | LoginMethod.KAKAO | "kakaoUid" | null  | null     | new UserNotFoundException()             | status().isNotFound()
-        "SNS: 필수 데이터가 누락된 경우"   | null              | "kakaoUid" | null  | null     | new UnsatisfiedRequirementException("") | status().isBadRequest()
-        "EMAIL: 필수 데이터가 누락된 경우" | LoginMethod.EMAIL | "emailUid" | null  | null     | new UnsatisfiedRequirementException("") | status().isBadRequest()
+        testCase                       | loginMethod       | uid        | email | password | userType       | exception                               | expectedStatus
+        "회원정보가 없는 경우"            | LoginMethod.KAKAO | "kakaoUid" | null  | null     | UserType.NORMAL| new UserNotFoundException()             | status().isNotFound()
+        "SNS: 필수 데이터가 누락된 경우"   | null              | "kakaoUid" | null  | null     | UserType.NORMAL| new UnsatisfiedRequirementException("") | status().isBadRequest()
+        "EMAIL: 필수 데이터가 누락된 경우" | LoginMethod.EMAIL | "emailUid" | null  | null     | UserType.NORMAL| new UnsatisfiedRequirementException("") | status().isBadRequest()
+        "관리자가 로그인한 경우"           | LoginMethod.EMAIL | "emailUid" | null  | null     | UserType.ADMIN | new UnauthorizedUserException("")       | status().isForbidden()
+    }
+
+    @Unroll
+    def "관리자 로그인 성공: #testCase"() {
+        given:
+        when(userService.logIn(isA(Users.class)))
+                .thenReturn(
+                        Users.builder()
+                                .loginMethod(loginMethod)
+                                .uid(uid)
+                                .userId(userId)
+                                .email(email)
+                                .password(password)
+                                .profileImage(profileImage)
+                                .name(name)
+                                .userType(userType)
+                                .build()
+                )
+        expect:
+        mvc.perform(post(USER_URL + "/adminLogin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(
+                        LogInRequestDto.builder()
+                                .loginMethod(loginMethod)
+                                .uid(uid)
+                                .email(email)
+                                .password(password)
+                                .userType(userType)
+                                .build()
+                )))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('$.userId').value(userId))
+
+        where:
+        testCase     | loginMethod       | uid   | email            | password   | profileImage | name    | userType        | userId
+        "EMAIL 로그인" | LoginMethod.EMAIL | "uid" | "test@gmail.com" | "password" | null         | "email" | UserType.ADMIN | 'uideml'
+    }
+
+    @Unroll
+    def "관리자 로그인 실패: #testCase"() {
+        given:
+        when(userService.logIn(isA(Users.class))).thenThrow(exception)
+
+        expect:
+        mvc.perform(post(USER_URL + "/adminLogin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(
+                        LogInRequestDto.builder()
+                                .loginMethod(loginMethod)
+                                .uid(uid)
+                                .email(email)
+                                .password(password)
+                                .userType(userType)
+                                .build()
+                )))
+                .andExpect(expectedStatus)
+
+        where:
+        testCase                         | loginMethod       | uid        | email            | password    | userType        | exception                               | expectedStatus
+        "회원정보가 없는 경우"               | LoginMethod.EMAIL | "emailUid" | "test@gmail.com" | "password"  | UserType.ADMIN  | new UserNotFoundException()             | status().isNotFound()
+        "EMAIL: 필수 데이터가 누락된 경우"    | LoginMethod.EMAIL | "emailUid" | null             | null        | UserType.ADMIN  | new UnsatisfiedRequirementException("") | status().isBadRequest()
+        "관리자가 아닌 경우"                 | LoginMethod.EMAIL | "emailUid" | null             | null        | UserType.NORMAL | new UnauthorizedUserException("")       | status().isForbidden()
     }
 
     @Unroll('#testCase')
