@@ -4,7 +4,9 @@ import com.leadpet.www.infrastructure.db.breed.BreedRepository
 import com.leadpet.www.infrastructure.domain.breed.Breed
 import com.leadpet.www.infrastructure.domain.pet.AnimalType
 import com.leadpet.www.presentation.dto.response.breed.SearchBreedResponse
+import com.leadpet.www.presentation.dto.response.breed.SearchBreedResultResponse
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.ObjectAssert
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -55,21 +57,24 @@ class BreedServiceSpec extends Specification {
         )
 
         when:
-        Map<String, List<SearchBreedResponse>> result = breedService.findGroupByCategory()
+        SearchBreedResultResponse result = breedService.findGroupByCategoryZz()
 
         then:
         {
-            def it = Assertions.assertThat(result.get('가'))
+            def it = Assertions.assertThat(result.getResults())
             it.hasSize(2)
-            it.extractingResultOf('getBreedName').containsExactly('골든 리트리버', '고든 셰터')
-            it.extractingResultOf('getAnimalType').containsExactly(AnimalType.DOG, AnimalType.DOG)
+            it.extractingResultOf('getIndex').containsExactly('가', '사')
+            it.extractingResultOf('getBreedList').hasSize(2)
         }
-
         {
-            def it = Assertions.assertThat(result.get('사'))
+            def it = Assertions.assertThat(result.getResults().get(0).getBreedList())
+            it.hasSize(2)
+            it.extracting('breedName').containsExactly('골든 리트리버', '고든 셰터')
+        }
+        {
+            def it = Assertions.assertThat(result.getResults().get(1).getBreedList())
             it.hasSize(3)
-            it.extractingResultOf('getBreedName').containsExactly('스피츠', '시츄', '시바')
-            it.extractingResultOf('getAnimalType').containsExactly(AnimalType.DOG, AnimalType.DOG, AnimalType.DOG)
+            it.extracting('breedName').containsExactly('스피츠', '시츄', '시바')
         }
     }
 
