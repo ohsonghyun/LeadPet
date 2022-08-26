@@ -5,7 +5,9 @@ import com.leadpet.www.application.service.breed.BreedService;
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
 import com.leadpet.www.presentation.dto.request.breed.AddBreedRequest;
 import com.leadpet.www.presentation.dto.response.breed.AddBreedResponse;
+import com.leadpet.www.presentation.dto.response.breed.AllCountBreedResponse;
 import com.leadpet.www.presentation.dto.response.breed.SearchBreedResponse;
+import com.leadpet.www.presentation.dto.response.breed.SearchBreedResultResponse;
 import com.leadpet.www.presentation.dto.response.shelter.ShelterDetailDto;
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto;
 import io.swagger.annotations.Api;
@@ -36,7 +38,16 @@ public class BreedController {
 
     @ApiOperation("품종 리스트 취득")
     @GetMapping
-    public ResponseEntity<Map<String, List<SearchBreedResponse>>> findGroupByCategory() {
+    public ResponseEntity<SearchBreedResultResponse> findGroupByCategory() {
         return ResponseEntity.ok(breedService.findGroupByCategory());
+    }
+
+    @ApiOperation("품종 전체 카운트 취득")
+    @GetMapping("/count")
+    public ResponseEntity<AllCountBreedResponse> allCountBreed() {
+        return ResponseEntity.ok(
+                AllCountBreedResponse.builder()
+                        .count(breedService.count())
+                        .build());
     }
 }
