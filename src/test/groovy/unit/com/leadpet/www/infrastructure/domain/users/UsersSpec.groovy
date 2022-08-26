@@ -101,4 +101,43 @@ class UsersSpec extends Specification {
         uid   | userId   | newShelterName   | newShelterAddress   | newShelterPhoneNumber | newShelterIntro   | newShelterAccount   | newShelterManager   | newShelterHomePage
         'uid' | 'userId' | 'newShelterName' | 'newShelterAddress' | '01056785678'         | 'newShelterIntro' | 'newShelterAccount' | 'newShelterManager' | 'newShelterHomePage'
     }
+
+    def "일반유저 정보 수정"() {
+        given:
+        def user = usersRepository.save(
+                Users.builder()
+                        .userId(userId)
+                        .loginMethod(LoginMethod.KAKAO)
+                        .uid('uid')
+                        .name('old name')
+                        .intro('old intro')
+                        .address('old address')
+                        .profileImage('old profileImage')
+                        .userType(UserType.NORMAL)
+                        .build())
+
+        def userInfo = UserInfo.builder()
+                .name(name)
+                .intro(intro)
+                .address(address)
+                .profileImage(profileImage)
+                .build()
+        when:
+        user.updateNormalUser(userInfo)
+
+        em.flush()
+        em.clear()
+
+        then:
+        // 더티 체킹
+        def updatedUser = usersRepository.findById(userId).orElseThrow()
+        updatedUser.getName() == name
+        updatedUser.getIntro() == intro
+        updatedUser.getAddress() == address
+        updatedUser.getProfileImage() == profileImage
+
+        where:
+        userId   | name   | intro   | address   | profileImage
+        'userId' | 'name' | 'intro' | 'address' | 'profileImage'
+    }
 }

@@ -11,6 +11,8 @@ CREATE TABLE users
     email                     VARCHAR(60),
     login_method              VARCHAR(20)  NOT NULL,
     name                      VARCHAR(50)  NOT NULL,
+    intro                     CLOB,
+    address                   VARCHAR(150),
     password                  VARCHAR(50),
     profile_image             VARCHAR(255),
     shelter_account           VARCHAR(150),

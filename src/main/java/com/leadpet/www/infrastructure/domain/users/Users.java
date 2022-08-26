@@ -31,6 +31,12 @@ public class Users extends BaseTime {
     private String profileImage;
     @Column(nullable = false)
     private String name;
+    @Lob
+    @Column(name = "intro")
+    private String intro;
+    @Column(name = "address")
+    private String address;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserType userType;
@@ -90,7 +96,7 @@ public class Users extends BaseTime {
     }
 
     /**
-     * 보호소 정보를 수정
+     * 보호소 정보 수정
      *
      * @param newShelterInfo {@code ShelterInfo}
      * @return {@code Users} 수정된 보호소 정보
@@ -103,6 +109,20 @@ public class Users extends BaseTime {
         shelterHomePage = newShelterInfo.getShelterHomePage();
         shelterIntro = newShelterInfo.getShelterIntro();
         shelterAccount = newShelterInfo.getShelterAccount();
+        return this;
+    }
+
+    /**
+     * 일반유저 정보 수정
+     *
+     * @param userInfo {@code UserInfo}
+     * @return {@code Users} 수정된 일반유저 정보
+     */
+    public Users updateNormalUser(final UserInfo userInfo) {
+        name = userInfo.getName();
+        intro = userInfo.getIntro();
+        address = userInfo.getAddress();
+        profileImage = userInfo.getProfileImage();
         return this;
     }
 }

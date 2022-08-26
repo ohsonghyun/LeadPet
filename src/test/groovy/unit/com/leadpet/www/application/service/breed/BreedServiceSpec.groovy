@@ -57,7 +57,7 @@ class BreedServiceSpec extends Specification {
         )
 
         when:
-        SearchBreedResultResponse result = breedService.findGroupByCategoryZz()
+        SearchBreedResultResponse result = breedService.findGroupByCategory()
 
         then:
         {

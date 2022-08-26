@@ -2,14 +2,19 @@ package com.leadpet.www.presentation.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.leadpet.www.application.service.UserService
+import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
+import com.leadpet.www.infrastructure.domain.users.ShelterInfo
+import com.leadpet.www.infrastructure.domain.users.UserInfo
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.UnauthorizedUserException
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
+import com.leadpet.www.presentation.dto.request.shelter.UpdateShelterInfoRequestDto
 import com.leadpet.www.presentation.dto.request.user.LogInRequestDto
 import com.leadpet.www.presentation.dto.request.user.SignUpUserRequestDto
+import com.leadpet.www.presentation.dto.request.user.UpdateUserInfoRequestDto
 import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto
 import org.hamcrest.Matchers
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,6 +30,7 @@ import static org.mockito.ArgumentMatchers.isA
 import static org.mockito.Mockito.when
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -202,11 +208,11 @@ class UserControllerSpec extends Specification {
                 .andExpect(expectedStatus)
 
         where:
-        testCase                       | loginMethod       | uid        | email | password | userType       | exception                               | expectedStatus
-        "회원정보가 없는 경우"            | LoginMethod.KAKAO | "kakaoUid" | null  | null     | UserType.NORMAL| new UserNotFoundException()             | status().isNotFound()
-        "SNS: 필수 데이터가 누락된 경우"   | null              | "kakaoUid" | null  | null     | UserType.NORMAL| new UnsatisfiedRequirementException("") | status().isBadRequest()
-        "EMAIL: 필수 데이터가 누락된 경우" | LoginMethod.EMAIL | "emailUid" | null  | null     | UserType.NORMAL| new UnsatisfiedRequirementException("") | status().isBadRequest()
-        "관리자가 로그인한 경우"           | LoginMethod.EMAIL | "emailUid" | null  | null     | UserType.ADMIN | new UnauthorizedUserException("")       | status().isForbidden()
+        testCase                | loginMethod       | uid        | email | password | userType        | exception                               | expectedStatus
+        "회원정보가 없는 경우"           | LoginMethod.KAKAO | "kakaoUid" | null  | null     | UserType.NORMAL | new UserNotFoundException()             | status().isNotFound()
+        "SNS: 필수 데이터가 누락된 경우"   | null              | "kakaoUid" | null  | null     | UserType.NORMAL | new UnsatisfiedRequirementException("") | status().isBadRequest()
+        "EMAIL: 필수 데이터가 누락된 경우" | LoginMethod.EMAIL | "emailUid" | null  | null     | UserType.NORMAL | new UnsatisfiedRequirementException("") | status().isBadRequest()
+        "관리자가 로그인한 경우"          | LoginMethod.EMAIL | "emailUid" | null  | null     | UserType.ADMIN  | new UnauthorizedUserException("")       | status().isForbidden()
     }
 
     @Unroll
@@ -241,7 +247,7 @@ class UserControllerSpec extends Specification {
                 .andExpect(jsonPath('$.userId').value(userId))
 
         where:
-        testCase     | loginMethod       | uid   | email            | password   | profileImage | name    | userType        | userId
+        testCase    | loginMethod       | uid   | email            | password   | profileImage | name    | userType       | userId
         "EMAIL 로그인" | LoginMethod.EMAIL | "uid" | "test@gmail.com" | "password" | null         | "email" | UserType.ADMIN | 'uideml'
     }
 
@@ -265,10 +271,10 @@ class UserControllerSpec extends Specification {
                 .andExpect(expectedStatus)
 
         where:
-        testCase                         | loginMethod       | uid        | email            | password    | userType        | exception                               | expectedStatus
-        "회원정보가 없는 경우"               | LoginMethod.EMAIL | "emailUid" | "test@gmail.com" | "password"  | UserType.ADMIN  | new UserNotFoundException()             | status().isNotFound()
-        "EMAIL: 필수 데이터가 누락된 경우"    | LoginMethod.EMAIL | "emailUid" | null             | null        | UserType.ADMIN  | new UnsatisfiedRequirementException("") | status().isBadRequest()
-        "관리자가 아닌 경우"                 | LoginMethod.EMAIL | "emailUid" | null             | null        | UserType.NORMAL | new UnauthorizedUserException("")       | status().isForbidden()
+        testCase                | loginMethod       | uid        | email            | password   | userType        | exception                               | expectedStatus
+        "회원정보가 없는 경우"           | LoginMethod.EMAIL | "emailUid" | "test@gmail.com" | "password" | UserType.ADMIN  | new UserNotFoundException()             | status().isNotFound()
+        "EMAIL: 필수 데이터가 누락된 경우" | LoginMethod.EMAIL | "emailUid" | null             | null       | UserType.ADMIN  | new UnsatisfiedRequirementException("") | status().isBadRequest()
+        "관리자가 아닌 경우"            | LoginMethod.EMAIL | "emailUid" | null             | null       | UserType.NORMAL | new UnauthorizedUserException("")       | status().isForbidden()
     }
 
     @Unroll('#testCase')
@@ -341,6 +347,46 @@ class UserControllerSpec extends Specification {
         where:
         testCase             | expectedException                              | userId     | responseStatus
         '존재하지 않는 userId인 경우' | new UserNotFoundException("Error: 존재하지 않는 유저") | 'notExist' | status().isNotFound()
+    }
+
+    def "[일반유저 정보 수정] 정상"() {
+        given:
+        when(userService.updateNormalUser(isA(String.class), isA(UserInfo.class)))
+                .thenReturn(
+                        Users.builder()
+                                .loginMethod(LoginMethod.KAKAO)
+                                .uid('uid')
+                                .name(name)
+                                .userId(userId)
+                                .name(name)
+                                .intro(intro)
+                                .address(address)
+                                .profileImage(profileImage)
+                                .userType(UserType.NORMAL)
+                                .build()
+                )
+
+        expect:
+        mvc.perform(put(USER_URL + '/' + userId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(
+                        UpdateUserInfoRequestDto.builder()
+                                .name(name)
+                                .intro(intro)
+                                .address(address)
+                                .profileImage(profileImage)
+                                .build()
+                )))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('\$.userId').value(userId))
+                .andExpect(jsonPath('\$.name').value(name))
+                .andExpect(jsonPath('\$.intro').value(intro))
+                .andExpect(jsonPath('\$.address').value(address))
+                .andExpect(jsonPath('\$.profileImage').value(profileImage))
+
+        where:
+        userId   | name   | intro   | profileImage   | address
+        'userId' | 'name' | 'intro' | 'profileImage' | 'address'
     }
 
 }
