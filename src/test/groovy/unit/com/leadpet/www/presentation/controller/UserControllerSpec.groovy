@@ -181,9 +181,12 @@ class UserControllerSpec extends Specification {
                 )))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath('$.userId').value(userId))
+                .andExpect(jsonPath('$.uid').value(uid))
+                .andExpect(jsonPath('$.profileImage').value(profileImage))
+                .andExpect(jsonPath('$.userType').value(userType.toString()))
 
         where:
-        testCase    | loginMethod       | uid   | email            | password   | profileImage | name    | userType        | userId
+        testCase      | loginMethod       | uid   | email            | password   | profileImage | name    | userType        | userId
         "SNS 로그인"   | LoginMethod.KAKAO | "uid" | null             | null       | null         | "kakao" | UserType.NORMAL | 'uidkko'
         "EMAIL 로그인" | LoginMethod.EMAIL | "uid" | "test@gmail.com" | "password" | null         | "email" | UserType.NORMAL | 'uideml'
     }
