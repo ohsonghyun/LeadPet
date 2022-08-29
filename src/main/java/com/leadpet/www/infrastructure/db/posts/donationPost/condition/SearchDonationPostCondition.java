@@ -1,5 +1,6 @@
 package com.leadpet.www.infrastructure.db.posts.donationPost.condition;
 
+import com.leadpet.www.infrastructure.domain.donation.DonationMethod;
 import lombok.AccessLevel;
 
 /**
@@ -11,4 +12,5 @@ import lombok.AccessLevel;
 @lombok.AllArgsConstructor
 public class SearchDonationPostCondition {
     private String userId;
+    private DonationMethod donationMethod;
 }

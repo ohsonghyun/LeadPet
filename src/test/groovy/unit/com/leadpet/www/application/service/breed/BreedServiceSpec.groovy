@@ -3,10 +3,8 @@ package com.leadpet.www.application.service.breed
 import com.leadpet.www.infrastructure.db.breed.BreedRepository
 import com.leadpet.www.infrastructure.domain.breed.Breed
 import com.leadpet.www.infrastructure.domain.pet.AnimalType
-import com.leadpet.www.presentation.dto.response.breed.SearchBreedResponse
 import com.leadpet.www.presentation.dto.response.breed.SearchBreedResultResponse
 import org.assertj.core.api.Assertions
-import org.assertj.core.api.ObjectAssert
 import spock.lang.Specification
 import spock.lang.Unroll
 

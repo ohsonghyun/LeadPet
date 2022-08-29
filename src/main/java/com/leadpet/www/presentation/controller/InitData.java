@@ -1,6 +1,7 @@
 package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.infrastructure.domain.breed.Breed;
+import com.leadpet.www.infrastructure.domain.donation.DonationMethod;
 import com.leadpet.www.infrastructure.domain.liked.Liked;
 import com.leadpet.www.infrastructure.domain.pet.AnimalType;
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts;
@@ -169,6 +170,7 @@ public class InitData {
                                         .contents("contents" + user.getUserId() + i)
                                         .startDate(LocalDateTime.now().minusDays(1))
                                         .endDate(LocalDateTime.now().plusDays((int) (Math.random() * 10)))
+                                        .donationMethod(DonationMethod.values()[i])
                                         .user(user)
                                         .build());
                         em.persist(
@@ -176,7 +178,7 @@ public class InitData {
                                         .adoptionPostId("AP_" + user.getUserId() + i)
                                         .title("title" + user.getUserId() + i)
                                         .contents("contents" + user.getUserId() + i)
-                                        .age(i+1)
+                                        .age(i + 1)
                                         .user(user)
                                         .build());
                     }

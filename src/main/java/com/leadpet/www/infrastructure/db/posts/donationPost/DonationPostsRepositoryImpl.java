@@ -1,6 +1,7 @@
 package com.leadpet.www.infrastructure.db.posts.donationPost;
 
 import com.leadpet.www.infrastructure.db.posts.donationPost.condition.SearchDonationPostCondition;
+import com.leadpet.www.infrastructure.domain.donation.DonationMethod;
 import com.leadpet.www.presentation.dto.response.post.donation.DonationPostPageResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -13,6 +14,7 @@ import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import static com.leadpet.www.infrastructure.domain.posts.QDonationPosts.donationPosts;
 
@@ -41,7 +43,8 @@ public class DonationPostsRepositoryImpl implements DonationPostRepositoryCustom
                 .from(donationPosts)
                 .where(
                         betweenStartDateAndEndDate(),
-                        eqUserIdWith(condition.getUserId())
+                        eqUserIdWith(condition.getUserId()),
+                        eqDonationMethodWith(condition.getDonationMethod())
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -52,7 +55,8 @@ public class DonationPostsRepositoryImpl implements DonationPostRepositoryCustom
                 .from(donationPosts)
                 .where(
                         betweenStartDateAndEndDate(),
-                        eqUserIdWith(condition.getUserId())
+                        eqUserIdWith(condition.getUserId()),
+                        eqDonationMethodWith(condition.getDonationMethod())
                 )
                 .fetchOne();
 
@@ -74,5 +78,9 @@ public class DonationPostsRepositoryImpl implements DonationPostRepositoryCustom
 
     private BooleanExpression eqUserIdWith(final String userId) {
         return StringUtils.isBlank(userId) ? null : donationPosts.user.userId.eq(userId);
+    }
+
+    private BooleanExpression eqDonationMethodWith(final DonationMethod donationMethod) {
+        return Objects.isNull(donationMethod) ? null : donationPosts.donationMethod.eq(donationMethod);
     }
 }
