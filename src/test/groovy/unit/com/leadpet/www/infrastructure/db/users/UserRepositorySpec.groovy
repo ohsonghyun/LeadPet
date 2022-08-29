@@ -139,6 +139,42 @@ class UserRepositorySpec extends Specification {
         '지역명 + 보호소명으로 검색하는 경우' | '부산'         | 'Hulk10'
     }
 
+    @Unroll("#testCase")
+    def "일반유저 디테일 조회"() {
+        given:
+        usersRepository.save(
+                Users.builder()
+                        .userId(userId)
+                        .loginMethod(loginMethod)
+                        .uid(uid)
+                        .name(name)
+                        .userType(userType)
+                        .build())
+
+        em.flush()
+        em.clear()
+
+        when:
+        Users normalUser = usersRepository.findNormalUserByUserId(userId)
+
+        then:
+        if (userType == UserType.NORMAL) {
+            normalUser != null
+            normalUser.getUserId() == userId
+            normalUser.getLoginMethod() == loginMethod
+            normalUser.getUid() == uid
+            normalUser.getName() == name
+            normalUser.getUserType() == userType
+        } else {
+            normalUser == null
+        }
+
+        where:
+        testCase      | userId   | loginMethod       | uid   | name   | userType
+        '일반유저인 경우'    | 'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.NORMAL
+        '일반유저가 아닌 경우' | 'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.SHELTER
+    }
+
     def "보호소 디테일 조회"() {
         given:
         usersRepository.save(

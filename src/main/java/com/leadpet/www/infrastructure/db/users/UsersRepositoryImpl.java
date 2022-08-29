@@ -114,6 +114,25 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
 
     @Nullable
     @Override
+    public Users findNormalUserByUserId(final String userId) {
+        return queryFactory
+                .selectFrom(users)
+                .where(
+                        users.userId.eq(userId),
+                        eqUserTypeNormal()
+                )
+                .fetchOne();
+    }
+
+    // TODO 일반유저 데이터 전체를 그대로 불러와서 컨트롤러에서 DTO로 변환하는 방식이 좋을 듯!
+
+    /**
+     * Deprecated
+     * <p>Use {@link #findNormalUserByUserId(String)}</p>
+     */
+    @Deprecated
+    @Nullable
+    @Override
     public UserDetailResponseDto findNormalUserDetailByUserId(String userId) {
         List<UserDetailResponseDto> userDetail = queryFactory
                 .select(

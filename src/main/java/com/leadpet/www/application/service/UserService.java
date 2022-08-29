@@ -2,10 +2,7 @@ package com.leadpet.www.application.service;
 
 import com.leadpet.www.infrastructure.db.users.UsersRepository;
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
-import com.leadpet.www.infrastructure.domain.users.LoginMethod;
-import com.leadpet.www.infrastructure.domain.users.ShelterInfo;
-import com.leadpet.www.infrastructure.domain.users.UserType;
-import com.leadpet.www.infrastructure.domain.users.Users;
+import com.leadpet.www.infrastructure.domain.users.*;
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
 import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException;
@@ -158,6 +155,25 @@ public class UserService {
             throw new UserNotFoundException("Error: 존재하지 않는 유저Id");
         }
         return targetShelter.updateShelter(newShelterInfo);
+    }
+
+    /**
+     * 일반유저 정보 수정
+     *
+     * @param newUserInfo {@code UserInfo}
+     * @return {@code Users} 수정된 유저 데이터
+     */
+    @Transactional
+    public Users updateNormalUser(
+            @NonNull final String userId,
+            @NonNull final UserInfo newUserInfo
+    ) {
+        Users targetNormalUser = usersRepository.findNormalUserByUserId(userId);
+        if (Objects.isNull(targetNormalUser)) {
+            log.error("[UserServier#updateNormalUser] 존재하지 않는 유저ID: {}", userId);
+            throw new UserNotFoundException("Error: 존재하지 않는 유저Id");
+        }
+        return targetNormalUser.updateNormalUser(newUserInfo);
     }
 
     /**

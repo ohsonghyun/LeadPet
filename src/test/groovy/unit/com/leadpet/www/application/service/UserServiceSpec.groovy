@@ -5,6 +5,7 @@ import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition
 import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.ShelterInfo
+import com.leadpet.www.infrastructure.domain.users.UserInfo
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException
@@ -239,6 +240,51 @@ class UserServiceSpec extends Specification {
         testCase             | userId     | exception
         'userId가 null인 경우'   | null       | UnsatisfiedRequirementException
         '존재하지 않는 userId인 경우' | 'notExist' | UserNotFoundException
+    }
+
+    @Unroll
+    def "[일반유저 정보 수정] 정상"() {
+        given:
+        usersRepository.findNormalUserByUserId(userId) >> Users.builder()
+                .loginMethod(LoginMethod.KAKAO)
+                .uid('uid')
+                .name('name')
+                .userId(userId)
+                .userType(UserType.NORMAL)
+                .build()
+
+
+        when:
+        Users updatedNormalUser = userService.updateNormalUser(
+                userId,
+                UserInfo.builder()
+                        .name(newName)
+                        .address(newAddress)
+                        .intro(newIntro)
+                        .profileImage(newProfileImage)
+                        .build())
+
+        then:
+        updatedNormalUser.getName() == newName
+        updatedNormalUser.getAddress() == newAddress
+        updatedNormalUser.getIntro() == newIntro
+        updatedNormalUser.getProfileImage() == newProfileImage
+
+        where:
+        userId   | newName   | newAddress   | newIntro   | newProfileImage
+        'userId' | 'newName' | 'newAddress' | 'newIntro' | 'newProfileImage'
+    }
+
+    @Unroll
+    def "[일반유저 정보 수정] 존재하지 않는 유저 에러"() {
+        given:
+        def newUserInfo = UserInfo.builder().build()
+
+        when:
+        userService.updateNormalUser('userId', newUserInfo)
+
+        then:
+        thrown(UserNotFoundException)
     }
 
     @Unroll

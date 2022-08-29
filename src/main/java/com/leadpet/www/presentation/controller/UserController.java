@@ -8,10 +8,8 @@ import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
 import com.leadpet.www.presentation.controller.annotation.UserTypes;
 import com.leadpet.www.presentation.dto.request.user.LogInRequestDto;
 import com.leadpet.www.presentation.dto.request.user.SignUpUserRequestDto;
-import com.leadpet.www.presentation.dto.response.user.LogInResponseDto;
-import com.leadpet.www.presentation.dto.response.user.SignUpUserResponseDto;
-import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto;
-import com.leadpet.www.presentation.dto.response.user.UserListResponseDto;
+import com.leadpet.www.presentation.dto.request.user.UpdateUserInfoRequestDto;
+import com.leadpet.www.presentation.dto.response.user.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -55,7 +53,7 @@ public class UserController {
     })
     @PostMapping("/login")
     public ResponseEntity<LogInResponseDto> logIn(@Valid @RequestBody final LogInRequestDto logInRequestDto) {
-        if(logInRequestDto.checkAdmin()) {
+        if (logInRequestDto.checkAdmin()) {
             log.info("관리자는 일반 로그인 불가");
             throw new UnauthorizedUserException("Error: 권한 없는 접근");
         }
@@ -104,6 +102,21 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<UserDetailResponseDto> getUserDetail(@PathVariable final String userId) {
         return ResponseEntity.ok(userService.normalUserDetail(userId));
+    }
+
+    @ApiOperation(value = "일반유저 정보 수정")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "일반유저 정보 수정 성공"),
+            @ApiResponse(code = 404, message = "존재하지 않는 유저")
+    })
+    @PutMapping("/{userId}")
+    public ResponseEntity<UpdateUserInfoResponseDto> updateUserInfo(
+            @PathVariable final String userId,
+            @RequestBody final UpdateUserInfoRequestDto request
+    ) {
+        return ResponseEntity.ok(
+                UpdateUserInfoResponseDto.from(
+                        userService.updateNormalUser(userId, request.toUserInfo())));
     }
 
 }
