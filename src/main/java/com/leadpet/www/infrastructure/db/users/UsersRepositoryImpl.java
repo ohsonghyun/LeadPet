@@ -141,6 +141,9 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
                                 users.userId,
                                 users.name.as("userName"),
                                 users.email,
+                                users.intro,
+                                users.address,
+                                users.profileImage,
                                 normalReply.normalReplyId.count().as("allReplyCount")
                         ))
                 .from(users)

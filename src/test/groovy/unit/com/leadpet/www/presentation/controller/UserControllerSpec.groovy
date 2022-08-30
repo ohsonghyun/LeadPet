@@ -186,7 +186,7 @@ class UserControllerSpec extends Specification {
                 .andExpect(jsonPath('$.userType').value(userType.toString()))
 
         where:
-        testCase      | loginMethod       | uid   | email            | password   | profileImage | name    | userType        | userId
+        testCase    | loginMethod       | uid   | email            | password   | profileImage | name    | userType        | userId
         "SNS 로그인"   | LoginMethod.KAKAO | "uid" | null             | null       | null         | "kakao" | UserType.NORMAL | 'uidkko'
         "EMAIL 로그인" | LoginMethod.EMAIL | "uid" | "test@gmail.com" | "password" | null         | "email" | UserType.NORMAL | 'uideml'
     }
@@ -321,6 +321,9 @@ class UserControllerSpec extends Specification {
                                 .userId(userId)
                                 .userName(userName)
                                 .email(email)
+                                .intro(intro)
+                                .address(address)
+                                .profileImage(profileImage)
                                 .allReplyCount(allReplyCount)
                                 .build())
 
@@ -334,8 +337,8 @@ class UserControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.allReplyCount').value(allReplyCount))
 
         where:
-        userId    | userName   | email            | shelterPhoneNumber | allReplyCount
-        'uid1kko' | 'userName' | 'test@gmail.com' | ''                 | 2
+        userId    | userName   | email            | shelterPhoneNumber | intro   | address   | profileImage   | allReplyCount
+        'uid1kko' | 'userName' | 'test@gmail.com' | ''                 | 'intro' | 'address' | 'profileImage' | 2
     }
 
     def "[유저 디테일 취득]에러: #testCase"() {
