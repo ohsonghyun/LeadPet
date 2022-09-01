@@ -61,8 +61,6 @@ public class Users extends BaseTime {
     /**
      * UserId를 생성
      * <p>유저아이디는 uid + loginMethod(약자)로 구성됨</p>
-     *
-     * @return {@code String}
      */
     @NonNull
     public void createUserId() {

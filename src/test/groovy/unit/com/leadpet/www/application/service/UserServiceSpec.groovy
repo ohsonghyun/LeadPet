@@ -351,6 +351,9 @@ class UserServiceSpec extends Specification {
                         .userId(userId)
                         .userName(userName)
                         .email(email)
+                        .intro(intro)
+                        .address(address)
+                        .profileImage(profileImage)
                         .allReplyCount(allReplyCount)
                         .build()
 
@@ -362,11 +365,14 @@ class UserServiceSpec extends Specification {
         userDetailResponseDto.getUserId() == userId
         userDetailResponseDto.getUserName() == userName
         userDetailResponseDto.getEmail() == email
+        userDetailResponseDto.getIntro() == intro
+        userDetailResponseDto.getAddress() == address
+        userDetailResponseDto.getProfileImage() == profileImage
         userDetailResponseDto.getAllReplyCount() == allReplyCount
 
         where:
-        userId   | email            | userName   | allReplyCount
-        'userId' | 'test@email.com' | 'userName' | 30
+        userId   | email            | userName   | intro   | address   | profileImage   | allReplyCount
+        'userId' | 'test@email.com' | 'userName' | 'intro' | 'address' | 'profileImage' | 30
     }
 
     // -------------------------------------------------------------------------------------

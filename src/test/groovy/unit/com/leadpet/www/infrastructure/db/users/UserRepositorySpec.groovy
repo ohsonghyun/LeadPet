@@ -25,6 +25,7 @@ import spock.lang.Unroll
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import java.util.stream.IntStream
+import java.util.stream.LongStream
 
 /**
  * UserRepositorySpec
@@ -223,6 +224,9 @@ class UserRepositorySpec extends Specification {
                         .loginMethod(loginMethod)
                         .uid(uid)
                         .name(name)
+                        .intro(intro)
+                        .address(address)
+                        .profileImage(profileImage)
                         .userType(userType)
                         .build())
 
@@ -234,7 +238,7 @@ class UserRepositorySpec extends Specification {
                         .user(user)
                         .build())
 
-        IntStream.range(0, allReplyCount).forEach(idx -> {
+        LongStream.range(0, allReplyCount).forEach(idx -> {
             normalReplyRepository.save(
                     NormalReply.builder()
                             .normalReplyId('replyId' + idx)
@@ -255,10 +259,13 @@ class UserRepositorySpec extends Specification {
         userDetailResponseDto.getUserId() == userId
         userDetailResponseDto.getUserName() == name
         userDetailResponseDto.getEmail() == null
+        userDetailResponseDto.getIntro() == intro
+        userDetailResponseDto.getAddress() == address
+        userDetailResponseDto.getProfileImage() == profileImage
         userDetailResponseDto.getAllReplyCount() == allReplyCount
 
         where:
-        userId   | loginMethod       | uid   | name   | userType        | allReplyCount
-        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.NORMAL | 3
+        userId   | loginMethod       | uid   | name   | userType        | allReplyCount | intro   | address   | profileImage
+        'userId' | LoginMethod.APPLE | 'uid' | 'name' | UserType.NORMAL | 3L            | 'intro' | 'address' | 'profileImage'
     }
 }

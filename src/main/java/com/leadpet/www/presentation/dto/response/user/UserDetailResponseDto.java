@@ -16,6 +16,9 @@ public class UserDetailResponseDto {
     private String userId;
     private String userName;
     private String email;
+    private String intro;
+    private String address;
+    private String profileImage;
 
     /**
      * 총 댓글 수
