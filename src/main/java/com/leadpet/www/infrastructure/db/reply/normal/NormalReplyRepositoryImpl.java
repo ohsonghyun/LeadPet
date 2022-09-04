@@ -30,6 +30,7 @@ public class NormalReplyRepositoryImpl implements NormalReplyRepositoryCustom {
                                 normalReply.normalReplyId,
                                 normalReply.user.userId,
                                 normalReply.user.name,
+                                normalReply.user.userType,
                                 normalReply.user.profileImage.as("userProfileImage"),
                                 normalReply.content,
                                 normalReply.createdDate

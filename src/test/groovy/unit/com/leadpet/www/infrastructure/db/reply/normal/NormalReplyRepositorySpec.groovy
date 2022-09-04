@@ -146,7 +146,7 @@ class NormalReplyRepositorySpec extends Specification {
                         .loginMethod(LoginMethod.KAKAO)
                         .name(userName)
                         .uid('uid')
-                        .userType(UserType.NORMAL)
+                        .userType(userType)
                         .profileImage(profileImage)
                         .build())
 
@@ -175,13 +175,14 @@ class NormalReplyRepositorySpec extends Specification {
             replies.getContent().get(0).getUserId() == userId
             replies.getContent().get(0).getUserName() == userName
             replies.getContent().get(0).getContent() == replyContent
+            replies.getContent().get(0).getUserType() == userType
             replies.getContent().get(0).getUserProfileImage() == profileImage
         }
 
         where:
-        testCase     | replyId   | postId   | postTitle | postContent     | userId   | userName   | profileImage   | replyContent    | size | totalPage
-        '데이터가 있는 경우' | 'replyId' | 'postId' | 'title'   | 'post contents' | 'userId' | 'userName' | 'profileImage' | 'reply content' | 5    | 1
-        '데이터가 없는 경우' | 'replyId' | 'postId' | 'title'   | 'post contents' | 'userId' | 'userName' | 'profileImage' | 'reply content' | 0    | 0
+        testCase     | replyId   | postId   | postTitle | postContent     | userId   | userName   | profileImage   | replyContent    | userType        | size | totalPage
+        '데이터가 있는 경우' | 'replyId' | 'postId' | 'title'   | 'post contents' | 'userId' | 'userName' | 'profileImage' | 'reply content' | UserType.NORMAL | 5    | 1
+        '데이터가 없는 경우' | 'replyId' | 'postId' | 'title'   | 'post contents' | 'userId' | 'userName' | 'profileImage' | 'reply content' | UserType.NORMAL | 0    | 0
     }
 
 }
