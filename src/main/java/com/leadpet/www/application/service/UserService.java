@@ -2,12 +2,14 @@ package com.leadpet.www.application.service;
 
 import com.leadpet.www.infrastructure.db.users.UsersRepository;
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
+import com.leadpet.www.infrastructure.db.users.condition.SearchUserCondition;
 import com.leadpet.www.infrastructure.domain.users.*;
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
 import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException;
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto;
 import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto;
+import com.leadpet.www.presentation.dto.response.user.UserListResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +21,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -102,6 +105,19 @@ public class UserService {
     @NonNull
     public List<Users> getUserListBy(@NonNull final UserType userType) {
         return usersRepository.findByUserType(userType);
+    }
+
+    /**
+     * 유저 리스트 취득
+     *
+     * @param searchUserCondition {@code SearchUserCondition} 유저 리스트 취득 조건
+     * @param pageable            {@code Pageable}
+     * @return {@code Page<UserListResponseDto>}
+     */
+    @Nonnull
+    public Page<UserListResponseDto> searchUsers(SearchUserCondition searchUserCondition, Pageable pageable) {
+        Page<UserListResponseDto> usersPage = usersRepository.searchUsers(searchUserCondition, pageable);
+        return Objects.isNull(usersPage) ? new PageImpl<>(Collections.EMPTY_LIST) : usersPage;
     }
 
     /**
