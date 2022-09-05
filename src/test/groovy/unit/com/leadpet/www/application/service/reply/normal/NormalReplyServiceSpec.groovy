@@ -5,6 +5,7 @@ import com.leadpet.www.infrastructure.db.reply.normal.NormalReplyRepository
 import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.reply.normal.NormalReply
+import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.PostNotFoundException
 import com.leadpet.www.infrastructure.exception.ReplyNotFoundException
@@ -222,6 +223,7 @@ class NormalReplyServiceSpec extends Specification {
                                 .userId(userId)
                                 .userName(userName)
                                 .userProfileImage(userProfileImage)
+                                .userType(userType)
                                 .build()),
                 PageRequest.of(0, 5),
                 1
@@ -239,10 +241,11 @@ class NormalReplyServiceSpec extends Specification {
         replyPagination.getContent().get(0).getUserId() == userId
         replyPagination.getContent().get(0).getUserName() == userName
         replyPagination.getContent().get(0).getUserProfileImage() == userProfileImage
+        replyPagination.getContent().get(0).getUserType() == userType
 
         where:
-        replyId   | userId   | userName   | userProfileImage
-        'replyId' | 'userId' | 'userName' | 'userProfileImage'
+        replyId   | userId   | userName   | userProfileImage   | userType
+        'replyId' | 'userId' | 'userName' | 'userProfileImage' | UserType.NORMAL
     }
 
     @Unroll

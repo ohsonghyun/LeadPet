@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.leadpet.www.application.service.reply.normal.NormalReplyService
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.reply.normal.NormalReply
+import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.PostNotFoundException
 import com.leadpet.www.infrastructure.exception.ReplyNotFoundException
@@ -259,6 +260,7 @@ class NormalReplyControllerSpec extends Specification {
                                         .userId(userId)
                                         .userName(userName)
                                         .userProfileImage(userProfileImage)
+                                        .userType(userType)
                                         .build()),
                         PageRequest.of(0, 5),
                         1
@@ -274,10 +276,11 @@ class NormalReplyControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.content[0].userId').value(userId))
                 .andExpect(jsonPath('\$.content[0].userName').value(userName))
                 .andExpect(jsonPath('\$.content[0].userProfileImage').value(userProfileImage))
+                .andExpect(jsonPath('\$.content[0].userType').value(userType.name()))
 
         where:
-        replyId   | userId   | userName   | userProfileImage
-        'replyId' | 'userId' | 'userName' | 'userProfileImage'
+        replyId   | userId   | userName   | userProfileImage   | userType
+        'replyId' | 'userId' | 'userName' | 'userProfileImage' | UserType.NORMAL
     }
 
 }

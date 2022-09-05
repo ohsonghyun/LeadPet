@@ -1,5 +1,6 @@
 package com.leadpet.www.presentation.dto.response.reply.normal;
 
+import com.leadpet.www.infrastructure.domain.users.UserType;
 import io.swagger.annotations.ApiModel;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ public class NormalReplyPageResponseDto {
     private final String normalReplyId;
     private final String userId;
     private final String userName;
+    private final UserType userType;
     private final String userProfileImage;
     private final String content;
     private final LocalDateTime createdDate;
