@@ -88,8 +88,7 @@ public class UserController {
 
     @ApiOperation(value = "유저리스트 취득")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "유저리스트 취득 성공"),
-            @ApiResponse(code = 400, message = "필수 데이터 누락 에러")
+            @ApiResponse(code = 200, message = "유저리스트 취득 성공")
     })
     @GetMapping("/list")
     public ResponseEntity<Page<UserListResponseDto>> listBy(final SearchUserCondition condition, final Pageable pageable) {
