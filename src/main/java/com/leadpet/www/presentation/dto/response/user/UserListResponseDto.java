@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 public class UserListResponseDto {
 
     // 공통
-    @Enumerated(EnumType.STRING)
     private LoginMethod loginMethod;
     private String uid;
     private String email;

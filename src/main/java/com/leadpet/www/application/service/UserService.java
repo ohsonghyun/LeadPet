@@ -21,7 +21,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -97,26 +96,19 @@ public class UserService {
     }
 
     /**
-     * 유저 타입별 리스트 획득
-     *
-     * @param userType 획득하려고하는 유저 타입
-     * @return {@code List<Users>}
-     */
-    @NonNull
-    public List<Users> getUserListBy(@NonNull final UserType userType) {
-        return usersRepository.findByUserType(userType);
-    }
-
-    /**
      * 유저 리스트 취득
      *
      * @param searchUserCondition {@code SearchUserCondition} 유저 리스트 취득 조건
      * @param pageable            {@code Pageable}
      * @return {@code Page<UserListResponseDto>}
      */
-    @Nonnull
+    @NonNull
     public Page<UserListResponseDto> searchUsers(SearchUserCondition searchUserCondition, Pageable pageable) {
         Page<UserListResponseDto> usersPage = usersRepository.searchUsers(searchUserCondition, pageable);
+        if(usersPage.isEmpty()){
+            log.error("[UserService] 존재하지 않는 유저");
+            throw new NullPointerException("Error: 존재하지 않는 유저");
+        }
         return Objects.isNull(usersPage) ? new PageImpl<>(Collections.EMPTY_LIST) : usersPage;
     }
 

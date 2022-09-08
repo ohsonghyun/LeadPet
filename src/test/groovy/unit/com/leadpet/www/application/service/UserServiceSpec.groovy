@@ -133,21 +133,6 @@ class UserServiceSpec extends Specification {
         "Email 로그인" | LoginMethod.EMAIL | "emailUid" | "email" | UserType.NORMAL | "email@email.com" | "password"
     }
 
-    def "일반 유저 리스트를 받는다"() {
-        given:
-        usersRepository.findByUserType(_) >> [
-                createUser('uid1kko', LoginMethod.KAKAO, 'uid1', null, null, null, "name1", UserType.NORMAL, null, null, null, null, null, null, null),
-                createUser('uid2ggl', LoginMethod.GOOGLE, 'uid2', null, null, null, "name2", UserType.NORMAL, null, null, null, null, null, null, null),
-                createUser('uid3eml', LoginMethod.EMAIL, 'uid3', "email@email.com", "password", null, "name3", UserType.NORMAL, null, null, null, null, null, null, null)
-        ]
-
-        when:
-        List<Users> result = userService.getUserListBy(UserType.NORMAL)
-
-        then:
-        result.size() == 3
-    }
-
     def "유저 리스트 취득"() {
         given:
         usersRepository.searchUsers(_, _) >> new PageImpl<UserListResponseDto>(
@@ -168,29 +153,37 @@ class UserServiceSpec extends Specification {
         result.getContent().size() == 4
         result.getTotalPages() == 1
         result.getTotalElements() == 4
-        result.getContent().get(0).getLoginMethod() == LoginMethod.KAKAO
-        result.getContent().get(0).getUid() == 'uid1'
-        result.getContent().get(0).getEmail() == null
-        result.getContent().get(0).getProfileImage() == 'profileImage1'
-        result.getContent().get(0).getName() == 'name1'
-        result.getContent().get(0).getUserType() == UserType.NORMAL
-        result.getContent().get(0).getShelterName() == null
-        result.getContent().get(0).getShelterAddress() == null
-        result.getContent().get(0).getShelterPhoneNumber() == null
-        result.getContent().get(0).getShelterManager() == null
-        result.getContent().get(0).getShelterHomePage() == null
-        result.getContent().get(3).getLoginMethod() == LoginMethod.KAKAO
-        result.getContent().get(3).getUid() == 'uid4'
-        result.getContent().get(3).getEmail() == null
-        result.getContent().get(3).getProfileImage() == 'profileImage4'
-        result.getContent().get(3).getName() == null
-        result.getContent().get(3).getUserType() == UserType.SHELTER
-        result.getContent().get(3).getShelterName() == 'shelter'
-        result.getContent().get(3).getShelterAddress() == '헬로우 월드 123-123'
-        result.getContent().get(3).getShelterPhoneNumber() == '010-1234-1234'
-        result.getContent().get(3).getShelterManager() == 'manager'
-        result.getContent().get(3).getShelterHomePage() == 'www.shelter1.com'
+        result.each {
+            it.getLoginMethod() == loginMethod
+            it.getUid() == uid
+            it.getEmail() == email
+            it.getProfileImage() == profileImage
+            it.getName() == name
+            it.getUserType() == userType
+            it.getShelterName() == shelterName
+            it.getShelterAddress() == shelterAddress
+            it.getShelterPhoneNumber() == shelterPhoneNumber
+            it.getShelterManager() == shelterManager
+            it.getShelterHomePage() == shelterHomePage
+        }
 
+        where:
+        loginMethod          | uid    | email            | profileImage    | name    | userType         | shelterName | shelterAddress      | shelterPhoneNumber | shelterManager | shelterHomePage
+        LoginMethod.KAKAO    | 'uid1' | null             | 'profileImage1' | 'name1' | UserType.NORMAL  | null        | null                | null               | null           |  null
+        LoginMethod.GOOGLE   | 'uid2' | null             | 'profileImage2' | 'name2' | UserType.NORMAL  | null        | null                | null               | null           |  null
+        LoginMethod.EMAIL    | 'uid3' | 'user@email.com' | 'profileImage3' | 'name3' | UserType.NORMAL  | null        | null                | null               | null           |  null
+        LoginMethod.KAKAO    | 'uid4' | null             | 'profileImage4' | null    | UserType.SHELTER | 'shelter'   | '헬로우 월드 123-123' | '010-1234-1234'    | 'manager'      |  'www.shelter.com'
+    }
+
+    def "유저 리스트 취득한 데이터가 없는 경우"() {
+        given:
+        usersRepository.searchUsers(_, _) >> null
+
+        when:
+        Page<UserListResponseDto> result = userService.searchUsers(new SearchUserCondition(), PageRequest.of(0, 5))
+
+        then:
+        thrown(NullPointerException.class)
     }
 
     def "보호소의 피드 리스트 취득"() {

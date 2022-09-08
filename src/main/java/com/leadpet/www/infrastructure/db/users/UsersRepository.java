@@ -37,14 +37,6 @@ public interface UsersRepository extends JpaRepository<Users, String>, UsersRepo
     Users findByLoginMethodAndUidAndEmailAndPassword(LoginMethod loginMethod, String uid, String email, String password);
 
     /**
-     * 유저 타입별 리스트 취득
-     *
-     * @param userType {@code Users.UserType}
-     * @return {@code List<Users>}
-     */
-    List<Users> findByUserType(UserType userType);
-
-    /**
      * 유저ID로 유저 정보 취득
      *
      * @param userId {@code String}
