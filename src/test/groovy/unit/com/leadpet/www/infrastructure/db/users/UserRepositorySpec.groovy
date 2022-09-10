@@ -4,6 +4,7 @@ import com.leadpet.www.TestConfig
 import com.leadpet.www.infrastructure.db.posts.normalPost.NormalPostsRepository
 import com.leadpet.www.infrastructure.db.reply.normal.NormalReplyRepository
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition
+import com.leadpet.www.infrastructure.db.users.condition.SearchUserCondition
 import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
@@ -14,6 +15,7 @@ import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto
 import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto
+import com.leadpet.www.presentation.dto.response.user.UserListResponseDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
@@ -138,6 +140,65 @@ class UserRepositorySpec extends Specification {
         '지역명으로 검색하는 경우'        | '서울특별시'      | null
         '보호소명으로 검색하는 경우'       | null         | 'Hulk10'
         '지역명 + 보호소명으로 검색하는 경우' | '부산'         | 'Hulk10'
+    }
+
+    @Unroll(value = "#testName")
+    def "유저 리스트 취득"() {
+        given:
+        // 유저 추가
+        IntStream.range(0, 20).forEach(idx -> {
+            idx % 2 == 0 ?
+            usersRepository.save(
+                    Users.builder()
+                            .userId("app" + idx)
+                            .loginMethod(LoginMethod.APPLE)
+                            .uid("uid" + idx)
+                            .name('name' + idx)
+                            .profileImage('profileImage' + idx)
+                            .userType(UserType.SHELTER)
+                            .shelterName("보호소" + idx)
+                            .shelterAddress("헬로우 월드 주소 어디서나 123-123")
+                            .shelterPhoneNumber('010-12' + idx + '-1234')
+                            .shelterManager('manager')
+                            .shelterHomePage('www.shelter' + idx + '.com')
+                            .build()
+            )
+            :
+            usersRepository.save(
+                    Users.builder()
+                            .userId("app" + idx)
+                            .loginMethod(LoginMethod.APPLE)
+                            .uid("uid" + idx)
+                            .name('name' + idx)
+                            .profileImage('profileImage' + idx)
+                            .userType(UserType.NORMAL)
+                            .build()
+            )
+        })
+        em.flush()
+        em.clear()
+
+        when:
+        def result = usersRepository.searchUsers(new SearchUserCondition(userType), PageRequest.of(0, 5))
+
+        then:
+        result.getTotalElements() == totalElement
+        result.getContent().size() == size
+        result.getContent().get(0) instanceof UserListResponseDto
+        result.each {
+            it.getLoginMethod() != null
+            it.getName().contains('name')
+            it.getUserType() != null
+            it.getUid().contains('uid')
+            it.getProfileImage().contains('profileImage')
+        }
+        result.getTotalPages() == totalPages
+
+        where:
+        testName                 | userType         | totalElement | totalPages | size
+        '검색조건이 없는 경우'       | null             | 20           | 4          | 5
+        '일반 유저로 검색하는 경우'   | UserType.NORMAL  | 10           | 2          | 5
+        '보호소 유저로 검색하는 경우' | UserType.SHELTER  | 10           | 2          | 5
     }
 
     @Unroll("#testCase")

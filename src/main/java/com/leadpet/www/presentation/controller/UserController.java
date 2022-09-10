@@ -1,6 +1,7 @@
 package com.leadpet.www.presentation.controller;
 
 import com.leadpet.www.application.service.UserService;
+import com.leadpet.www.infrastructure.db.users.condition.SearchUserCondition;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.infrastructure.exception.UnauthorizedUserException;
@@ -15,6 +16,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -85,12 +88,11 @@ public class UserController {
 
     @ApiOperation(value = "유저리스트 취득")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "유저리스트 취득 성공"),
-            @ApiResponse(code = 400, message = "필수 데이터 누락 에러")
+            @ApiResponse(code = 200, message = "유저리스트 취득 성공")
     })
     @GetMapping("/list")
-    public ResponseEntity<List<UserListResponseDto>> listBy(@UserTypes final UserType ut) {
-        return ResponseEntity.ok(UserListResponseDto.from(userService.getUserListBy(ut)));
+    public ResponseEntity<Page<UserListResponseDto>> listBy(final SearchUserCondition condition, final Pageable pageable) {
+        return ResponseEntity.ok(userService.searchUsers(condition, pageable));
     }
 
     @ApiOperation(value = "유저 디테일 취득")

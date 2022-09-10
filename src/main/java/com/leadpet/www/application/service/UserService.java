@@ -2,12 +2,14 @@ package com.leadpet.www.application.service;
 
 import com.leadpet.www.infrastructure.db.users.UsersRepository;
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
+import com.leadpet.www.infrastructure.db.users.condition.SearchUserCondition;
 import com.leadpet.www.infrastructure.domain.users.*;
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
 import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException;
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto;
 import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto;
+import com.leadpet.www.presentation.dto.response.user.UserListResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -94,14 +96,20 @@ public class UserService {
     }
 
     /**
-     * 유저 타입별 리스트 획득
+     * 유저 리스트 취득
      *
-     * @param userType 획득하려고하는 유저 타입
-     * @return {@code List<Users>}
+     * @param searchUserCondition {@code SearchUserCondition} 유저 리스트 취득 조건
+     * @param pageable            {@code Pageable}
+     * @return {@code Page<UserListResponseDto>}
      */
     @NonNull
-    public List<Users> getUserListBy(@NonNull final UserType userType) {
-        return usersRepository.findByUserType(userType);
+    public Page<UserListResponseDto> searchUsers(SearchUserCondition searchUserCondition, Pageable pageable) {
+        Page<UserListResponseDto> usersPage = usersRepository.searchUsers(searchUserCondition, pageable);
+        if(usersPage.isEmpty()){
+            log.error("[UserService] 존재하지 않는 유저");
+            throw new NullPointerException("Error: 존재하지 않는 유저");
+        }
+        return Objects.isNull(usersPage) ? new PageImpl<>(Collections.EMPTY_LIST) : usersPage;
     }
 
     /**

@@ -2,6 +2,7 @@ package com.leadpet.www.presentation.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.leadpet.www.application.service.UserService
+import com.leadpet.www.infrastructure.db.users.condition.SearchUserCondition
 import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.ShelterInfo
@@ -16,10 +17,13 @@ import com.leadpet.www.presentation.dto.request.user.LogInRequestDto
 import com.leadpet.www.presentation.dto.request.user.SignUpUserRequestDto
 import com.leadpet.www.presentation.dto.request.user.UpdateUserInfoRequestDto
 import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto
+import com.leadpet.www.presentation.dto.response.user.UserListResponseDto
 import org.hamcrest.Matchers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Specification
@@ -283,33 +287,31 @@ class UserControllerSpec extends Specification {
     @Unroll('#testCase')
     def "유저 타입별 리스트 획득"() {
         given:
-        when(userService.getUserListBy(eq(UserType.NORMAL)))
-                .thenReturn(List.of(
-                        Users.builder().loginMethod(LoginMethod.KAKAO).uid('uid1').name('name1').userType(UserType.NORMAL).build(),
-                        Users.builder().loginMethod(LoginMethod.GOOGLE).uid('uid2').name('name2').userType(UserType.NORMAL).build(),
-                        Users.builder().loginMethod(LoginMethod.EMAIL).uid('uid4').email("email@email.com").password("password").name('name4').userType(UserType.NORMAL).build()
-                ))
-
-        when(userService.getUserListBy(eq(UserType.SHELTER)))
-                .thenReturn(List.of(
-                        Users.builder().loginMethod(LoginMethod.GOOGLE).uid('uid3').name('name3').userType(UserType.SHELTER).shelterName("shelter").shelterAddress("address").shelterPhoneNumber('01012341234').build()
+        when(userService.searchUsers(isA(SearchUserCondition.class), isA(Pageable.class)))
+                .thenReturn(new PageImpl<UserListResponseDto>(
+                        List.of(new UserListResponseDto(loginMethod, uid, email, profileImage, name, userType, shelterName, shelterAddress, shelterPhoneNumber, shelterManager, shelterHomePage))
                 ))
 
         expect:
-        mvc.perform(get(USER_URL + '/list').param('ut', paramValue)).andExpect(status().isOk())
-                .andExpect(jsonPath("\$", Matchers.hasSize(expectedSize)))
+        mvc.perform(get(USER_URL + '/list').param('ut', paramValue)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('\$.content[0].loginMethod').value(loginMethod.name()))
+                .andExpect(jsonPath('\$.content[0].uid').value(uid))
+                .andExpect(jsonPath('\$.content[0].email').value(email))
+                .andExpect(jsonPath('\$.content[0].profileImage').value(profileImage))
+                .andExpect(jsonPath('\$.content[0].name').value(name))
+                .andExpect(jsonPath('\$.content[0].userType').value(userType.name()))
+                .andExpect(jsonPath('\$.content[0].shelterName').value(shelterName))
+                .andExpect(jsonPath('\$.content[0].shelterAddress').value(shelterAddress))
+                .andExpect(jsonPath('\$.content[0].shelterPhoneNumber').value(shelterPhoneNumber))
+                .andExpect(jsonPath('\$.content[0].shelterManager').value(shelterManager))
+                .andExpect(jsonPath('\$.content[0].shelterHomePage').value(shelterHomePage))
 
         where:
-        testCase | paramValue | expectedSize
-        '일반유저'   | 'normal'   | 3
-        '보호소'    | 'shelter'  | 1
-    }
-
-    def "유저 타입별 리스트 획득: 에러 케이스: WrongArgumentsException"() {
-        expect:
-        mvc.perform(get(USER_URL + '/list').param('ut', 'wrongParam'))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath('\$.error.detail').value('Error: 잘못 된 파라미터'))
+        testCase | paramValue | loginMethod         | uid     | email  | profileImage | name   | userType            | shelterName | shelterAddress      | shelterPhoneNumber | shelterManager | shelterHomePage
+        '일반유저' | 'normal'   | LoginMethod.KAKAO   | 'uid1' | null   | 'profile1'    | 'name' | UserType.NORMAL    | null         | null                | null               | null           |  null
+        '보호소'  | 'shelter'  | LoginMethod.KAKAO    | 'uid2' | null   | 'profile2'    | null   | UserType.SHELTER   | 'shelter'    | '헬로우 월드 123-123' | '010-1234-1234'    | 'manager'      |  'www.shelter.com'
     }
 
     @Unroll

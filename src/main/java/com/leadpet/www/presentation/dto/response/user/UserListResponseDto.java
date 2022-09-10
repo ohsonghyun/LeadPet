@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiModel;
 import lombok.AccessLevel;
 import org.springframework.lang.NonNull;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +16,8 @@ import java.util.stream.Collectors;
  * UserListResponseDto
  */
 @lombok.Getter
+@lombok.NoArgsConstructor
+@lombok.AllArgsConstructor
 @lombok.Builder(access = AccessLevel.PRIVATE)
 @ApiModel("유저리스트 취득 Response")
 public class UserListResponseDto {

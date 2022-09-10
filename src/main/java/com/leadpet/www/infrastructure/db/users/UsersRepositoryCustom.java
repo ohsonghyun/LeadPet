@@ -1,9 +1,11 @@
 package com.leadpet.www.infrastructure.db.users;
 
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
+import com.leadpet.www.infrastructure.db.users.condition.SearchUserCondition;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto;
 import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto;
+import com.leadpet.www.presentation.dto.response.user.UserListResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -45,4 +47,13 @@ public interface UsersRepositoryCustom {
      */
 
     UserDetailResponseDto findNormalUserDetailByUserId(final String userId);
+
+    /**
+     * 조건에 맞는 모든 유저 정보를 반환
+     *
+     * @param condition {@code SearchUserCondition}
+     * @param pageable {@code Pageable}
+     * @return {@code Page<UserListResponseDto>}
+     */
+    Page<UserListResponseDto> searchUsers(final SearchUserCondition condition, final Pageable pageable);
 }

@@ -1,12 +1,15 @@
 package com.leadpet.www.infrastructure.db.users;
 
 import com.leadpet.www.infrastructure.db.users.condition.SearchShelterCondition;
+import com.leadpet.www.infrastructure.db.users.condition.SearchUserCondition;
 import com.leadpet.www.infrastructure.domain.users.AssessmentStatus;
 import com.leadpet.www.infrastructure.domain.reply.normal.QNormalReply;
+import com.leadpet.www.infrastructure.domain.users.QUsers;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto;
 import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto;
+import com.leadpet.www.presentation.dto.response.user.UserListResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -156,6 +159,38 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
         return userDetail.isEmpty() ? null : userDetail.get(0);
     }
 
+    @Override
+    public Page<UserListResponseDto> searchUsers(final SearchUserCondition condition, final Pageable pageable) {
+        List<UserListResponseDto> userList = queryFactory
+                .select(
+                        Projections.constructor(
+                                UserListResponseDto.class,
+                                users.loginMethod,
+                                users.uid,
+                                users.email,
+                                users.profileImage,
+                                users.name,
+                                users.userType,
+                                users.shelterName,
+                                users.shelterAddress,
+                                users.shelterPhoneNumber,
+                                users.shelterManager,
+                                users.shelterHomePage
+                        )
+                )
+                .from(users)
+                .where(eqUserType(condition.getUserType()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        final Long total = queryFactory
+                .select(users.userType.count())
+                .from(users)
+                .where(eqUserType(condition.getUserType()))
+                .fetchOne();
+        return new PageImpl<>(userList, pageable, total);
+    }
+
     /**
      * 보호소 주소 조건 추가
      *
@@ -196,6 +231,16 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
     @Nullable
     private BooleanExpression eqUserTypeNormal() {
         return users.userType.eq(UserType.NORMAL);
+    }
+
+    /**
+     * 유저 타입 조건 추가
+     *
+     * @param userType
+     * @return {@code BooleanExpression}
+     */
+    private BooleanExpression eqUserType(final UserType userType) {
+        return userType == null ? null : users.userType.eq(userType);
     }
 
     /**
