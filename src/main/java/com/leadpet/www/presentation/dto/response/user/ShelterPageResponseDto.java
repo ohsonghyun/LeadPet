@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiModel;
 public class ShelterPageResponseDto {
 
     private String userId;
+    private String uid;
     /**
      * 보호소명
      */

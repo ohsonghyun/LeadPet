@@ -137,10 +137,10 @@ class UserServiceSpec extends Specification {
         given:
         usersRepository.searchUsers(_, _) >> new PageImpl<UserListResponseDto>(
                 List.of(
-                        new UserListResponseDto(LoginMethod.KAKAO, 'uid1', null, 'profileImage1', "name1", UserType.NORMAL, null, null, null, null, null),
-                        new UserListResponseDto(LoginMethod.GOOGLE, 'uid2', null, 'profileImage2', "name2", UserType.NORMAL, null, null, null, null, null),
-                        new UserListResponseDto(LoginMethod.EMAIL, 'uid3', 'user@email.com', 'profileImage3', "name3", UserType.NORMAL, null, null, null, null, null),
-                        new UserListResponseDto(LoginMethod.KAKAO, 'uid4', null, 'profileImage4', null, UserType.SHELTER, 'shelter', '헬로우 월드 123-123', '010-1234-1234', 'manager', 'www.shelter1.com')
+                        new UserListResponseDto(LoginMethod.KAKAO, 'userId1', 'uid1', null, 'profileImage1', "name1", UserType.NORMAL, null, null, null, null, null),
+                        new UserListResponseDto(LoginMethod.GOOGLE, 'userId2', 'uid2', null, 'profileImage2', "name2", UserType.NORMAL, null, null, null, null, null),
+                        new UserListResponseDto(LoginMethod.EMAIL, 'userId3', 'uid3', 'user@email.com', 'profileImage3', "name3", UserType.NORMAL, null, null, null, null, null),
+                        new UserListResponseDto(LoginMethod.KAKAO, 'userId4', 'uid4', null, 'profileImage4', null, UserType.SHELTER, 'shelter', '헬로우 월드 123-123', '010-1234-1234', 'manager', 'www.shelter1.com')
                 ),
                 PageRequest.of(0, 5),
                 4
@@ -155,6 +155,7 @@ class UserServiceSpec extends Specification {
         result.getTotalElements() == 4
         result.each {
             it.getLoginMethod() == loginMethod
+            it.getUserId() == userId
             it.getUid() == uid
             it.getEmail() == email
             it.getProfileImage() == profileImage
@@ -168,11 +169,11 @@ class UserServiceSpec extends Specification {
         }
 
         where:
-        loginMethod          | uid    | email            | profileImage    | name    | userType         | shelterName | shelterAddress      | shelterPhoneNumber | shelterManager | shelterHomePage
-        LoginMethod.KAKAO    | 'uid1' | null             | 'profileImage1' | 'name1' | UserType.NORMAL  | null        | null                | null               | null           |  null
-        LoginMethod.GOOGLE   | 'uid2' | null             | 'profileImage2' | 'name2' | UserType.NORMAL  | null        | null                | null               | null           |  null
-        LoginMethod.EMAIL    | 'uid3' | 'user@email.com' | 'profileImage3' | 'name3' | UserType.NORMAL  | null        | null                | null               | null           |  null
-        LoginMethod.KAKAO    | 'uid4' | null             | 'profileImage4' | null    | UserType.SHELTER | 'shelter'   | '헬로우 월드 123-123' | '010-1234-1234'    | 'manager'      |  'www.shelter.com'
+        loginMethod          | userId     | uid    | email            | profileImage    | name    | userType         | shelterName | shelterAddress      | shelterPhoneNumber | shelterManager | shelterHomePage
+        LoginMethod.KAKAO    | 'userId1'  | 'uid1' | null             | 'profileImage1' | 'name1' | UserType.NORMAL  | null        | null                | null               | null           |  null
+        LoginMethod.GOOGLE   | 'userId2'  | 'uid2' | null             | 'profileImage2' | 'name2' | UserType.NORMAL  | null        | null                | null               | null           |  null
+        LoginMethod.EMAIL    | 'userId3'  | 'uid3' | 'user@email.com' | 'profileImage3' | 'name3' | UserType.NORMAL  | null        | null                | null               | null           |  null
+        LoginMethod.KAKAO    | 'userId4'  | 'uid4' | null             | 'profileImage4' | null    | UserType.SHELTER | 'shelter'   | '헬로우 월드 123-123' | '010-1234-1234'    | 'manager'      |  'www.shelter.com'
     }
 
     def "유저 리스트 취득한 데이터가 없는 경우"() {
@@ -190,9 +191,9 @@ class UserServiceSpec extends Specification {
         given:
         usersRepository.searchShelters(_, _) >> new PageImpl<ShelterPageResponseDto>(
                 List.of(
-                        new ShelterPageResponseDto('userId1', "Shelter1", 3, AssessmentStatus.PENDING, "헬로우 월드 123-123", "010-1234-1233", "www.shelter1.com", 'profileImage'),
-                        new ShelterPageResponseDto('userId2', "Shelter2", 2, AssessmentStatus.COMPLETED, "헬로우 월드 123-122", "010-1234-1232", "www.shelter2.com", 'profileImage'),
-                        new ShelterPageResponseDto('userId3', "Shelter3", 1, AssessmentStatus.DECLINED, "헬로우 월드 123-121", "010-1234-1231", "www.shelter3.com", 'profileImage')
+                        new ShelterPageResponseDto('userId1', 'uid1', "Shelter1", 3, AssessmentStatus.PENDING, "헬로우 월드 123-123", "010-1234-1233", "www.shelter1.com", 'profileImage'),
+                        new ShelterPageResponseDto('userId2', 'uid2', "Shelter2", 2, AssessmentStatus.COMPLETED, "헬로우 월드 123-122", "010-1234-1232", "www.shelter2.com", 'profileImage'),
+                        new ShelterPageResponseDto('userId3', 'uid3', "Shelter3", 1, AssessmentStatus.DECLINED, "헬로우 월드 123-121", "010-1234-1231", "www.shelter3.com", 'profileImage')
                 ),
                 PageRequest.of(0, 5),
                 3
@@ -207,6 +208,7 @@ class UserServiceSpec extends Specification {
         result.getTotalElements() == 3
         result.getContent().get(0).profileImage == 'profileImage'
         result.getContent().get(0).getUserId() == 'userId1'
+        result.getContent().get(0).getUid() == 'uid1'
         result.getContent().get(0).getShelterName() == 'Shelter1'
         result.getContent().get(0).getAssessmentStatus() == AssessmentStatus.PENDING
         result.getContent().get(0).getShelterAddress() == '헬로우 월드 123-123'

@@ -24,6 +24,7 @@ public class UserListResponseDto {
 
     // 공통
     private LoginMethod loginMethod;
+    private String userId;
     private String uid;
     private String email;
     private String profileImage;
