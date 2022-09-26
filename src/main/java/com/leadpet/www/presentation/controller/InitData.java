@@ -149,13 +149,24 @@ public class InitData {
         @Transactional
         public void init() {
             List<Users> allUsers = em.createQuery("select u from Users u").getResultList();
+            List<String> titles = List.of("Love Dive", "Hype boy", "After Like", "우린 그렇게 사랑해서", "밤편지", "그때 그 순간 그대로", "Ink");
+            List<String> content = List.of("Woo yeah It's so bad It's good 난 그 맘을 좀 봐야겠어 Narcissistic, my god I love it 서로를 비춘 밤 아름다운 까만 눈빛 더 빠져 깊이 넌 내게로 난 네게로 숨 참고 love dive",
+                    "Hype boy 너만 원해 Hype boy 내가 전해 And we can go high 말해봐 yeah 느껴봐 mm mm Take him to the sky You know I hype you boy",
+                    "또 모르지 내 마음이 저 날씨처럼 바뀔지 날 나조차 다 알 수 없으니 그게 뭐가 중요하니 지금 네게 완전히 푹 빠졌단 게 중요한 거지 아마 꿈만 같겠지만 분명 꿈이 아니야 달리 설명할 수 없는 이건 사랑일 거야 방금 내가 말한 감정 감히 의심하지 마 그냥 좋다는 게 아냐 What's after 'LIKE'?",
+                    "밤하늘, 손을 잡으면 기분이 좋다며 옅은 웃음 띠며 나에게 말하다 너는 슬픈 노래를 불렀는데 그게 우리 둘의 주제곡 같았어 하루는 순진한 눈으로 나를 바라보며 매일 두 손 모아 하늘에 빈다고 우리 둘의 시간이 영원하길 그게 참 아팠는데 그립기도 하더라",
+                    "이 밤 그날의 반딧불을 당신의 창 가까이 보낼게요 음 사랑한다는 말이에요 나 우리의 첫 입맞춤을 떠올려 그럼 언제든 눈을 감고 음 가장 먼 곳으로 가요 난 파도가 머물던 모래 위에 적힌 글씨처럼 그대가 멀리 사라져 버릴 것 같아",
+                    "잘 지냈지? 조금은 어색해 요즘 좋아 보여 인사 나누며 사실 궁금한 게 너무 많았는데 반가움에 멍해졌죠 생각보다 오래 된 것 같은 우리 수다스럽던 그때가 생각나 뭐가 그렇게도 할 말이 많아서 밤을 지새우곤 했죠 그리운 목소리 그리던 얼굴 참 많이도 기다렸어 다시 만나자는 너의 한마디에 울컥 눈물이 나 결국 너였단 걸 알아",
+                    "Got a tattoo said \"together thru life\" Carved in your name with my pocket knife And you wonder when you wake up Will it be alright? Oh, oh, oh, oh, oh Feels like there's something broken inside");
             for (Users user : allUsers) {
                 for (int i = 0; i < 3; i++) {
+                    int num = (int) (Math.random() * 7);
+                    final String title = titles.get(num) + i;
+                    final String contents = content.get(num) + i;
                     em.persist(
                             NormalPosts.builder()
                                     .normalPostId("NP_" + user.getUserId() + i)
-                                    .title("title" + user.getUserId() + i)
-                                    .contents("contents" + user.getUserId() + i)
+                                    .title(title)
+                                    .contents(contents)
                                     .user(user)
                                     .build());
 
@@ -166,8 +177,8 @@ public class InitData {
                         em.persist(
                                 DonationPosts.builder()
                                         .donationPostId("DP_" + user.getUserId() + i)
-                                        .title("title" + user.getUserId() + i)
-                                        .contents("contents" + user.getUserId() + i)
+                                        .title(title)
+                                        .contents(contents)
                                         .startDate(LocalDateTime.now().minusDays(1))
                                         .endDate(LocalDateTime.now().plusDays((int) (Math.random() * 10)))
                                         .donationMethod(DonationMethod.values()[i])
@@ -176,8 +187,8 @@ public class InitData {
                         em.persist(
                                 AdoptionPosts.builder()
                                         .adoptionPostId("AP_" + user.getUserId() + i)
-                                        .title("title" + user.getUserId() + i)
-                                        .contents("contents" + user.getUserId() + i)
+                                        .title(title)
+                                        .contents(contents)
                                         .age(i + 1)
                                         .user(user)
                                         .build());

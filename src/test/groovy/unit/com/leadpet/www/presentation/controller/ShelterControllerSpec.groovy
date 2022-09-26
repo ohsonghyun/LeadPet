@@ -81,7 +81,6 @@ class ShelterControllerSpec extends Specification {
                                 .shelterIntro(shelterIntro)
                                 .shelterAccount(shelterAccount)
                                 .build())
-        
 
         expect:
         mvc.perform(get(SHELTER_URL + '/' + userId)
