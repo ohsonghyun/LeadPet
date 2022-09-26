@@ -166,6 +166,7 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
                         Projections.constructor(
                                 UserListResponseDto.class,
                                 users.loginMethod,
+                                users.userId,
                                 users.uid,
                                 users.email,
                                 users.profileImage,
