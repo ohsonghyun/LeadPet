@@ -28,4 +28,34 @@ public class ShelterInfo {
     @Column(name = "shelter_assessment_status")
     @Enumerated(value = EnumType.STRING)
     private AssessmentStatus shelterAssessmentStatus;
+
+
+    /**
+     * 보호소 관련 정보 수정
+     *
+     * @param newShelterName        {@code String}
+     * @param newShelterAddress     {@code String}
+     * @param newShelterPhoneNumber {@code String}
+     * @param newShelterManager     {@code String}
+     * @param newShelterHomePage    {@code String}
+     * @param newShelterIntro       {@code String}
+     * @param newShelterAccount     {@code String}
+     */
+    public void update(
+            final String newShelterName,
+            final String newShelterAddress,
+            final String newShelterPhoneNumber,
+            final String newShelterManager,
+            final String newShelterHomePage,
+            final String newShelterIntro,
+            final String newShelterAccount
+    ) {
+        shelterName = newShelterName;
+        shelterAddress = newShelterAddress;
+        shelterPhoneNumber = newShelterPhoneNumber;
+        shelterManager = newShelterManager;
+        shelterHomePage = newShelterHomePage;
+        shelterIntro = newShelterIntro;
+        shelterAccount = newShelterAccount;
+    }
 }
