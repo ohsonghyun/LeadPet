@@ -35,15 +35,15 @@ public class ShelterDetailDto {
     public static ShelterDetailDto from(final Users shelter) {
         return ShelterDetailDto.builder()
                 .userId(shelter.getUserId())
-                .shelterName(shelter.getShelterName())
-                .assessmentStatus(shelter.getShelterAssessmentStatus())
-                .shelterAddress(shelter.getShelterAddress())
-                .shelterPhoneNumber(shelter.getShelterPhoneNumber())
-                .shelterHomepage(shelter.getShelterHomePage())
-                .shelterManager(shelter.getShelterManager())
+                .shelterName(shelter.getShelterInfo().getShelterName())
+                .assessmentStatus(shelter.getShelterInfo().getShelterAssessmentStatus())
+                .shelterAddress(shelter.getShelterInfo().getShelterAddress())
+                .shelterPhoneNumber(shelter.getShelterInfo().getShelterPhoneNumber())
+                .shelterHomepage(shelter.getShelterInfo().getShelterHomePage())
+                .shelterManager(shelter.getShelterInfo().getShelterManager())
                 .profileImage(shelter.getProfileImage())
-                .shelterIntro(shelter.getShelterIntro())
-                .shelterAccount(shelter.getShelterAccount())
+                .shelterIntro(shelter.getShelterInfo().getShelterIntro())
+                .shelterAccount(shelter.getShelterInfo().getShelterAccount())
                 .build();
 
     }

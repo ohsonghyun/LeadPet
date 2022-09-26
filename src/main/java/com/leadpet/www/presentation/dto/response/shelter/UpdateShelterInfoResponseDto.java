@@ -32,13 +32,13 @@ public class UpdateShelterInfoResponseDto {
     public static UpdateShelterInfoResponseDto from(final Users shelter) {
         return UpdateShelterInfoResponseDto.builder()
                 .userId(shelter.getUserId())
-                .shelterName(shelter.getShelterName())
-                .shelterAddress(shelter.getShelterAddress())
-                .shelterPhoneNumber(shelter.getShelterPhoneNumber())
-                .shelterHomepage(shelter.getShelterHomePage())
-                .shelterManager(shelter.getShelterManager())
-                .shelterIntro(shelter.getShelterIntro())
-                .shelterAccount(shelter.getShelterAccount())
+                .shelterName(shelter.getShelterInfo().getShelterName())
+                .shelterAddress(shelter.getShelterInfo().getShelterAddress())
+                .shelterPhoneNumber(shelter.getShelterInfo().getShelterPhoneNumber())
+                .shelterHomepage(shelter.getShelterInfo().getShelterHomePage())
+                .shelterManager(shelter.getShelterInfo().getShelterManager())
+                .shelterIntro(shelter.getShelterInfo().getShelterIntro())
+                .shelterAccount(shelter.getShelterInfo().getShelterAccount())
                 .build();
     }
 }

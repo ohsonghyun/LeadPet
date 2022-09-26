@@ -52,13 +52,13 @@ class UserServiceSpec extends Specification {
         savedUser.getProfileImage() == profileImage
         savedUser.getName() == name
         savedUser.getUserType() == userType
-        savedUser.getShelterName() == shelterName
-        savedUser.getShelterAddress() == shelterAddress
-        savedUser.getShelterPhoneNumber() == shelterPhoneNumber
-        savedUser.getShelterManager() == shelterManager
-        savedUser.getShelterHomePage() == shelterHomePage
-        savedUser.getShelterIntro() == shelterIntro
-        savedUser.getShelterAccount() == shelterAccount
+        savedUser.getShelterInfo().getShelterName() == shelterName
+        savedUser.getShelterInfo().getShelterAddress() == shelterAddress
+        savedUser.getShelterInfo().getShelterPhoneNumber() == shelterPhoneNumber
+        savedUser.getShelterInfo().getShelterManager() == shelterManager
+        savedUser.getShelterInfo().getShelterHomePage() == shelterHomePage
+        savedUser.getShelterInfo().getShelterIntro() == shelterIntro
+        savedUser.getShelterInfo().getShelterAccount() == shelterAccount
 
         where:
         testCase     | loginMethod        | userId   | uid   | email             | password   | profileImage | name     | userType         | shelterName  | shelterAddress | shelterPhoneNumber | shelterManager | shelterHomePage  | shelterAccount   | shelterIntro
@@ -169,11 +169,11 @@ class UserServiceSpec extends Specification {
         }
 
         where:
-        loginMethod          | userId     | uid    | email            | profileImage    | name    | userType         | shelterName | shelterAddress      | shelterPhoneNumber | shelterManager | shelterHomePage
-        LoginMethod.KAKAO    | 'userId1'  | 'uid1' | null             | 'profileImage1' | 'name1' | UserType.NORMAL  | null        | null                | null               | null           |  null
-        LoginMethod.GOOGLE   | 'userId2'  | 'uid2' | null             | 'profileImage2' | 'name2' | UserType.NORMAL  | null        | null                | null               | null           |  null
-        LoginMethod.EMAIL    | 'userId3'  | 'uid3' | 'user@email.com' | 'profileImage3' | 'name3' | UserType.NORMAL  | null        | null                | null               | null           |  null
-        LoginMethod.KAKAO    | 'userId4'  | 'uid4' | null             | 'profileImage4' | null    | UserType.SHELTER | 'shelter'   | '헬로우 월드 123-123' | '010-1234-1234'    | 'manager'      |  'www.shelter.com'
+        loginMethod        | userId    | uid    | email            | profileImage    | name    | userType         | shelterName | shelterAddress   | shelterPhoneNumber | shelterManager | shelterHomePage
+        LoginMethod.KAKAO  | 'userId1' | 'uid1' | null             | 'profileImage1' | 'name1' | UserType.NORMAL  | null        | null             | null               | null           | null
+        LoginMethod.GOOGLE | 'userId2' | 'uid2' | null             | 'profileImage2' | 'name2' | UserType.NORMAL  | null        | null             | null               | null           | null
+        LoginMethod.EMAIL  | 'userId3' | 'uid3' | 'user@email.com' | 'profileImage3' | 'name3' | UserType.NORMAL  | null        | null             | null               | null           | null
+        LoginMethod.KAKAO  | 'userId4' | 'uid4' | null             | 'profileImage4' | null    | UserType.SHELTER | 'shelter'   | '헬로우 월드 123-123' | '010-1234-1234'    | 'manager'      | 'www.shelter.com'
     }
 
     def "유저 리스트 취득한 데이터가 없는 경우"() {
@@ -225,11 +225,15 @@ class UserServiceSpec extends Specification {
                         .uid(uid)
                         .name(name)
                         .userType(userType)
-                        .shelterName(shelterName)
-                        .shelterAddress(shelterAddress)
-                        .shelterAssessmentStatus(shelterAssessmentStatus)
-                        .shelterIntro(shelterIntro)
-                        .shelterAccount(shelterAccount)
+                        .shelterInfo(
+                                ShelterInfo.builder()
+                                        .shelterName(shelterName)
+                                        .shelterAddress(shelterAddress)
+                                        .shelterAssessmentStatus(shelterAssessmentStatus)
+                                        .shelterIntro(shelterIntro)
+                                        .shelterAccount(shelterAccount)
+                                        .build()
+                        )
                         .build()
 
         when:
@@ -242,11 +246,11 @@ class UserServiceSpec extends Specification {
         shelter.getUid() == uid
         shelter.getName() == name
         shelter.getUserType() == userType
-        shelter.getShelterName() == shelterName
-        shelter.getShelterAddress() == shelterAddress
-        shelter.getShelterAssessmentStatus() == shelterAssessmentStatus
-        shelter.getShelterIntro() == shelterIntro
-        shelter.getShelterAccount() == shelterAccount
+        shelter.getShelterInfo().getShelterName() == shelterName
+        shelter.getShelterInfo().getShelterAddress() == shelterAddress
+        shelter.getShelterInfo().getShelterAssessmentStatus() == shelterAssessmentStatus
+        shelter.getShelterInfo().getShelterIntro() == shelterIntro
+        shelter.getShelterInfo().getShelterAccount() == shelterAccount
 
         where:
         userId   | loginMethod       | uid   | name   | userType         | shelterName | shelterAddress                 | shelterIntro   | shelterAccount   | shelterAssessmentStatus
@@ -338,13 +342,17 @@ class UserServiceSpec extends Specification {
                 .name('name')
                 .userId(userId)
                 .userType(UserType.SHELTER)
-                .shelterName('newShelterName')
-                .shelterAddress('shelterAddress')
-                .shelterManager('shelterManager')
-                .shelterHomePage('shelterHomePage')
-                .shelterPhoneNumber('01012341234')
-                .shelterIntro('shelterIntro')
-                .shelterAccount('shelterAccount')
+                .shelterInfo(
+                        ShelterInfo.builder()
+                                .shelterName('newShelterName')
+                                .shelterAddress('shelterAddress')
+                                .shelterManager('shelterManager')
+                                .shelterHomePage('shelterHomePage')
+                                .shelterPhoneNumber('01012341234')
+                                .shelterIntro('shelterIntro')
+                                .shelterAccount('shelterAccount')
+                                .build()
+                )
                 .build()
 
         def newShelterInfo = ShelterInfo.builder()
@@ -361,13 +369,13 @@ class UserServiceSpec extends Specification {
         Users updatedShelter = userService.updateShetlerInfo(userId, newShelterInfo)
 
         then:
-        updatedShelter.getShelterName() == newShelterName
-        updatedShelter.getShelterAddress() == newShelterAddress
-        updatedShelter.getShelterPhoneNumber() == newShelterPhoneNumber
-        updatedShelter.getShelterIntro() == newShelterIntro
-        updatedShelter.getShelterAccount() == newShelterAccount
-        updatedShelter.getShelterManager() == newShelterManager
-        updatedShelter.getShelterHomePage() == newShelterHomePage
+        updatedShelter.getShelterInfo().getShelterName() == newShelterName
+        updatedShelter.getShelterInfo().getShelterAddress() == newShelterAddress
+        updatedShelter.getShelterInfo().getShelterPhoneNumber() == newShelterPhoneNumber
+        updatedShelter.getShelterInfo().getShelterIntro() == newShelterIntro
+        updatedShelter.getShelterInfo().getShelterAccount() == newShelterAccount
+        updatedShelter.getShelterInfo().getShelterManager() == newShelterManager
+        updatedShelter.getShelterInfo().getShelterHomePage() == newShelterHomePage
 
         where:
         userId   | newShelterName   | newShelterAddress   | newShelterPhoneNumber | newShelterIntro   | newShelterAccount   | newShelterManager   | newShelterHomePage
@@ -431,13 +439,17 @@ class UserServiceSpec extends Specification {
                 .profileImage(profileImage)
                 .name(name)
                 .userType(userType)
-                .shelterName(shelterName)
-                .shelterAddress(shelterAddress)
-                .shelterPhoneNumber(shelterPhoneNumber)
-                .shelterManager(shelterManager)
-                .shelterHomePage(shelterHomePage)
-                .shelterAccount(shelterAccount)
-                .shelterIntro(shelterIntro)
+                .shelterInfo(
+                        ShelterInfo.builder()
+                                .shelterName(shelterName)
+                                .shelterAddress(shelterAddress)
+                                .shelterPhoneNumber(shelterPhoneNumber)
+                                .shelterManager(shelterManager)
+                                .shelterHomePage(shelterHomePage)
+                                .shelterAccount(shelterAccount)
+                                .shelterIntro(shelterIntro)
+                                .build()
+                )
                 .build();
     }
 

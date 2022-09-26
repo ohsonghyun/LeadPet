@@ -77,12 +77,13 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
             shelterPageResponseDto.add(
                     ShelterPageResponseDto.builder()
                             .userId(shelter.getUserId())
-                            .shelterName(shelter.getShelterName())
+                            .uid(shelter.getUid())
+                            .shelterName(shelter.getShelterInfo().getShelterName())
                             .allFeedCount(normalPostCount + donationPostCount + adoptionPostCount)
-                            .assessmentStatus(shelter.getShelterAssessmentStatus())
-                            .shelterAddress(shelter.getShelterAddress())
-                            .shelterPhoneNumber(shelter.getShelterPhoneNumber())
-                            .shelterHomePage(shelter.getShelterHomePage())
+                            .assessmentStatus(shelter.getShelterInfo().getShelterAssessmentStatus())
+                            .shelterAddress(shelter.getShelterInfo().getShelterAddress())
+                            .shelterPhoneNumber(shelter.getShelterInfo().getShelterPhoneNumber())
+                            .shelterHomePage(shelter.getShelterInfo().getShelterHomePage())
                             .profileImage(shelter.getProfileImage())
                             .build()
             );
@@ -172,11 +173,11 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
                                 users.profileImage,
                                 users.name,
                                 users.userType,
-                                users.shelterName,
-                                users.shelterAddress,
-                                users.shelterPhoneNumber,
-                                users.shelterManager,
-                                users.shelterHomePage
+                                users.shelterInfo.shelterName,
+                                users.shelterInfo.shelterAddress,
+                                users.shelterInfo.shelterPhoneNumber,
+                                users.shelterInfo.shelterManager,
+                                users.shelterInfo.shelterHomePage
                         )
                 )
                 .from(users)
@@ -200,7 +201,7 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
      */
     @Nullable
     private BooleanExpression containsCityName(final String cityName) {
-        return StringUtils.isBlank(cityName) ? null : users.shelterAddress.contains(cityName);
+        return StringUtils.isBlank(cityName) ? null : users.shelterInfo.shelterAddress.contains(cityName);
     }
 
     /**
@@ -211,7 +212,7 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
      */
     @Nullable
     private BooleanExpression containsShelterName(final String shelterName) {
-        return StringUtils.isBlank(shelterName) ? null : users.shelterName.contains(shelterName);
+        return StringUtils.isBlank(shelterName) ? null : users.shelterInfo.shelterName.contains(shelterName);
     }
 
     /**
@@ -252,6 +253,6 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
      */
     @Nullable
     private BooleanExpression eqAssessmentStatus(final AssessmentStatus assessmentStatus) {
-        return assessmentStatus == null ? null : users.shelterAssessmentStatus.eq(assessmentStatus);
+        return assessmentStatus == null ? null : users.shelterInfo.shelterAssessmentStatus.eq(assessmentStatus);
     }
 }

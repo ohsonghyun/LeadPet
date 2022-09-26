@@ -59,11 +59,15 @@ class UserControllerSpec extends Specification {
                                 .name(userName)
                                 .loginMethod(loginMethod)
                                 .userType(userType)
-                                .shelterName(shelterName)
-                                .shelterPhoneNumber(shelterPhoneNumber)
-                                .shelterAddress(shelterAddress)
-                                .shelterIntro(shelterIntro)
-                                .shelterAccount(shelterAccount)
+                                .shelterInfo(
+                                        ShelterInfo.builder()
+                                                .shelterName(shelterName)
+                                                .shelterPhoneNumber(shelterPhoneNumber)
+                                                .shelterAddress(shelterAddress)
+                                                .shelterIntro(shelterIntro)
+                                                .shelterAccount(shelterAccount)
+                                                .build()
+                                )
                                 .build()
                 )
 
@@ -310,9 +314,9 @@ class UserControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.content[0].shelterHomePage').value(shelterHomePage))
 
         where:
-        testCase | paramValue | loginMethod         | userId    | uid     | email  | profileImage | name   | userType            | shelterName | shelterAddress      | shelterPhoneNumber | shelterManager | shelterHomePage
-        '일반유저' | 'normal'   | LoginMethod.KAKAO   | 'userId1' | 'uid1' | null   | 'profile1'    | 'name' | UserType.NORMAL    | null         | null                | null               | null           |  null
-        '보호소'  | 'shelter'  | LoginMethod.KAKAO    | 'userId2' | 'uid2' | null   | 'profile2'    | null   | UserType.SHELTER   | 'shelter'    | '헬로우 월드 123-123' | '010-1234-1234'    | 'manager'      |  'www.shelter.com'
+        testCase | paramValue | loginMethod       | userId    | uid    | email | profileImage | name   | userType         | shelterName | shelterAddress   | shelterPhoneNumber | shelterManager | shelterHomePage
+        '일반유저'   | 'normal'   | LoginMethod.KAKAO | 'userId1' | 'uid1' | null  | 'profile1'   | 'name' | UserType.NORMAL  | null        | null             | null               | null           | null
+        '보호소'    | 'shelter'  | LoginMethod.KAKAO | 'userId2' | 'uid2' | null  | 'profile2'   | null   | UserType.SHELTER | 'shelter'   | '헬로우 월드 123-123' | '010-1234-1234'    | 'manager'      | 'www.shelter.com'
     }
 
     @Unroll

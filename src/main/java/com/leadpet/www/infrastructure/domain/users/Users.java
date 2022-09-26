@@ -43,20 +43,19 @@ public class Users extends BaseTime {
 
     // 보호소
     // TODO 여유 생기면 테스트와 함께 작성
-//    @Embedded
-//    private ShelterInfo shelterInfo;
-    private String shelterName;
-    private String shelterAddress;
-    private String shelterPhoneNumber;
-    private String shelterManager;
-    private String shelterHomePage;
-    private String shelterIntro;
-    private String shelterAccount;
+    @Embedded
+    private ShelterInfo shelterInfo;
 
-    // TODO 이거 내부적으로 설정하도록 해야함.
-    @Column(name = "shelter_assessment_status")
-    @Enumerated(value = EnumType.STRING)
-    private AssessmentStatus shelterAssessmentStatus;
+    /**
+     * 명시적으로 Getter 설정
+     * <p>ShelterInfo가 null인 경우에도 Empty Object 생성을 통해 NP를 막고 싶기 때문</p>
+     *
+     * @return {@code ShelterInfo}
+     */
+    @NonNull
+    public ShelterInfo getShelterInfo() {
+        return ObjectUtils.defaultIfNull(shelterInfo, new ShelterInfo());
+    }
 
     /**
      * UserId를 생성
@@ -100,13 +99,22 @@ public class Users extends BaseTime {
      * @return {@code Users} 수정된 보호소 정보
      */
     public Users updateShelter(final ShelterInfo newShelterInfo) {
-        shelterName = newShelterInfo.getShelterName();
-        shelterAddress = newShelterInfo.getShelterAddress();
-        shelterPhoneNumber = newShelterInfo.getShelterPhoneNumber();
-        shelterManager = newShelterInfo.getShelterManager();
-        shelterHomePage = newShelterInfo.getShelterHomePage();
-        shelterIntro = newShelterInfo.getShelterIntro();
-        shelterAccount = newShelterInfo.getShelterAccount();
+        this.shelterInfo.update(
+                newShelterInfo.getShelterName(),
+                newShelterInfo.getShelterAddress(),
+                newShelterInfo.getShelterPhoneNumber(),
+                newShelterInfo.getShelterManager(),
+                newShelterInfo.getShelterHomePage(),
+                newShelterInfo.getShelterIntro(),
+                newShelterInfo.getShelterAccount()
+        );
+//        shelterName = newShelterInfo.getShelterName();
+//        shelterAddress = newShelterInfo.getShelterAddress();
+//        shelterPhoneNumber = newShelterInfo.getShelterPhoneNumber();
+//        shelterManager = newShelterInfo.getShelterManager();
+//        shelterHomePage = newShelterInfo.getShelterHomePage();
+//        shelterIntro = newShelterInfo.getShelterIntro();
+//        shelterAccount = newShelterInfo.getShelterAccount();
         return this;
     }
 

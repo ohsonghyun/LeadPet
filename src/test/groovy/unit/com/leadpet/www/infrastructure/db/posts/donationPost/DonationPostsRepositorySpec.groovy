@@ -7,6 +7,7 @@ import com.leadpet.www.infrastructure.domain.donation.DonationMethod
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts
 import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
+import com.leadpet.www.infrastructure.domain.users.ShelterInfo
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import org.springframework.beans.factory.annotation.Autowired
@@ -136,9 +137,13 @@ class DonationPostsRepositorySpec extends Specification {
                             .uid("uid" + idx)
                             .name('name' + idx)
                             .userType(UserType.SHELTER)
-                            .shelterName("보호소" + idx)
-                            .shelterAddress("헬로우 월드 주소 어디서나 123-123")
-                            .shelterAssessmentStatus(AssessmentStatus.COMPLETED)
+                            .shelterInfo(
+                                    ShelterInfo.builder()
+                                            .shelterName("보호소" + idx)
+                                            .shelterAddress("헬로우 월드 주소 어디서나 123-123")
+                                            .shelterAssessmentStatus(AssessmentStatus.COMPLETED)
+                                            .build()
+                            )
                             .build()
             )
         })

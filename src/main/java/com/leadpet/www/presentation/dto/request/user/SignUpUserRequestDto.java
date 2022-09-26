@@ -2,6 +2,7 @@ package com.leadpet.www.presentation.dto.request.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.leadpet.www.infrastructure.domain.users.LoginMethod;
+import com.leadpet.www.infrastructure.domain.users.ShelterInfo;
 import com.leadpet.www.infrastructure.domain.users.UserType;
 import com.leadpet.www.infrastructure.domain.users.Users;
 import io.swagger.annotations.ApiModel;
@@ -67,13 +68,17 @@ public class SignUpUserRequestDto {
                 .profileImage(this.profileImage)
                 .name(this.name)
                 .userType(this.userType)
-                .shelterName(this.shelterName)
-                .shelterAddress(this.shelterAddress)
-                .shelterPhoneNumber(this.shelterPhoneNumber)
-                .shelterManager(this.shelterManager)
-                .shelterHomePage(this.shelterHomePage)
-                .shelterIntro(this.shelterIntro)
-                .shelterAccount(this.shelterAccount)
+                .shelterInfo(
+                        ShelterInfo.builder()
+                                .shelterName(this.shelterName)
+                                .shelterAddress(this.shelterAddress)
+                                .shelterPhoneNumber(this.shelterPhoneNumber)
+                                .shelterManager(this.shelterManager)
+                                .shelterHomePage(this.shelterHomePage)
+                                .shelterIntro(this.shelterIntro)
+                                .shelterAccount(this.shelterAccount)
+                                .build()
+                )
                 .build();
     }
 }

@@ -61,13 +61,17 @@ class UsersSpec extends Specification {
                         .userId(userId)
                         .userType(UserType.SHELTER)
                         .profileImage('profileImage')
-                        .shelterName('shelterName')
-                        .shelterAddress('shelterAddress')
-                        .shelterManager('shelterManager')
-                        .shelterHomePage('shelterHomePage')
-                        .shelterPhoneNumber('01012341234')
-                        .shelterIntro('shelterIntro')
-                        .shelterAccount('shelterAccount')
+                        .shelterInfo(
+                                ShelterInfo.builder()
+                                        .shelterName('shelterName')
+                                        .shelterAddress('shelterAddress')
+                                        .shelterManager('shelterManager')
+                                        .shelterHomePage('shelterHomePage')
+                                        .shelterPhoneNumber('01012341234')
+                                        .shelterIntro('shelterIntro')
+                                        .shelterAccount('shelterAccount')
+                                        .build()
+                        )
                         .build())
 
         def newShelterInfo = ShelterInfo.builder()
@@ -90,13 +94,13 @@ class UsersSpec extends Specification {
         then:
         def updatedShelter = usersRepository.findShelterByUserId(userId)
 
-        updatedShelter.getShelterName() == newShelterName
-        updatedShelter.getShelterAddress() == newShelterAddress
-        updatedShelter.getShelterPhoneNumber() == newShelterPhoneNumber
-        updatedShelter.getShelterIntro() == newShelterIntro
-        updatedShelter.getShelterAccount() == newShelterAccount
-        updatedShelter.getShelterManager() == newShelterManager
-        updatedShelter.getShelterHomePage() == newShelterHomePage
+        updatedShelter.getShelterInfo().getShelterName() == newShelterName
+        updatedShelter.getShelterInfo().getShelterAddress() == newShelterAddress
+        updatedShelter.getShelterInfo().getShelterPhoneNumber() == newShelterPhoneNumber
+        updatedShelter.getShelterInfo().getShelterIntro() == newShelterIntro
+        updatedShelter.getShelterInfo().getShelterAccount() == newShelterAccount
+        updatedShelter.getShelterInfo().getShelterManager() == newShelterManager
+        updatedShelter.getShelterInfo().getShelterHomePage() == newShelterHomePage
 
         where:
         uid   | userId   | newShelterName   | newShelterAddress   | newShelterPhoneNumber | newShelterIntro   | newShelterAccount   | newShelterManager   | newShelterHomePage
