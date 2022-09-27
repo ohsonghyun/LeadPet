@@ -7,6 +7,7 @@ import com.leadpet.www.infrastructure.domain.users.*;
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException;
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException;
 import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException;
+import com.leadpet.www.presentation.dto.request.shelter.UpdateShelterInfoRequestDto;
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto;
 import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto;
 import com.leadpet.www.presentation.dto.response.user.UserListResponseDto;
@@ -105,7 +106,7 @@ public class UserService {
     @NonNull
     public Page<UserListResponseDto> searchUsers(SearchUserCondition searchUserCondition, Pageable pageable) {
         Page<UserListResponseDto> usersPage = usersRepository.searchUsers(searchUserCondition, pageable);
-        if(usersPage.isEmpty()){
+        if (usersPage.isEmpty()) {
             log.error("[UserService] 존재하지 않는 유저");
             throw new NullPointerException("Error: 존재하지 않는 유저");
         }
@@ -149,20 +150,20 @@ public class UserService {
     /**
      * 보호소 정보 수정
      *
-     * @param newShelterInfo {@code ShelterInfo}
+     * @param updateShelterInfoRequestDto {@code UpdateShelterInfoRequestDto}
      * @return {@code Users} 수정된 유저 데이터
      */
     @Transactional
     public Users updateShetlerInfo(
             @NonNull final String userId,
-            @NonNull final ShelterInfo newShelterInfo
+            @NonNull final UpdateShelterInfoRequestDto updateShelterInfoRequestDto
     ) {
         Users targetShelter = usersRepository.findShelterByUserId(userId);
         if (Objects.isNull(targetShelter)) {
             log.error("[UserServier#updateShelterInfo] 존재하지 않는 유저ID: {}", userId);
             throw new UserNotFoundException("Error: 존재하지 않는 유저Id");
         }
-        return targetShelter.updateShelter(newShelterInfo);
+        return targetShelter.updateShelter(updateShelterInfoRequestDto);
     }
 
     /**

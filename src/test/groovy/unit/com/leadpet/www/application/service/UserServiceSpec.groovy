@@ -12,6 +12,7 @@ import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.infrastructure.exception.UnsatisfiedRequirementException
 import com.leadpet.www.infrastructure.exception.login.UserNotFoundException
 import com.leadpet.www.infrastructure.exception.signup.UserAlreadyExistsException
+import com.leadpet.www.presentation.dto.request.shelter.UpdateShelterInfoRequestDto
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto
 import com.leadpet.www.presentation.dto.response.user.UserDetailResponseDto
 import com.leadpet.www.presentation.dto.response.user.UserListResponseDto
@@ -342,6 +343,7 @@ class UserServiceSpec extends Specification {
                 .name('name')
                 .userId(userId)
                 .userType(UserType.SHELTER)
+                .profileImage('profileImage')
                 .shelterInfo(
                         ShelterInfo.builder()
                                 .shelterName('newShelterName')
@@ -355,7 +357,7 @@ class UserServiceSpec extends Specification {
                 )
                 .build()
 
-        def newShelterInfo = ShelterInfo.builder()
+        def updateShelterInfoRequestDto = UpdateShelterInfoRequestDto.builder()
                 .shelterName(newShelterName)
                 .shelterAddress(newShelterAddress)
                 .shelterPhoneNumber(newShelterPhoneNumber)
@@ -363,10 +365,11 @@ class UserServiceSpec extends Specification {
                 .shelterAccount(newShelterAccount)
                 .shelterManager(newShelterManager)
                 .shelterHomePage(newShelterHomePage)
+                .profileImage(newProfileImage)
                 .build()
 
         when:
-        Users updatedShelter = userService.updateShetlerInfo(userId, newShelterInfo)
+        Users updatedShelter = userService.updateShetlerInfo(userId, updateShelterInfoRequestDto)
 
         then:
         updatedShelter.getShelterInfo().getShelterName() == newShelterName
@@ -376,19 +379,20 @@ class UserServiceSpec extends Specification {
         updatedShelter.getShelterInfo().getShelterAccount() == newShelterAccount
         updatedShelter.getShelterInfo().getShelterManager() == newShelterManager
         updatedShelter.getShelterInfo().getShelterHomePage() == newShelterHomePage
+        updatedShelter.getProfileImage() == newProfileImage
 
         where:
-        userId   | newShelterName   | newShelterAddress   | newShelterPhoneNumber | newShelterIntro   | newShelterAccount   | newShelterManager   | newShelterHomePage
-        'userId' | 'newShelterName' | 'newShelterAddress' | '01056785678'         | 'newShelterIntro' | 'newShelterAccount' | 'newShelterManager' | 'newShelterHomePage'
+        userId   | newProfileImage   | newShelterName   | newShelterAddress   | newShelterPhoneNumber | newShelterIntro   | newShelterAccount   | newShelterManager   | newShelterHomePage
+        'userId' | 'newProfileImage' | 'newShelterName' | 'newShelterAddress' | '01056785678'         | 'newShelterIntro' | 'newShelterAccount' | 'newShelterManager' | 'newShelterHomePage'
     }
 
     @Unroll
     def "[보호소 정보 수정] 존재하지 않는 유저 에러"() {
         given:
-        def newShelterInfo = ShelterInfo.builder().build()
+        def updateShelterInfoRequestDto = UpdateShelterInfoRequestDto.builder().build()
 
         when:
-        userService.updateShetlerInfo('userId', newShelterInfo)
+        userService.updateShetlerInfo('userId', updateShelterInfoRequestDto)
 
         then:
         thrown(UserNotFoundException)

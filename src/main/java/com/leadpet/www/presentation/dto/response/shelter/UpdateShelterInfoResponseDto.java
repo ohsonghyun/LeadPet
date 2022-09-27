@@ -21,6 +21,7 @@ public class UpdateShelterInfoResponseDto {
     private String shelterHomepage;
     private String shelterManager;
     private String shelterIntro;
+    private String profileImage;
 
 
     /**
@@ -39,6 +40,7 @@ public class UpdateShelterInfoResponseDto {
                 .shelterManager(shelter.getShelterInfo().getShelterManager())
                 .shelterIntro(shelter.getShelterInfo().getShelterIntro())
                 .shelterAccount(shelter.getShelterInfo().getShelterAccount())
+                .profileImage(shelter.getProfileImage())
                 .build();
     }
 }
