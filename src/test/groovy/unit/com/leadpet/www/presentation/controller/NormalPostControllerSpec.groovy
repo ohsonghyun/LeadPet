@@ -53,6 +53,7 @@ class NormalPostControllerSpec extends Specification {
                                                 .title(title)
                                                 .contents(contents)
                                                 .userId(userId)
+                                                .userName(userName)
                                                 .likedCount(likedCount)
                                                 .commentCount(commentCount)
                                                 .liked(liked)
@@ -71,13 +72,14 @@ class NormalPostControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.content[0].title').value(title))
                 .andExpect(jsonPath('\$.content[0].contents').value(contents))
                 .andExpect(jsonPath('\$.content[0].userId').value(userId))
+                .andExpect(jsonPath('\$.content[0].userName').value(userName))
                 .andExpect(jsonPath('\$.content[0].likedCount').value(likedCount))
                 .andExpect(jsonPath('\$.content[0].commentCount').value(commentCount))
                 .andExpect(jsonPath('\$.content[0].liked').value(liked))
 
         where:
-        postId   | title   | contents   | userId   | likedCount | commentCount | liked
-        'postId' | 'title' | 'contents' | 'userId' | 3L         | 3L           | true
+        postId   | title   | contents   | userId   | userName   | likedCount | commentCount | liked
+        'postId' | 'title' | 'contents' | 'userId' | 'userName' | 3L         | 3L           | true
     }
 
     def "[신규 일반 게시물 추가] Service로부터 받은 데이터를 DTO를 통해 반환한다"() {
@@ -298,19 +300,19 @@ class NormalPostControllerSpec extends Specification {
                 .loginMethod(LoginMethod.KAKAO)
                 .uid('dummyUid')
                 .name('dummyName')
-                .userId( 'uidkko')
+                .userId('uidkko')
                 .userType(UserType.NORMAL)
                 .build()
 
         when(normalPostService.selectNormalPost(isA(String.class)))
-            .thenReturn(NormalPosts.builder()
-                            .normalPostId(normalPostId)
-                            .title(title)
-                            .contents(contents)
-                            .images(images)
-                            .user(user)
-                            .build()
-            )
+                .thenReturn(NormalPosts.builder()
+                        .normalPostId(normalPostId)
+                        .title(title)
+                        .contents(contents)
+                        .images(images)
+                        .user(user)
+                        .build()
+                )
 
         expect:
         mvc.perform(get(NORMAL_POST_URL + '/' + normalPostId)
@@ -322,7 +324,7 @@ class NormalPostControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.images').value(images))
 
         where:
-        normalPostId   | title   | contents   | images
-        'NP_app00'     | 'title' | 'contents' | ['image1','image2']
+        normalPostId | title   | contents   | images
+        'NP_app00'   | 'title' | 'contents' | ['image1', 'image2']
     }
 }

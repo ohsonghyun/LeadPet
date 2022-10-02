@@ -43,7 +43,8 @@ public class NormalPostsRepositoryImpl implements NormalPostsRepositoryCustom {
                                 eqLikedUserIdWith(condition.getLikedUserId()).as("liked"),
                                 liked.postId.count().as("likedCount"),
                                 normalReply.normalPost.normalPostId.count().as("commentCount"),
-                                normalPosts.user.userId.as("userId")
+                                normalPosts.user.userId.as("userId"),
+                                normalPosts.user.name.as("userName")
                         )
                 )
                 .distinct()

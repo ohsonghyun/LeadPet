@@ -29,4 +29,5 @@ public class NormalPostResponse {
     private final Long commentCount;
 
     private final String userId;
+    private final String userName;
 }
