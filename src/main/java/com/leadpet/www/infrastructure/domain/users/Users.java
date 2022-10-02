@@ -1,6 +1,7 @@
 package com.leadpet.www.infrastructure.domain.users;
 
 import com.leadpet.www.infrastructure.domain.BaseTime;
+import com.leadpet.www.presentation.dto.request.shelter.UpdateShelterInfoRequestDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
@@ -95,26 +96,21 @@ public class Users extends BaseTime {
     /**
      * 보호소 정보 수정
      *
-     * @param newShelterInfo {@code ShelterInfo}
+     * @param updateShelterInfoRequestDto {@code UpdateShelterInfoRequestDto}
      * @return {@code Users} 수정된 보호소 정보
      */
-    public Users updateShelter(final ShelterInfo newShelterInfo) {
+    public Users updateShelter(final UpdateShelterInfoRequestDto updateShelterInfoRequestDto) {
         this.shelterInfo.update(
-                newShelterInfo.getShelterName(),
-                newShelterInfo.getShelterAddress(),
-                newShelterInfo.getShelterPhoneNumber(),
-                newShelterInfo.getShelterManager(),
-                newShelterInfo.getShelterHomePage(),
-                newShelterInfo.getShelterIntro(),
-                newShelterInfo.getShelterAccount()
+                updateShelterInfoRequestDto.getShelterName(),
+                updateShelterInfoRequestDto.getShelterAddress(),
+                updateShelterInfoRequestDto.getShelterPhoneNumber(),
+                updateShelterInfoRequestDto.getShelterManager(),
+                updateShelterInfoRequestDto.getShelterHomePage(),
+                updateShelterInfoRequestDto.getShelterIntro(),
+                updateShelterInfoRequestDto.getShelterAccount()
         );
-//        shelterName = newShelterInfo.getShelterName();
-//        shelterAddress = newShelterInfo.getShelterAddress();
-//        shelterPhoneNumber = newShelterInfo.getShelterPhoneNumber();
-//        shelterManager = newShelterInfo.getShelterManager();
-//        shelterHomePage = newShelterInfo.getShelterHomePage();
-//        shelterIntro = newShelterInfo.getShelterIntro();
-//        shelterAccount = newShelterInfo.getShelterAccount();
+        // 공통 필드
+        this.profileImage = updateShelterInfoRequestDto.getProfileImage();
         return this;
     }
 

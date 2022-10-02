@@ -124,7 +124,7 @@ class ShelterControllerSpec extends Specification {
 
     def "[보호소 정보 수정] 정상"() {
         given:
-        when(userService.updateShetlerInfo(isA(String.class), isA(ShelterInfo.class)))
+        when(userService.updateShetlerInfo(isA(String.class), isA(UpdateShelterInfoRequestDto.class)))
                 .thenReturn(
                         Users.builder()
                                 .loginMethod(LoginMethod.KAKAO)
@@ -144,6 +144,7 @@ class ShelterControllerSpec extends Specification {
                                                 .shelterAssessmentStatus(AssessmentStatus.COMPLETED)
                                                 .build()
                                 )
+                                .profileImage(profileImage)
                                 .build()
                 )
 
@@ -170,15 +171,16 @@ class ShelterControllerSpec extends Specification {
                 .andExpect(jsonPath('\$.shelterHomepage').value(shelterHomePage))
                 .andExpect(jsonPath('\$.shelterManager').value(shelterManager))
                 .andExpect(jsonPath('\$.shelterIntro').value(shelterIntro))
+                .andExpect(jsonPath('\$.profileImage').value(profileImage))
 
         where:
-        userId   | shelterName   | shelterAddress   | shelterPhoneNumber | shelterManager   | shelterHomePage   | shelterIntro   | shelterAccount
-        'userId' | 'shelterName' | 'shelterAddress' | '01012341234'      | 'shelterManager' | 'shelterHomePage' | 'shelterIntro' | 'shelterAccount'
+        userId   | profileImage   | shelterName   | shelterAddress   | shelterPhoneNumber | shelterManager   | shelterHomePage   | shelterIntro   | shelterAccount
+        'userId' | 'profileImage' | 'shelterName' | 'shelterAddress' | '01012341234'      | 'shelterManager' | 'shelterHomePage' | 'shelterIntro' | 'shelterAccount'
     }
 
     def "[보호소 정보 수정] 존재하지 않는 유저 에러"() {
         given:
-        when(userService.updateShetlerInfo(isA(String.class), isA(ShelterInfo.class)))
+        when(userService.updateShetlerInfo(isA(String.class), isA(UpdateShelterInfoRequestDto.class)))
                 .thenThrow(new UserNotFoundException(errorMessage))
 
         expect:

@@ -18,19 +18,5 @@ public class UpdateShelterInfoRequestDto {
     private String shelterHomePage;
     private String shelterIntro;
     private String shelterAccount;
-
-    /**
-     * {@code ShelterInfo} 객체로 변환
-     */
-    public ShelterInfo toShelterInfo() {
-        return ShelterInfo.builder()
-                .shelterName(shelterName)
-                .shelterAddress(shelterAddress)
-                .shelterPhoneNumber(shelterPhoneNumber)
-                .shelterManager(shelterManager)
-                .shelterHomePage(shelterHomePage)
-                .shelterIntro(shelterIntro)
-                .shelterAccount(shelterAccount)
-                .build();
-    }
+    private String profileImage;
 }

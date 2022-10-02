@@ -51,6 +51,6 @@ public class ShelterController {
     ) {
         return ResponseEntity.ok(
                 UpdateShelterInfoResponseDto.from(
-                        userService.updateShetlerInfo(userId, request.toShelterInfo())));
+                        userService.updateShetlerInfo(userId, request)));
     }
 }
