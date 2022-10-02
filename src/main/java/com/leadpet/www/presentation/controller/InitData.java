@@ -8,10 +8,7 @@ import com.leadpet.www.infrastructure.domain.posts.AdoptionPosts;
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts;
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts;
 import com.leadpet.www.infrastructure.domain.reply.normal.NormalReply;
-import com.leadpet.www.infrastructure.domain.users.AssessmentStatus;
-import com.leadpet.www.infrastructure.domain.users.LoginMethod;
-import com.leadpet.www.infrastructure.domain.users.UserType;
-import com.leadpet.www.infrastructure.domain.users.Users;
+import com.leadpet.www.infrastructure.domain.users.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -108,13 +105,17 @@ public class InitData {
                                 .uid("uid" + idx)
                                 .name(name)
                                 .userType(UserType.SHELTER)
-                                .shelterName(name + " 보호소")
-                                .shelterAddress(city + " 헬로우 월드 주소 어디서나 123-123")
-                                .shelterPhoneNumber("01012341234")
-                                .shelterHomePage("https://helloworld.com")
-                                .shelterIntro("shelterIntro" + idx)
                                 .profileImage("profileImage" + idx)
-                                .shelterAssessmentStatus(idx % 2 == 0 ? AssessmentStatus.COMPLETED : idx % 3 == 0 ? AssessmentStatus.DECLINED : AssessmentStatus.PENDING)
+                                .shelterInfo(
+                                        ShelterInfo.builder()
+                                                .shelterName(name + " 보호소")
+                                                .shelterAddress(city + " 헬로우 월드 주소 어디서나 123-123")
+                                                .shelterPhoneNumber("01012341234")
+                                                .shelterHomePage("https://helloworld.com")
+                                                .shelterIntro("shelterIntro" + idx)
+                                                .shelterAssessmentStatus(idx % 2 == 0 ? AssessmentStatus.COMPLETED : idx % 3 == 0 ? AssessmentStatus.DECLINED : AssessmentStatus.PENDING)
+                                                .build()
+                                )
                                 .build());
             });
         }

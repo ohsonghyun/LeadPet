@@ -1,6 +1,7 @@
 package com.leadpet.www.infrastructure.domain.users;
 
 import com.leadpet.www.infrastructure.domain.BaseTime;
+import com.leadpet.www.presentation.dto.request.shelter.UpdateShelterInfoRequestDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
@@ -43,20 +44,19 @@ public class Users extends BaseTime {
 
     // 보호소
     // TODO 여유 생기면 테스트와 함께 작성
-//    @Embedded
-//    private ShelterInfo shelterInfo;
-    private String shelterName;
-    private String shelterAddress;
-    private String shelterPhoneNumber;
-    private String shelterManager;
-    private String shelterHomePage;
-    private String shelterIntro;
-    private String shelterAccount;
+    @Embedded
+    private ShelterInfo shelterInfo;
 
-    // TODO 이거 내부적으로 설정하도록 해야함.
-    @Column(name = "shelter_assessment_status")
-    @Enumerated(value = EnumType.STRING)
-    private AssessmentStatus shelterAssessmentStatus;
+    /**
+     * 명시적으로 Getter 설정
+     * <p>ShelterInfo가 null인 경우에도 Empty Object 생성을 통해 NP를 막고 싶기 때문</p>
+     *
+     * @return {@code ShelterInfo}
+     */
+    @NonNull
+    public ShelterInfo getShelterInfo() {
+        return ObjectUtils.defaultIfNull(shelterInfo, new ShelterInfo());
+    }
 
     /**
      * UserId를 생성
@@ -96,17 +96,21 @@ public class Users extends BaseTime {
     /**
      * 보호소 정보 수정
      *
-     * @param newShelterInfo {@code ShelterInfo}
+     * @param updateShelterInfoRequestDto {@code UpdateShelterInfoRequestDto}
      * @return {@code Users} 수정된 보호소 정보
      */
-    public Users updateShelter(final ShelterInfo newShelterInfo) {
-        shelterName = newShelterInfo.getShelterName();
-        shelterAddress = newShelterInfo.getShelterAddress();
-        shelterPhoneNumber = newShelterInfo.getShelterPhoneNumber();
-        shelterManager = newShelterInfo.getShelterManager();
-        shelterHomePage = newShelterInfo.getShelterHomePage();
-        shelterIntro = newShelterInfo.getShelterIntro();
-        shelterAccount = newShelterInfo.getShelterAccount();
+    public Users updateShelter(final UpdateShelterInfoRequestDto updateShelterInfoRequestDto) {
+        this.shelterInfo.update(
+                updateShelterInfoRequestDto.getShelterName(),
+                updateShelterInfoRequestDto.getShelterAddress(),
+                updateShelterInfoRequestDto.getShelterPhoneNumber(),
+                updateShelterInfoRequestDto.getShelterManager(),
+                updateShelterInfoRequestDto.getShelterHomePage(),
+                updateShelterInfoRequestDto.getShelterIntro(),
+                updateShelterInfoRequestDto.getShelterAccount()
+        );
+        // 공통 필드
+        this.profileImage = updateShelterInfoRequestDto.getProfileImage();
         return this;
     }
 

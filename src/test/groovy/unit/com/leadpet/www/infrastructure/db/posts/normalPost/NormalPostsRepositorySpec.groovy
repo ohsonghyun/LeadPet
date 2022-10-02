@@ -8,6 +8,7 @@ import com.leadpet.www.infrastructure.domain.liked.Liked
 import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
+import com.leadpet.www.infrastructure.domain.users.ShelterInfo
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.presentation.dto.request.post.normal.SelectNormalPostRequestDto
@@ -54,9 +55,13 @@ class NormalPostsRepositorySpec extends Specification {
                             .uid("uid" + idx)
                             .name('name' + idx)
                             .userType(UserType.SHELTER)
-                            .shelterName("보호소" + idx)
-                            .shelterAddress("헬로우 월드 주소 어디서나 123-123")
-                            .shelterAssessmentStatus(AssessmentStatus.COMPLETED)
+                            .shelterInfo(
+                                    ShelterInfo.builder()
+                                            .shelterName("보호소" + idx)
+                                            .shelterAddress("헬로우 월드 주소 어디서나 123-123")
+                                            .shelterAssessmentStatus(AssessmentStatus.COMPLETED)
+                                            .build()
+                            )
                             .build()
             )
         })
@@ -212,7 +217,7 @@ class NormalPostsRepositorySpec extends Specification {
 
         where:
         normalPostId   | title   | contents   | images
-        'normalPostId' | 'title' | 'contents' | ['image1','image2']
+        'normalPostId' | 'title' | 'contents' | ['image1', 'image2']
     }
 
     def "일반 게시물 상세조회: 데이터가 없는 경우"() {

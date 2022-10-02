@@ -11,6 +11,7 @@ import com.leadpet.www.infrastructure.domain.posts.NormalPosts
 import com.leadpet.www.infrastructure.domain.reply.normal.NormalReply
 import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
 import com.leadpet.www.infrastructure.domain.users.LoginMethod
+import com.leadpet.www.infrastructure.domain.users.ShelterInfo
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
 import com.leadpet.www.presentation.dto.response.user.ShelterPageResponseDto
@@ -61,11 +62,15 @@ class UserRepositorySpec extends Specification {
                             .uid("uid" + idx)
                             .name(name)
                             .userType(UserType.SHELTER)
-                            .shelterName(name + " 보호소")
-                            .shelterAddress(city + " 헬로우 월드 주소 어디서나 123-123")
-                            .shelterAssessmentStatus(assessmentStatus)
-                            .shelterHomePage("www." + name + ".com")
-                            .shelterPhoneNumber("010-" + idx + "12-1234")
+                            .shelterInfo(
+                                    ShelterInfo.builder()
+                                            .shelterName(name + " 보호소")
+                                            .shelterAddress(city + " 헬로우 월드 주소 어디서나 123-123")
+                                            .shelterAssessmentStatus(assessmentStatus)
+                                            .shelterHomePage("www." + name + ".com")
+                                            .shelterPhoneNumber("010-" + idx + "12-1234")
+                                            .build()
+                            )
                             .profileImage(profileImage)
                             .build())
 
@@ -148,32 +153,36 @@ class UserRepositorySpec extends Specification {
         // 유저 추가
         IntStream.range(0, 20).forEach(idx -> {
             idx % 2 == 0 ?
-            usersRepository.save(
-                    Users.builder()
-                            .userId("app" + idx)
-                            .loginMethod(LoginMethod.APPLE)
-                            .uid("uid" + idx)
-                            .name('name' + idx)
-                            .profileImage('profileImage' + idx)
-                            .userType(UserType.SHELTER)
-                            .shelterName("보호소" + idx)
-                            .shelterAddress("헬로우 월드 주소 어디서나 123-123")
-                            .shelterPhoneNumber('010-12' + idx + '-1234')
-                            .shelterManager('manager')
-                            .shelterHomePage('www.shelter' + idx + '.com')
-                            .build()
-            )
-            :
-            usersRepository.save(
-                    Users.builder()
-                            .userId("app" + idx)
-                            .loginMethod(LoginMethod.APPLE)
-                            .uid("uid" + idx)
-                            .name('name' + idx)
-                            .profileImage('profileImage' + idx)
-                            .userType(UserType.NORMAL)
-                            .build()
-            )
+                    usersRepository.save(
+                            Users.builder()
+                                    .userId("app" + idx)
+                                    .loginMethod(LoginMethod.APPLE)
+                                    .uid("uid" + idx)
+                                    .name('name' + idx)
+                                    .profileImage('profileImage' + idx)
+                                    .userType(UserType.SHELTER)
+                                    .shelterInfo(
+                                            ShelterInfo.builder()
+                                                    .shelterName("보호소" + idx)
+                                                    .shelterAddress("헬로우 월드 주소 어디서나 123-123")
+                                                    .shelterPhoneNumber('010-12' + idx + '-1234')
+                                                    .shelterManager('manager')
+                                                    .shelterHomePage('www.shelter' + idx + '.com')
+                                                    .build()
+                                    )
+                                    .build()
+                    )
+                    :
+                    usersRepository.save(
+                            Users.builder()
+                                    .userId("app" + idx)
+                                    .loginMethod(LoginMethod.APPLE)
+                                    .uid("uid" + idx)
+                                    .name('name' + idx)
+                                    .profileImage('profileImage' + idx)
+                                    .userType(UserType.NORMAL)
+                                    .build()
+                    )
         })
         em.flush()
         em.clear()
@@ -195,10 +204,10 @@ class UserRepositorySpec extends Specification {
         result.getTotalPages() == totalPages
 
         where:
-        testName                 | userType         | totalElement | totalPages | size
-        '검색조건이 없는 경우'       | null             | 20           | 4          | 5
-        '일반 유저로 검색하는 경우'   | UserType.NORMAL  | 10           | 2          | 5
-        '보호소 유저로 검색하는 경우' | UserType.SHELTER  | 10           | 2          | 5
+        testName          | userType         | totalElement | totalPages | size
+        '검색조건이 없는 경우'     | null             | 20           | 4          | 5
+        '일반 유저로 검색하는 경우'  | UserType.NORMAL  | 10           | 2          | 5
+        '보호소 유저로 검색하는 경우' | UserType.SHELTER | 10           | 2          | 5
     }
 
     @Unroll("#testCase")
@@ -246,11 +255,15 @@ class UserRepositorySpec extends Specification {
                         .uid(uid)
                         .name(name)
                         .userType(userType)
-                        .shelterName(shelterName)
-                        .shelterAddress(shelterAddress)
-                        .shelterAssessmentStatus(shelterAssessmentStatus)
-                        .shelterIntro(shelterIntro)
-                        .shelterAccount(shelterAccount)
+                        .shelterInfo(
+                                ShelterInfo.builder()
+                                        .shelterName(shelterName)
+                                        .shelterAddress(shelterAddress)
+                                        .shelterAssessmentStatus(shelterAssessmentStatus)
+                                        .shelterIntro(shelterIntro)
+                                        .shelterAccount(shelterAccount)
+                                        .build()
+                        )
                         .build())
 
         em.flush()
@@ -266,11 +279,11 @@ class UserRepositorySpec extends Specification {
         shelter.getUid() == uid
         shelter.getName() == name
         shelter.getUserType() == userType
-        shelter.getShelterName() == shelterName
-        shelter.getShelterAddress() == shelterAddress
-        shelter.getShelterAssessmentStatus() == shelterAssessmentStatus
-        shelter.getShelterAccount() == shelterAccount
-        shelter.getShelterIntro() == shelterIntro
+        shelter.getShelterInfo().getShelterName() == shelterName
+        shelter.getShelterInfo().getShelterAddress() == shelterAddress
+        shelter.getShelterInfo().getShelterAssessmentStatus() == shelterAssessmentStatus
+        shelter.getShelterInfo().getShelterAccount() == shelterAccount
+        shelter.getShelterInfo().getShelterIntro() == shelterIntro
 
         where:
         userId   | loginMethod       | uid   | name   | userType         | shelterName | shelterAddress                 | shelterIntro   | shelterAccount   | shelterAssessmentStatus

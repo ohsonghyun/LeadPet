@@ -21,9 +21,9 @@ public enum UserType {
         @Override
         public boolean validateEssentialParam(final Users user) {
             return !StringUtils.isAnyBlank(
-                    user.getShelterName(),
-                    user.getShelterAddress(),
-                    user.getShelterPhoneNumber()
+                    user.getShelterInfo().getShelterName(),
+                    user.getShelterInfo().getShelterAddress(),
+                    user.getShelterInfo().getShelterPhoneNumber()
             );
         }
     },
@@ -34,7 +34,6 @@ public enum UserType {
         }
     },
     ;
-
 
 
     @JsonCreator

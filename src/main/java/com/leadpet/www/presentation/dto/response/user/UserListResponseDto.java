@@ -48,11 +48,11 @@ public class UserListResponseDto {
                                 .profileImage(user.getProfileImage())
                                 .name(user.getName())
                                 .userType(user.getUserType())
-                                .shelterName(user.getShelterName())
-                                .shelterAddress(user.getShelterAddress())
-                                .shelterPhoneNumber(user.getShelterPhoneNumber())
-                                .shelterManager(user.getShelterManager())
-                                .shelterHomePage(user.getShelterHomePage())
+                                .shelterName(user.getShelterInfo().getShelterName())
+                                .shelterAddress(user.getShelterInfo().getShelterAddress())
+                                .shelterPhoneNumber(user.getShelterInfo().getShelterPhoneNumber())
+                                .shelterManager(user.getShelterInfo().getShelterManager())
+                                .shelterHomePage(user.getShelterInfo().getShelterHomePage())
                                 .build())
                 .collect(Collectors.toList());
     }

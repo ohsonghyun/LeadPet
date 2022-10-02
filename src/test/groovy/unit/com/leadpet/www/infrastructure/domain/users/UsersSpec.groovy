@@ -2,6 +2,7 @@ package com.leadpet.www.infrastructure.domain.users
 
 import com.leadpet.www.TestConfig
 import com.leadpet.www.infrastructure.db.users.UsersRepository
+import com.leadpet.www.presentation.dto.request.shelter.UpdateShelterInfoRequestDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
@@ -60,16 +61,21 @@ class UsersSpec extends Specification {
                         .name('name')
                         .userId(userId)
                         .userType(UserType.SHELTER)
-                        .shelterName('newShelterName')
-                        .shelterAddress('shelterAddress')
-                        .shelterManager('shelterManager')
-                        .shelterHomePage('shelterHomePage')
-                        .shelterPhoneNumber('01012341234')
-                        .shelterIntro('shelterIntro')
-                        .shelterAccount('shelterAccount')
+                        .profileImage('profileImage')
+                        .shelterInfo(
+                                ShelterInfo.builder()
+                                        .shelterName('shelterName')
+                                        .shelterAddress('shelterAddress')
+                                        .shelterManager('shelterManager')
+                                        .shelterHomePage('shelterHomePage')
+                                        .shelterPhoneNumber('01012341234')
+                                        .shelterIntro('shelterIntro')
+                                        .shelterAccount('shelterAccount')
+                                        .build()
+                        )
                         .build())
 
-        def newShelterInfo = ShelterInfo.builder()
+        def newShelterInfo = UpdateShelterInfoRequestDto.builder()
                 .shelterName(newShelterName)
                 .shelterAddress(newShelterAddress)
                 .shelterPhoneNumber(newShelterPhoneNumber)
@@ -77,6 +83,7 @@ class UsersSpec extends Specification {
                 .shelterAccount(newShelterAccount)
                 .shelterManager(newShelterManager)
                 .shelterHomePage(newShelterHomePage)
+                .profileImage(newProfileImage)
                 .build()
 
         when:
@@ -89,17 +96,18 @@ class UsersSpec extends Specification {
         then:
         def updatedShelter = usersRepository.findShelterByUserId(userId)
 
-        updatedShelter.getShelterName() == newShelterName
-        updatedShelter.getShelterAddress() == newShelterAddress
-        updatedShelter.getShelterPhoneNumber() == newShelterPhoneNumber
-        updatedShelter.getShelterIntro() == newShelterIntro
-        updatedShelter.getShelterAccount() == newShelterAccount
-        updatedShelter.getShelterManager() == newShelterManager
-        updatedShelter.getShelterHomePage() == newShelterHomePage
+        updatedShelter.getShelterInfo().getShelterName() == newShelterName
+        updatedShelter.getShelterInfo().getShelterAddress() == newShelterAddress
+        updatedShelter.getShelterInfo().getShelterPhoneNumber() == newShelterPhoneNumber
+        updatedShelter.getShelterInfo().getShelterIntro() == newShelterIntro
+        updatedShelter.getShelterInfo().getShelterAccount() == newShelterAccount
+        updatedShelter.getShelterInfo().getShelterManager() == newShelterManager
+        updatedShelter.getShelterInfo().getShelterHomePage() == newShelterHomePage
+        updatedShelter.getProfileImage() == newProfileImage
 
         where:
-        uid   | userId   | newShelterName   | newShelterAddress   | newShelterPhoneNumber | newShelterIntro   | newShelterAccount   | newShelterManager   | newShelterHomePage
-        'uid' | 'userId' | 'newShelterName' | 'newShelterAddress' | '01056785678'         | 'newShelterIntro' | 'newShelterAccount' | 'newShelterManager' | 'newShelterHomePage'
+        uid   | userId   | newProfileImage   | newShelterName   | newShelterAddress   | newShelterPhoneNumber | newShelterIntro   | newShelterAccount   | newShelterManager   | newShelterHomePage
+        'uid' | 'userId' | 'newProfileImage' | 'newShelterName' | 'newShelterAddress' | '01056785678'         | 'newShelterIntro' | 'newShelterAccount' | 'newShelterManager' | 'newShelterHomePage'
     }
 
     def "일반유저 정보 수정"() {
