@@ -5,11 +5,8 @@ import com.leadpet.www.infrastructure.db.posts.donationPost.condition.SearchDona
 import com.leadpet.www.infrastructure.db.users.UsersRepository
 import com.leadpet.www.infrastructure.domain.donation.DonationMethod
 import com.leadpet.www.infrastructure.domain.posts.DonationPosts
-import com.leadpet.www.infrastructure.domain.users.AssessmentStatus
-import com.leadpet.www.infrastructure.domain.users.LoginMethod
-import com.leadpet.www.infrastructure.domain.users.ShelterInfo
-import com.leadpet.www.infrastructure.domain.users.UserType
-import com.leadpet.www.infrastructure.domain.users.Users
+import com.leadpet.www.infrastructure.domain.users.*
+import org.assertj.core.api.Assertions
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
@@ -69,8 +66,12 @@ class DonationPostsRepositorySpec extends Specification {
                 PageRequest.of(0, 5))
 
         then:
-        result.getContent().size() == 5
         result.getTotalElements() == expectedNumOfPosts
+
+        def it = Assertions.assertThat(result.getContent())
+        it.hasSize(5)
+        it.extractingResultOf('getTitle').containsExactly('title', 'title', 'title', 'title', 'title')
+        it.extractingResultOf('getUserName').containsAnyOf('name0', 'name1')
 
         where:
         testcase          | totalNumOfPosts | startDate           | endDate                | targetUserId | expectedNumOfPosts
