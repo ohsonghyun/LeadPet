@@ -30,4 +30,5 @@ public class AdoptionPostPageResponseDto {
     private final String disease;
     private final List<String> images;
     private final String userId;
+    private final String userName;
 }

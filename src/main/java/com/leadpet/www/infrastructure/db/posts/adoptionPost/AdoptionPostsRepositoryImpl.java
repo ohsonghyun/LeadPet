@@ -42,7 +42,8 @@ public class AdoptionPostsRepositoryImpl implements AdoptionPostRepositoryCustom
                                 adoptionPosts.age,
                                 adoptionPosts.disease,
                                 adoptionPosts.images,
-                                adoptionPosts.user.userId.as("userId")
+                                adoptionPosts.user.userId.as("userId"),
+                                adoptionPosts.user.name.as("userName")
                         ))
                 .from(adoptionPosts)
                 .where(eqUserIdWith(condition.getUserId()))
