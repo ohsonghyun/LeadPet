@@ -43,7 +43,8 @@ public class AdoptionPostsRepositoryImpl implements AdoptionPostRepositoryCustom
                                 adoptionPosts.disease,
                                 adoptionPosts.images,
                                 adoptionPosts.user.userId.as("userId"),
-                                adoptionPosts.user.name.as("userName")
+                                adoptionPosts.user.name.as("userName"),
+                                adoptionPosts.user.profileImage.as("profileImage")
                         ))
                 .from(adoptionPosts)
                 .where(eqUserIdWith(condition.getUserId()))

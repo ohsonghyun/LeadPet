@@ -44,7 +44,8 @@ public class NormalPostsRepositoryImpl implements NormalPostsRepositoryCustom {
                                 liked.postId.count().as("likedCount"),
                                 normalReply.normalPost.normalPostId.count().as("commentCount"),
                                 normalPosts.user.userId.as("userId"),
-                                normalPosts.user.name.as("userName")
+                                normalPosts.user.name.as("userName"),
+                                normalPosts.user.profileImage.as("profileImage")
                         )
                 )
                 .distinct()

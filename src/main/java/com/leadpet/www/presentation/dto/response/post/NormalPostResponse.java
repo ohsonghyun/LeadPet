@@ -30,4 +30,5 @@ public class NormalPostResponse {
 
     private final String userId;
     private final String userName;
+    private final String profileImage;
 }

@@ -66,6 +66,7 @@ public class InitData {
                                 .name(name)
                                 .uid("uid" + idx)
                                 .userType(UserType.NORMAL)
+                                .profileImage("profileImage")
                                 .build());
             });
 
@@ -138,6 +139,7 @@ public class InitData {
                             .uid("uid")
                             .password("adminpass")
                             .userType(UserType.ADMIN)
+                            .profileImage("profileImage")
                             .build());
         }
     }
