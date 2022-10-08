@@ -22,4 +22,6 @@ public class DonationPostPageResponseDto {
     private final String contents;
     private final List<String> images;
     private final String userId;
+    private final String userName;
+    private final String profileImage;
 }

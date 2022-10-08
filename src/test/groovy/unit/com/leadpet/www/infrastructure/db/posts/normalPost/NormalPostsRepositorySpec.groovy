@@ -115,7 +115,7 @@ class NormalPostsRepositorySpec extends Specification {
                         .userId(userId)
                         .loginMethod(LoginMethod.APPLE)
                         .uid("uid")
-                        .name('name')
+                        .name(userName)
                         .userType(UserType.NORMAL)
                         .build()
         )
@@ -160,15 +160,18 @@ class NormalPostsRepositorySpec extends Specification {
         result.getTotalPages() == 1
         result.getContent().size() == 2
         result.getContent().get(0).getUserId() == userId
+        result.getContent().get(0).getUserName() == userName
         result.getContent().get(0).getNormalPostId() == postId2
         result.getContent().get(0).getLiked() == true
+
         result.getContent().get(1).getUserId() == userId
+        result.getContent().get(1).getUserName() == userName
         result.getContent().get(1).getNormalPostId() == postId1
         result.getContent().get(1).getLiked() == null
 
         where:
-        userId   | postId1   | postId2
-        'userId' | 'postId1' | 'postId2'
+        userId   | userName   | postId1   | postId2
+        'userId' | 'userName' | 'postId1' | 'postId2'
     }
 
     def "일반 피드 페이지네이션: 데이터가 없는 경우"() {

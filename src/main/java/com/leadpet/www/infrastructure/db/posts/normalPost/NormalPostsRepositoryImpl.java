@@ -43,14 +43,17 @@ public class NormalPostsRepositoryImpl implements NormalPostsRepositoryCustom {
                                 eqLikedUserIdWith(condition.getLikedUserId()).as("liked"),
                                 liked.postId.count().as("likedCount"),
                                 normalReply.normalPost.normalPostId.count().as("commentCount"),
-                                normalPosts.user.userId.as("userId")
+                                normalPosts.user.userId.as("userId"),
+                                normalPosts.user.name.as("userName"),
+                                normalPosts.user.profileImage.as("profileImage")
                         )
                 )
+                .distinct()
                 .from(normalPosts)
                 .leftJoin(liked).on(liked.postId.eq(normalPosts.normalPostId))
                 .leftJoin(normalReply).on(normalReply.normalPost.normalPostId.eq(normalPosts.normalPostId))
                 .where(eqUserIdWith(condition.getUserId()))
-                .groupBy(normalPosts.normalPostId)
+                .groupBy(normalPosts.normalPostId, liked.userId)
                 .orderBy(normalPosts.createdDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

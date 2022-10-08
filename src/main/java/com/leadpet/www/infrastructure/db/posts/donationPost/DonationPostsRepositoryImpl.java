@@ -38,7 +38,9 @@ public class DonationPostsRepositoryImpl implements DonationPostRepositoryCustom
                         donationPosts.donationMethod,
                         donationPosts.contents,
                         donationPosts.images,
-                        donationPosts.user.userId.as("userId")
+                        donationPosts.user.userId.as("userId"),
+                        donationPosts.user.name.as("userName"),
+                        donationPosts.user.profileImage.as("profileImage")
                 ))
                 .from(donationPosts)
                 .where(

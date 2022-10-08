@@ -120,6 +120,7 @@ class DonationPostServiceSpec extends Specification {
                             .contents('contents')
                             .images(['img1', 'img2'])
                             .userId('userId' + i)
+                            .userName('userName')
                             .build())
         }
 

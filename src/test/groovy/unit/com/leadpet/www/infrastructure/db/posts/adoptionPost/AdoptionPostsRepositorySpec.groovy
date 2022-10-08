@@ -13,6 +13,9 @@ import com.leadpet.www.infrastructure.domain.users.LoginMethod
 import com.leadpet.www.infrastructure.domain.users.ShelterInfo
 import com.leadpet.www.infrastructure.domain.users.UserType
 import com.leadpet.www.infrastructure.domain.users.Users
+import com.leadpet.www.presentation.dto.response.post.adoption.AdoptionPostPageResponseDto
+import org.assertj.core.api.Assertions
+import org.assertj.core.api.ListAssert
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
@@ -100,6 +103,9 @@ class AdoptionPostsRepositorySpec extends Specification {
         result.getContent().size() == 5
         result.getContent().get(0).getEuthanasiaDate().isBefore(result.getContent().get(1).getEuthanasiaDate())
         result.getTotalElements() == expectedNumOfPosts
+
+        def it = Assertions.assertThat(result.getContent())
+        it.extractingResultOf('getUserName').containsAnyOf('name0', 'name1')
 
         where:
         testcase          | totalNumOfPosts | startDate           | endDate                | targetUserId | expectedNumOfPosts

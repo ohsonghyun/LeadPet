@@ -160,6 +160,7 @@ class AdoptionPostControllerSpec extends Specification {
                                         .disease('disease')
                                         .images(['img1', 'img2'])
                                         .userId('userId')
+                                        .userName('userName')
                                         .build()
                         )
                 ))
