@@ -96,9 +96,15 @@ public class SavedPostRepositoryImpl implements SavedPostRepositoryCustom {
                         Projections.constructor(
                                 SimpleDonationPostResponse.class,
                                 donationPosts.donationPostId,
+                                donationPosts.startDate,
+                                donationPosts.endDate,
                                 donationPosts.title,
+                                donationPosts.donationMethod,
+                                donationPosts.contents,
                                 donationPosts.images,
-                                donationPosts.user.userId
+                                donationPosts.user.userId.as("userId"),
+                                donationPosts.user.name.as("userName"),
+                                donationPosts.user.profileImage.as("profileImage")
                         ))
                 .from(donationPosts)
                 .leftJoin(savedPost).on(donationPosts.user.userId.eq(savedPost.user.userId))
