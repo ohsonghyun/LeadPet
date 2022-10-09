@@ -39,8 +39,12 @@ public class SavedPostRepositoryImpl implements SavedPostRepositoryCustom {
                                 SimpleNormalPostResponse.class,
                                 normalPosts.normalPostId,
                                 normalPosts.title,
+                                normalPosts.contents,
                                 normalPosts.images,
-                                normalPosts.user.userId
+                                normalPosts.createdDate,
+                                normalPosts.user.userId,
+                                normalPosts.user.name,
+                                normalPosts.user.profileImage
                         ))
                 .from(normalPosts)
                 .leftJoin(savedPost).on(normalPosts.user.userId.eq(savedPost.user.userId))
@@ -65,9 +69,21 @@ public class SavedPostRepositoryImpl implements SavedPostRepositoryCustom {
                         Projections.constructor(
                                 SimpleAdoptionPostResponse.class,
                                 adoptionPosts.adoptionPostId,
+                                adoptionPosts.startDate,
+                                adoptionPosts.endDate,
+                                adoptionPosts.euthanasiaDate,
                                 adoptionPosts.title,
+                                adoptionPosts.contents,
+                                adoptionPosts.animalType,
+                                adoptionPosts.breed,
+                                adoptionPosts.gender,
+                                adoptionPosts.neutering,
+                                adoptionPosts.age,
+                                adoptionPosts.disease,
                                 adoptionPosts.images,
-                                adoptionPosts.user.userId
+                                adoptionPosts.user.userId.as("userId"),
+                                adoptionPosts.user.name.as("userName"),
+                                adoptionPosts.user.profileImage.as("profileImage")
                         ))
                 .from(adoptionPosts)
                 .leftJoin(savedPost).on(adoptionPosts.user.userId.eq(savedPost.user.userId))
@@ -92,9 +108,15 @@ public class SavedPostRepositoryImpl implements SavedPostRepositoryCustom {
                         Projections.constructor(
                                 SimpleDonationPostResponse.class,
                                 donationPosts.donationPostId,
+                                donationPosts.startDate,
+                                donationPosts.endDate,
                                 donationPosts.title,
+                                donationPosts.donationMethod,
+                                donationPosts.contents,
                                 donationPosts.images,
-                                donationPosts.user.userId
+                                donationPosts.user.userId.as("userId"),
+                                donationPosts.user.name.as("userName"),
+                                donationPosts.user.profileImage.as("profileImage")
                         ))
                 .from(donationPosts)
                 .leftJoin(savedPost).on(donationPosts.user.userId.eq(savedPost.user.userId))
