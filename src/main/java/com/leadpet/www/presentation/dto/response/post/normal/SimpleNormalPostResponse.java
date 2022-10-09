@@ -15,6 +15,10 @@ import java.util.List;
 public class SimpleNormalPostResponse {
     private final String normalPostId;
     private final String title;
+    private final String contents;
     private final List<String> images;
+    private final LocalDateTime createdDate;
     private final String userId;
+    private final String userName;
+    private final String profileImage;
 }

@@ -39,8 +39,12 @@ public class SavedPostRepositoryImpl implements SavedPostRepositoryCustom {
                                 SimpleNormalPostResponse.class,
                                 normalPosts.normalPostId,
                                 normalPosts.title,
+                                normalPosts.contents,
                                 normalPosts.images,
-                                normalPosts.user.userId
+                                normalPosts.createdDate,
+                                normalPosts.user.userId,
+                                normalPosts.user.name,
+                                normalPosts.user.profileImage
                         ))
                 .from(normalPosts)
                 .leftJoin(savedPost).on(normalPosts.user.userId.eq(savedPost.user.userId))
