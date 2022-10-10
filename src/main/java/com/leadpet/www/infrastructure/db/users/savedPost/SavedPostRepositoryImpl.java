@@ -1,8 +1,6 @@
 package com.leadpet.www.infrastructure.db.users.savedPost;
 
 import com.leadpet.www.infrastructure.domain.posts.PostType;
-import com.leadpet.www.infrastructure.domain.posts.QAdoptionPosts;
-import com.leadpet.www.infrastructure.domain.posts.QDonationPosts;
 import com.leadpet.www.presentation.dto.response.post.adoption.SimpleAdoptionPostResponse;
 import com.leadpet.www.presentation.dto.response.post.donation.SimpleDonationPostResponse;
 import com.leadpet.www.presentation.dto.response.post.normal.SimpleNormalPostResponse;
@@ -17,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
 import static com.leadpet.www.infrastructure.domain.posts.QAdoptionPosts.adoptionPosts;
 import static com.leadpet.www.infrastructure.domain.posts.QDonationPosts.donationPosts;
@@ -47,7 +44,7 @@ public class SavedPostRepositoryImpl implements SavedPostRepositoryCustom {
                                 normalPosts.user.profileImage
                         ))
                 .from(normalPosts)
-                .leftJoin(savedPost).on(normalPosts.user.userId.eq(savedPost.user.userId))
+                .leftJoin(savedPost).on(normalPosts.normalPostId.eq(savedPost.postId))
                 .where(eqSavedPostUserIdWith(userId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -86,7 +83,7 @@ public class SavedPostRepositoryImpl implements SavedPostRepositoryCustom {
                                 adoptionPosts.user.profileImage.as("profileImage")
                         ))
                 .from(adoptionPosts)
-                .leftJoin(savedPost).on(adoptionPosts.user.userId.eq(savedPost.user.userId))
+                .leftJoin(savedPost).on(adoptionPosts.adoptionPostId.eq(savedPost.postId))
                 .where(eqSavedPostUserIdWith(userId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -119,7 +116,7 @@ public class SavedPostRepositoryImpl implements SavedPostRepositoryCustom {
                                 donationPosts.user.profileImage.as("profileImage")
                         ))
                 .from(donationPosts)
-                .leftJoin(savedPost).on(donationPosts.user.userId.eq(savedPost.user.userId))
+                .leftJoin(savedPost).on(donationPosts.donationPostId.eq(savedPost.postId))
                 .where(eqSavedPostUserIdWith(userId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
